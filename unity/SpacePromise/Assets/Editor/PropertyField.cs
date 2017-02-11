@@ -12,6 +12,7 @@ namespace Assets.Editor
         private readonly PropertyInfo info;
         private readonly MethodInfo getter;
         private readonly MethodInfo setter;
+        private readonly string instanceTypeName;
 
 
         public PropertyField(System.Object instance, PropertyInfo info, SerializedPropertyType type)
@@ -24,6 +25,8 @@ namespace Assets.Editor
             this.instance = instance;
             this.info = info;
             Type = type;
+
+            this.instanceTypeName = instance.GetType().Name;
 
             getter = this.info.GetGetMethod();
             setter = this.info.GetSetMethod();
@@ -101,6 +104,12 @@ namespace Assets.Editor
         
             propertyType = SerializedPropertyType.ObjectReference;
             return true;
+        }
+
+
+        public string InstanceTypeName
+        {
+            get { return this.instanceTypeName; }
         }
 
         public bool HasGetter

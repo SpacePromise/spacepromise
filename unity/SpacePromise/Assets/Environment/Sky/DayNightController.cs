@@ -37,24 +37,30 @@ namespace Assets.Environment.Sky
         /// <summary>
         /// The number of real-world seconds in one game day.
         /// </summary>
-        public float DayCycleLength;
+        [SerializeField]
+        private float dayCycleLength;
 
         /// <summary>
         /// The number of hours per day used in the WorldHour time calculation.
         /// </summary>
-        public float HoursPerDay;
+        [SerializeField]
+        private float hoursPerDay;
 
         /// <summary>
         /// Dawn occurs at currentCycleTime = 0.0f, so this offsets the WorldHour time to make
         /// dawn occur at a specified hour. A value of 3 results in a 5am dawn for a 24 hour world clock.
         /// </summary>
-        public float DawnTimeOffset;
+        [SerializeField]
+        private float dawnTimeOffset;
 
-        public Gradient DawnGradient;
+        [SerializeField]
+        private Gradient dawnGradient;
 
-        public Gradient DuskGradient;
+        [SerializeField]
+        private Gradient duskGradient;
 
-        public AnimationCurve SunIntensity;
+        [SerializeField]
+        private AnimationCurve sunIntensity;
 
         /// <summary>
         /// The current time within the day cycle. Modify to change the World Time.
@@ -96,7 +102,7 @@ namespace Assets.Environment.Sky
         /// </summary>
         void Initialize()
         {
-            this.quarterDay = DayCycleLength * 0.25f;
+            this.quarterDay = dayCycleLength * 0.25f;
             this.dawnTime = 0.0f;
             this.dayTime = dawnTime + quarterDay;
             this.duskTime = dayTime + quarterDay;
@@ -110,10 +116,10 @@ namespace Assets.Environment.Sky
         /// </summary>
         void Reset()
         {
-            this.DayCycleLength = 1200.0f;
-            this.HoursPerDay = 24.0f;
-            this.DawnTimeOffset = 3.0f;
-            this.DawnGradient = new Gradient
+            this.dayCycleLength = 1200.0f;
+            this.hoursPerDay = 24.0f;
+            this.dawnTimeOffset = 3.0f;
+            this.dawnGradient = new Gradient
             {
                 mode = GradientMode.Blend,
                 colorKeys = new[]
@@ -129,7 +135,7 @@ namespace Assets.Environment.Sky
                     new GradientAlphaKey(1, 1)
                 }
             };
-            this.DuskGradient = new Gradient
+            this.duskGradient = new Gradient
             {
                 mode = GradientMode.Blend,
                 colorKeys = new[]
@@ -145,7 +151,7 @@ namespace Assets.Environment.Sky
                     new GradientAlphaKey(1, 1)
                 }
             };
-            this.SunIntensity = new AnimationCurve(
+            this.sunIntensity = new AnimationCurve(
                 new Keyframe(0, 0),
                 new Keyframe(0.27f, 0.00f, 0.03f, 0.03f),
                 new Keyframe(0.42f, 0.81f, 2.80f, 2.80f),
@@ -186,7 +192,7 @@ namespace Assets.Environment.Sky
 
             // Update the current cycle time:
             CurrentCycleTime += Time.deltaTime;
-            CurrentCycleTime = CurrentCycleTime % DayCycleLength;
+            CurrentCycleTime = CurrentCycleTime % dayCycleLength;
         }
 
         /// <summary>
@@ -241,18 +247,18 @@ namespace Assets.Environment.Sky
             {
                 var relativeTime = CurrentCycleTime - dawnTime;
                 var relative = relativeTime / quarterDay;
-                this.lightSource.intensity = Mathf.Clamp01(this.lightIntensity * this.SunIntensity.Evaluate(relative / 2f));
-                RenderSettings.ambientLight = this.DawnGradient.Evaluate(relative);
+                this.lightSource.intensity = Mathf.Clamp01(this.lightIntensity * this.sunIntensity.Evaluate(relative / 2f));
+                RenderSettings.ambientLight = this.dawnGradient.Evaluate(relative);
             }
             else if (CurrentPhase == DayPhase.Dusk)
             {
                 float relativeTime = CurrentCycleTime - duskTime;
                 var relative = (quarterDay - relativeTime) / quarterDay;
-                this.lightSource.intensity = Mathf.Clamp01(this.lightIntensity * this.SunIntensity.Evaluate((1f - relative) / 2f + 0.5f));
-                RenderSettings.ambientLight = this.DuskGradient.Evaluate(1f - relative);
+                this.lightSource.intensity = Mathf.Clamp01(this.lightIntensity * this.sunIntensity.Evaluate((1f - relative) / 2f + 0.5f));
+                RenderSettings.ambientLight = this.duskGradient.Evaluate(1f - relative);
             }
             
-            this.transform.rotation = Quaternion.Euler(CurrentCycleTime / DayCycleLength * 360f + 90, -90, -90);
+            this.transform.rotation = Quaternion.Euler(CurrentCycleTime / dayCycleLength * 360f + 90, -90, -90);
         }
 
         /// <summary>
@@ -260,8 +266,8 @@ namespace Assets.Environment.Sky
         /// </summary>
         private void UpdateWorldTime()
         {
-            this.worldTimeHour = (int)((Mathf.Ceil(this.CurrentCycleTime / this.DayCycleLength * this.HoursPerDay) + this.DawnTimeOffset) % this.HoursPerDay) + 1;
-            this.worldTimeMinute = Mathf.FloorToInt(this.CurrentCycleTime / this.DayCycleLength * this.HoursPerDay % 1f / (1f / 60f));
+            this.worldTimeHour = (int)((Mathf.Ceil(this.CurrentCycleTime / this.dayCycleLength * this.hoursPerDay) + this.dawnTimeOffset) % this.hoursPerDay) + 1;
+            this.worldTimeMinute = Mathf.FloorToInt(this.CurrentCycleTime / this.dayCycleLength * this.hoursPerDay % 1f / (1f / 60f));
         }
 
         public enum DayPhase

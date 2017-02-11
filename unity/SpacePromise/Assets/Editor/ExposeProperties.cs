@@ -13,69 +13,73 @@ namespace Assets.Editor
     {
         public static void Expose(PropertyField[] properties)
         {
-            var emptyOptions = new GUILayoutOption[0];
-
-            EditorGUILayout.BeginVertical(emptyOptions);
+            EditorGUILayout.BeginVertical();
 
             var lastRow = -1;
+            string lastInstanceTypeName = null;
             foreach (var field in properties)
             {
-                if (lastRow != field.Row && lastRow == 0 && field.Row == 0)
+                if (lastRow != field.Row && lastRow == 0 && field.Row == 0 && lastRow != -1)
+                    EditorGUILayout.EndHorizontal();
+
+                if (lastInstanceTypeName != field.InstanceTypeName)
                 {
-                    if (lastRow != -1)
-                        EditorGUILayout.EndHorizontal();
-                    EditorGUILayout.BeginHorizontal(emptyOptions);
+                    EditorGUILayout.Space();
+                    EditorGUILayout.LabelField(field.InstanceTypeName, new GUIStyle{fontStyle = FontStyle.Bold});
                 }
+
+                if (lastRow != field.Row && lastRow == 0 && field.Row == 0)
+                    EditorGUILayout.BeginHorizontal();
 
                 switch (field.Type)
                 {
                     case SerializedPropertyType.Integer:
                         if (field.HasSetter)
-                            field.SetValue(EditorGUILayout.IntField(field.Name, (int) field.GetValue(), emptyOptions));
-                        else EditorGUILayout.LabelField(field.Name, field.GetValue().ToString(), emptyOptions);
+                            field.SetValue(EditorGUILayout.IntField(field.Name, (int) field.GetValue()));
+                        else EditorGUILayout.LabelField(field.Name, field.GetValue().ToString());
                         break;
 
                     case SerializedPropertyType.Float:
                         if (field.HasSetter)
-                            field.SetValue(EditorGUILayout.FloatField(field.Name, (float) field.GetValue(), emptyOptions));
-                        else EditorGUILayout.LabelField(field.Name, ((float)field.GetValue()).ToString(CultureInfo.InvariantCulture), emptyOptions);
+                            field.SetValue(EditorGUILayout.FloatField(field.Name, (float) field.GetValue()));
+                        else EditorGUILayout.LabelField(field.Name, ((float)field.GetValue()).ToString(CultureInfo.InvariantCulture));
                         break;
 
                     case SerializedPropertyType.Boolean:
                         field.SetValue(field.IsButton
-                            ? GUILayout.Button(field.Name, emptyOptions)
-                            : EditorGUILayout.Toggle(field.Name, (bool) field.GetValue(), emptyOptions));
+                            ? GUILayout.Button(field.Name)
+                            : EditorGUILayout.Toggle(field.Name, (bool) field.GetValue()));
                         break;
 
                     case SerializedPropertyType.String:
-                        field.SetValue(EditorGUILayout.TextField(field.Name, (String) field.GetValue(), emptyOptions));
+                        field.SetValue(EditorGUILayout.TextField(field.Name, (String) field.GetValue()));
                         break;
 
                     case SerializedPropertyType.Vector2:
-                        field.SetValue(EditorGUILayout.Vector2Field(field.Name, (Vector2) field.GetValue(), emptyOptions));
+                        field.SetValue(EditorGUILayout.Vector2Field(field.Name, (Vector2) field.GetValue()));
                         break;
 
                     case SerializedPropertyType.Vector3:
-                        field.SetValue(EditorGUILayout.Vector3Field(field.Name, (Vector3) field.GetValue(), emptyOptions));
+                        field.SetValue(EditorGUILayout.Vector3Field(field.Name, (Vector3) field.GetValue()));
                         break;
 
                     case SerializedPropertyType.Enum:
                         if (field.HasSetter)
-                            field.SetValue(EditorGUILayout.EnumPopup(field.Name, (Enum) field.GetValue(), emptyOptions));
-                        else EditorGUILayout.LabelField(field.Name, ((Enum)field.GetValue()).ToString(), emptyOptions);
+                            field.SetValue(EditorGUILayout.EnumPopup(field.Name, (Enum) field.GetValue()));
+                        else EditorGUILayout.LabelField(field.Name, ((Enum)field.GetValue()).ToString());
                         break;
 
                     case SerializedPropertyType.ObjectReference:
                         field.SetValue(EditorGUILayout.ObjectField(field.Name, (UnityEngine.Object) field.GetValue(),
-                            field.GetPropertyType(), true, emptyOptions));
+                            field.GetPropertyType(), true));
                         break;
                 }
 
+                lastInstanceTypeName = field.InstanceTypeName;
                 lastRow = field.Row;
             }
 
             EditorGUILayout.EndVertical();
-
         }
 
         public static PropertyField[] GetProperties(System.Object obj)
