@@ -1,37 +1,40 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 namespace Assets.Engine.Pathfinding
 {
-    /** Binary heap implementation.
-	 * Binary heaps are really fast for ordering nodes in a way that
-	 * makes it possible to get the node with the lowest F score.
-	 * Also known as a priority queue.
-	 *
-	 * This has actually been rewritten as a d-ary heap (by default a 4-ary heap)
-	 * for performance, but it's the same principle.
-	 *
-	 * \see http://en.wikipedia.org/wiki/Binary_heap
-	 * \see https://en.wikipedia.org/wiki/D-ary_heap
-	 */
+    //  /** Binary heap implementation.
+    //* Binary heaps are really fast for ordering nodes in a way that
+    //* makes it possible to get the node with the lowest F score.
+    //* Also known as a priority queue.
+    //*
+    //* This has actually been rewritten as a d-ary heap (by default a 4-ary heap)
+    //* for performance, but it's the same principle.
+    //*
+    //* \see http://en.wikipedia.org/wiki/Binary_heap
+    //* \see https://en.wikipedia.org/wiki/D-ary_heap
+    //*/
     public class BinaryHeap
     {
         /** Number of items in the tree */
         public int NumberOfItems;
 
         /** The tree will grow by at least this factor every time it is expanded */
-        public float GrowthFactor = 2;
+        const int GrowthFactor = 4;
 
         /**
-		 * Number of children of each node in the tree.
-		 * Different values have been tested and 4 has been empirically found to perform the best.
-		 * \see https://en.wikipedia.org/wiki/D-ary_heap
-		 */
+   * Number of children of each node in the tree.
+   * Different values have been tested and 4 has been empirically found to perform the best.
+   * \see https://en.wikipedia.org/wiki/D-ary_heap
+   */
         const int D = 4;
 
         /** Internal backing array for the tree */
@@ -39,7 +42,7 @@ namespace Assets.Engine.Pathfinding
 
         private struct Tuple
         {
-            public uint F;
+            public readonly uint F;
             public readonly PathNode node;
 
             public Tuple(uint f, PathNode node)
@@ -65,11 +68,6 @@ namespace Assets.Engine.Pathfinding
             return binaryHeap[i].node;
         }
 
-        internal void SetF(int i, uint f)
-        {
-            binaryHeap[i].F = f;
-        }
-
         /** Adds a node to the heap */
         public void Add(PathNode node)
         {
@@ -77,10 +75,11 @@ namespace Assets.Engine.Pathfinding
 
             if (NumberOfItems == binaryHeap.Length)
             {
-                int newSize = Math.Max(binaryHeap.Length + 4, (int)Math.Round(binaryHeap.Length * GrowthFactor));
+                int newSize = Math.Max(binaryHeap.Length + 4, binaryHeap.Length * GrowthFactor);
                 if (newSize > 1 << 18)
                 {
-                    throw new Exception("Binary Heap Size really large (2^18). A heap size this large is probably the cause of pathfinding running in an infinite loop. " +
+                    throw new Exception(
+                        "Binary Heap Size really large (2^18). A heap size this large is probably the cause of pathfinding running in an infinite loop. " +
                         "\nRemove this check (in BinaryHeap.cs) if you are sure that it is not caused by a bug");
                 }
 
@@ -90,6 +89,7 @@ namespace Assets.Engine.Pathfinding
                 {
                     tmp[i] = binaryHeap[i];
                 }
+
                 binaryHeap = tmp;
             }
 
@@ -187,7 +187,7 @@ namespace Assets.Engine.Pathfinding
         }
 
         /** Rebuilds the heap by trickeling down all items.
-		 * Usually called after the hTarget on a path has been changed */
+   * Usually called after the hTarget on a path has been changed */
         public void Rebuild()
         {
             for (int i = 2; i < NumberOfItems; i++)
@@ -272,7 +272,7 @@ namespace Assets.Engine.Pathfinding
 
         private readonly int hashCode;
         public readonly Int3 Location;
-        public readonly List<GraphNode> Connections = new List<GraphNode>();
+        public readonly List<GraphNode> Connections = new List<GraphNode>(8);
 
 
         public GraphNode(Int3 location)
@@ -284,20 +284,22 @@ namespace Assets.Engine.Pathfinding
 
         public override int GetHashCode()
         {
-            return this.hashCode;
+            return Location.GetHashCode();
         }
     }
 
     public class PathNode
     {
-        public GraphNode GraphNode;
+        public readonly GraphNode GraphNode;
 
-        public uint FunctionCost;
-        public uint CostFromStart;
+        public readonly uint FunctionCost;
+        public readonly uint CostFromStart;
 
-        public uint DestinationHeuristic;
-        public PathNode From;
-        public bool IsEnd;
+        public readonly uint DestinationHeuristic;
+        public readonly PathNode From;
+        public readonly bool IsEnd;
+
+        private readonly int hashCode;
 
         public PathNode(GraphNode graphNode, GraphNode destinationNode)
             : this(graphNode, null, destinationNode)
@@ -316,7 +318,7 @@ namespace Assets.Engine.Pathfinding
                     (uint) (Int3.Distance(this.From.GraphNode.Location, graphNode.Location) * 1000);
             }
 
-            if (graphNode == destinationNode)
+            if (graphNode.Equals(destinationNode))
             {
                 this.IsEnd = true;
                 this.DestinationHeuristic = 0;
@@ -327,6 +329,13 @@ namespace Assets.Engine.Pathfinding
             }
 
             this.FunctionCost = this.CostFromStart + this.DestinationHeuristic;
+
+            this.hashCode = this.GraphNode.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return this.hashCode;
         }
     }
 
@@ -335,7 +344,7 @@ namespace Assets.Engine.Pathfinding
         private readonly int width;
         private readonly int height;
         private readonly Int3 offset;
-        public readonly List<List<GraphNode>> Nodes = new List<List<GraphNode>>();
+        public readonly GraphNode[,] Nodes;
         //public readonly List<GraphNode> Nodes = new List<GraphNode>();
 
 
@@ -348,15 +357,11 @@ namespace Assets.Engine.Pathfinding
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
+            this.Nodes = new GraphNode[this.height, this.width];
             for (int y = 0; y < this.height; y++)
-            {
-                var rowNodes = new List<GraphNode>();
-                for (int x = 0; x < this.width; x++)
-                    rowNodes.Add(new GraphNode(new Int3(this.offset.X + x, 0, this.offset.Z + y)));
-
-                Nodes.Add(rowNodes);
-            }
-
+            for (int x = 0; x < this.width; x++)
+                this.Nodes[y, x] = new GraphNode(new Int3(this.offset.X + x, 0, this.offset.Z + y));
+            
             sw.Stop();
             Debug.Log("Generated point mesh in " + sw.ElapsedTicks);
             sw.Reset();
@@ -364,40 +369,39 @@ namespace Assets.Engine.Pathfinding
 
             for (int y = 0; y < this.height; y++)
             {
-                var rowNodes = this.Nodes[y];
                 for (int x = 0; x < this.width; x++)
                 {
-                    var node = rowNodes[x];
+                    var node = this.Nodes[y,x];
                     if (y > 1)
                     {
                         if (x > 0)
                         {
-                            node.Connections.Add(this.Nodes[y - 1][x - 1]);
+                            node.Connections.Add(this.Nodes[y - 1,x - 1]);
                         }
-                        node.Connections.Add(this.Nodes[y - 1][x]);
+                        node.Connections.Add(this.Nodes[y - 1,x]);
                         if (x < this.width - 1)
                         {
-                            node.Connections.Add(this.Nodes[y - 1][x + 1]);
+                            node.Connections.Add(this.Nodes[y - 1,x + 1]);
                         }
                     }
                     if (x > 0)
                     {
-                        node.Connections.Add(this.Nodes[y][x - 1]);
+                        node.Connections.Add(this.Nodes[y,x - 1]);
                     }
                     if (x < this.width - 1)
                     {
-                        node.Connections.Add(this.Nodes[y][x + 1]);
+                        node.Connections.Add(this.Nodes[y,x + 1]);
                     }
                     if (y < this.height - 1)
                     {
                         if (x > 0)
                         {
-                            node.Connections.Add(this.Nodes[y + 1][x - 1]);
+                            node.Connections.Add(this.Nodes[y + 1,x - 1]);
                         }
-                        node.Connections.Add(this.Nodes[y + 1][x]);
+                        node.Connections.Add(this.Nodes[y + 1,x]);
                         if (x < this.width - 1)
                         {
-                            node.Connections.Add(this.Nodes[y + 1][x + 1]);
+                            node.Connections.Add(this.Nodes[y + 1,x + 1]);
                         }
                     }
                 }
@@ -434,12 +438,13 @@ namespace Assets.Engine.Pathfinding
             if (graph == null) return;
 
             // Mark whole graph as not blocked
-            for (int oY = 0; oY < size.z && oY < this.graph.Nodes.Count; oY++)
+            var ySize = this.graph.Nodes.GetLength(0);
+            var xSize = this.graph.Nodes.GetLength(1);
+            for (int oY = 0; oY < size.z && oY < ySize; oY++)
             {
-                var yNode = this.graph.Nodes[oY];
-                for (int oX = 0; oX < size.x && oX < yNode.Count; oX++)
+                for (int oX = 0; oX < size.x && oX < xSize; oX++)
                 {
-                    yNode[oX].IsBlocked = false;
+                    this.graph.Nodes[oY, oX].IsBlocked = false;
                 }
             }
 
@@ -456,9 +461,32 @@ namespace Assets.Engine.Pathfinding
                 {
                     for (int oX = startX; oX < size.x && oX < startX + width; oX++)
                     {
-                        this.graph.Nodes[oY][oX].IsBlocked = true;
+                        this.graph.Nodes[oY,oX].IsBlocked = true;
                     }
                 }
+            }
+        }
+
+        public int lineCount = 100;
+        public float radius = 3.0f;
+
+        static Material lineMaterial;
+        static void CreateLineMaterial()
+        {
+            if (!lineMaterial)
+            {
+                // Unity has a built-in shader that is useful for drawing
+                // simple colored things.
+                Shader shader = Shader.Find("Hidden/Internal-Colored");
+                lineMaterial = new Material(shader);
+                lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+                // Turn on alpha blending
+                lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                // Turn backface culling off
+                lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+                // Turn off depth writes
+                lineMaterial.SetInt("_ZWrite", 0);
             }
         }
 
@@ -477,34 +505,74 @@ namespace Assets.Engine.Pathfinding
                     var ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
                     RaycastHit rayInfo;
                     Physics.Raycast(ray, out rayInfo);
-                    this.lastFoundPath = GetPath(this.graph.Nodes[0][0],
+                    this.lastFoundPath = GetPath(this.graph.Nodes[0,0],
                         this.graph.Nodes
-                            [(int) Mathf.Clamp(rayInfo.point.z + this.size.z / 2, 0, this.size.z)]
-                            [(int) Mathf.Clamp(rayInfo.point.x + this.size.x / 2, 0, this.size.x)]);
+                            [(int) Mathf.Clamp(rayInfo.point.z + this.size.z / 2, 0, this.size.z),
+                            (int) Mathf.Clamp(rayInfo.point.x + this.size.x / 2, 0, this.size.x)]);
 
                     lastDestinationLocation = Input.mousePosition;
                 }
             }
         }
 
+        public void OnRenderObject()
+        {
+            CreateLineMaterial();
+            // Apply the line material
+            lineMaterial.SetPass(0);
+
+            GL.PushMatrix();
+            // Set transformation matrix for drawing to
+            // match our transform
+            GL.MultMatrix(transform.localToWorldMatrix);
+
+            // Draw lines
+            GL.Begin(GL.LINES);
+            if (lastFoundPath != null)
+            {
+                GL.Color(new Color(time / 10f, 0, 0, 1f));
+                var currentNode = this.lastFoundPath;
+                while (currentNode != null)
+                {
+                    if (currentNode.From != null)
+                    {
+                        GL.Vertex3(currentNode.GraphNode.Location.X, currentNode.GraphNode.Location.Y, currentNode.GraphNode.Location.Z);
+                        GL.Vertex3(currentNode.From.GraphNode.Location.X, currentNode.From.GraphNode.Location.Y, currentNode.From.GraphNode.Location.Z);
+                    }
+
+                    currentNode = currentNode.From;
+                }
+            }
+            GL.End();
+            GL.PopMatrix();
+        }
+
+        private int opCounter = 0;
+        private int time = 0;
         public PathNode GetPath(GraphNode startNode, GraphNode destinationNode)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
-            //// TODO Remove, for debugging
-            foreach (var result in this.graph.Nodes.SelectMany(gn => gn.SelectMany(gnx => gnx.Connections)))
-                result.wasOpen = false;
+            // TODO Remove, for debugging
+            var ySize = this.graph.Nodes.GetLength(0);
+            var xSize = this.graph.Nodes.GetLength(1);
+            for (int oY = 0; oY < size.z && oY < ySize; oY++)
+                for (int oX = 0; oX < size.x && oX < xSize; oX++)
+                    this.graph.Nodes[oY, oX].wasOpen = false;
+
+            opCounter = 0;
+            var sw1 = new Stopwatch();
 
             PathNode bestPath = null;
             var openNodes = new BinaryHeap(128);
-            var openGraphNodes = new HashSet<GraphNode>();
-            var closedNodes = new HashSet<GraphNode>();
+            var openGraphNodesGrid = new bool[40000];
+            var closedGraphNodesGrid = new bool[40000];
             openNodes.Add(new PathNode(startNode, destinationNode));
             do
             {
                 var currentPath = openNodes.Remove();
-                closedNodes.Add(currentPath.GraphNode);
+                closedGraphNodesGrid[(currentPath.GraphNode.Location.Z + 100)*200+ currentPath.GraphNode.Location.X + 100] = true;
 
                 if (bestPath == null)
                     bestPath = currentPath;
@@ -519,47 +587,59 @@ namespace Assets.Engine.Pathfinding
                 for (int index = 0; index < neighbours.Count; index++)
                 {
                     var graphNode = neighbours[index];
-                    if (graphNode.IsBlocked || 
-                        closedNodes.Contains(graphNode) || 
-                        openGraphNodes.Contains(graphNode))
+                    var loc = (graphNode.Location.Z + 100) * 200 + graphNode.Location.X + 100;
+                    if (graphNode.IsBlocked ||
+                        openGraphNodesGrid[loc] ||
+                        closedGraphNodesGrid[loc])
                         continue;
-                    openGraphNodes.Add(graphNode);
+                    openGraphNodesGrid[loc] = true;
 
-                    //// TODO Remove, for debugging
+                    // TODO Remove, for debugging
                     graphNode.wasOpen = true;
 
                     var newNode = new PathNode(graphNode, currentPath, destinationNode);
-                    //if (newNode.DestinationHeuristic < bestPath.DestinationHeuristic)
-                        openNodes.Add(newNode);
+                    openNodes.Add(newNode);
+                    
                 }
+
+                opCounter++;
             } while (openNodes.NumberOfItems > 0);
 
             sw.Stop();
             Debug.Log("Found path in " + sw.ElapsedMilliseconds + " ms");
+            Debug.Log("Total neighbours handling: " + sw1.ElapsedMilliseconds);
+            Debug.Log("Total operations: " + opCounter);
+            time = (int)sw.ElapsedMilliseconds;
 
             return bestPath;
         }
+
+        //private List<GraphNode> GetInterestingNeighvours(GraphNode start, GraphNode end)
+        //{
+            
+        //}
 
         public void OnDrawGizmos()
         {
             if (graph == null)
                 return;
 
-            foreach (var nodeY in graph.Nodes)
+            var ySize = this.graph.Nodes.GetLength(0);
+            var xSize = this.graph.Nodes.GetLength(1);
+            for (int oY = 0; oY < size.z && oY < ySize; oY++)
             {
-                foreach (var nodeX in nodeY)
+                for (int oX = 0; oX < size.x && oX < xSize; oX++)
                 {
-                    if (!nodeX.IsBlocked)
+                    var node = this.graph.Nodes[oY, oX];
+                    for (int cIndex = 0; cIndex < node.Connections.Count; cIndex++)
                     {
-                        nodeX.Connections.ForEach(conn =>
-                        {
-                            if (conn.wasOpen)
-                                Gizmos.color = Color.blue;
+                        var conn = node.Connections[cIndex];
+                        if (conn.wasOpen)
+                            Gizmos.color = Color.blue;
 
-                            if (!conn.IsBlocked)
-                                Gizmos.DrawLine((Vector3)nodeX.Location, (Vector3)conn.Location);
-                            Gizmos.color = Color.white;
-                        });
+                        if (!conn.IsBlocked)
+                            Gizmos.DrawLine((Vector3)node.Location, (Vector3)conn.Location);
+                        Gizmos.color = Color.white;
                     }
                 }
             }
