@@ -11,209 +11,6 @@ using Random = UnityEngine.Random;
 
 namespace Assets.Engine.Pathfinding
 {
-    //  /** Binary heap implementation.
-    //* Binary heaps are really fast for ordering nodes in a way that
-    //* makes it possible to get the node with the lowest F score.
-    //* Also known as a priority queue.
-    //*
-    //* This has actually been rewritten as a d-ary heap (by default a 4-ary heap)
-    //* for performance, but it's the same principle.
-    //*
-    //* \see http://en.wikipedia.org/wiki/Binary_heap
-    //* \see https://en.wikipedia.org/wiki/D-ary_heap
-    //*/
-    public class BinaryHeap
-    {
-        /** Number of items in the tree */
-        public int NumberOfItems;
-
-        /** The tree will grow by at least this factor every time it is expanded */
-        const int GrowthFactor = 4;
-
-        /**
-   * Number of children of each node in the tree.
-   * Different values have been tested and 4 has been empirically found to perform the best.
-   * \see https://en.wikipedia.org/wiki/D-ary_heap
-   */
-        const int D = 4;
-
-        /** Internal backing array for the tree */
-        private Tuple[] binaryHeap;
-
-        private struct Tuple
-        {
-            public readonly uint F;
-            public readonly PathNode node;
-
-            public Tuple(uint f, PathNode node)
-            {
-                this.F = f;
-                this.node = node;
-            }
-        }
-
-        public BinaryHeap(int numberOfElements)
-        {
-            binaryHeap = new Tuple[numberOfElements];
-            NumberOfItems = 0;
-        }
-
-        public void Clear()
-        {
-            NumberOfItems = 0;
-        }
-
-        internal PathNode GetNode(int i)
-        {
-            return binaryHeap[i].node;
-        }
-
-        /** Adds a node to the heap */
-        public void Add(PathNode node)
-        {
-            if (node == null) throw new ArgumentNullException("node");
-
-            if (NumberOfItems == binaryHeap.Length)
-            {
-                int newSize = Math.Max(binaryHeap.Length + 4, binaryHeap.Length * GrowthFactor);
-                if (newSize > 1 << 18)
-                {
-                    throw new Exception(
-                        "Binary Heap Size really large (2^18). A heap size this large is probably the cause of pathfinding running in an infinite loop. " +
-                        "\nRemove this check (in BinaryHeap.cs) if you are sure that it is not caused by a bug");
-                }
-
-                var tmp = new Tuple[newSize];
-
-                for (int i = 0; i < binaryHeap.Length; i++)
-                {
-                    tmp[i] = binaryHeap[i];
-                }
-
-                binaryHeap = tmp;
-            }
-
-            var obj = new Tuple(node.FunctionCost, node);
-            binaryHeap[NumberOfItems] = obj;
-
-            int bubbleIndex = NumberOfItems;
-            uint nodeF = node.FunctionCost;
-            uint nodeG = node.CostFromStart;
-
-            while (bubbleIndex != 0)
-            {
-                int parentIndex = (bubbleIndex - 1) / D;
-
-                if (nodeF < binaryHeap[parentIndex].F || (nodeF == binaryHeap[parentIndex].F && nodeG > binaryHeap[parentIndex].node.CostFromStart))
-                {
-                    binaryHeap[bubbleIndex] = binaryHeap[parentIndex];
-                    binaryHeap[parentIndex] = obj;
-                    bubbleIndex = parentIndex;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            NumberOfItems++;
-        }
-
-        /** Returns the node with the lowest F score from the heap */
-        public PathNode Remove()
-        {
-            NumberOfItems--;
-            PathNode returnItem = binaryHeap[0].node;
-
-            binaryHeap[0] = binaryHeap[NumberOfItems];
-
-            int swapItem = 0;
-
-            do
-            {
-                var parent = swapItem;
-                var swapF = binaryHeap[swapItem].F;
-                var pd = parent * D + 1;
-
-                if (pd + 0 <= NumberOfItems &&
-                    (binaryHeap[pd + 0].F < swapF ||
-                     binaryHeap[pd + 0].F == swapF &&
-                     binaryHeap[pd + 0].node.CostFromStart < binaryHeap[swapItem].node.CostFromStart))
-                {
-                    swapF = binaryHeap[pd + 0].F;
-                    swapItem = pd + 0;
-                }
-
-                if (pd + 1 <= NumberOfItems &&
-                    (binaryHeap[pd + 1].F < swapF ||
-                     binaryHeap[pd + 1].F == swapF &&
-                     binaryHeap[pd + 1].node.CostFromStart < binaryHeap[swapItem].node.CostFromStart))
-                {
-                    swapF = binaryHeap[pd + 1].F;
-                    swapItem = pd + 1;
-                }
-
-                if (pd + 2 <= NumberOfItems &&
-                    (binaryHeap[pd + 2].F < swapF ||
-                     binaryHeap[pd + 2].F == swapF &&
-                     binaryHeap[pd + 2].node.CostFromStart < binaryHeap[swapItem].node.CostFromStart))
-                {
-                    swapF = binaryHeap[pd + 2].F;
-                    swapItem = pd + 2;
-                }
-
-                if (pd + 3 <= NumberOfItems &&
-                    (binaryHeap[pd + 3].F < swapF ||
-                     binaryHeap[pd + 3].F == swapF &&
-                     binaryHeap[pd + 3].node.CostFromStart < binaryHeap[swapItem].node.CostFromStart))
-                {
-                    swapItem = pd + 3;
-                }
-
-                // One if the parent's children are smaller or equal, swap them
-                if (parent != swapItem)
-                {
-                    var tmpIndex = binaryHeap[parent];
-                    binaryHeap[parent] = binaryHeap[swapItem];
-                    binaryHeap[swapItem] = tmpIndex;
-                }
-                else
-                {
-                    break;
-                }
-            } while (true);
-
-            return returnItem;
-        }
-
-        /** Rebuilds the heap by trickeling down all items.
-   * Usually called after the hTarget on a path has been changed */
-        public void Rebuild()
-        {
-            for (int i = 2; i < NumberOfItems; i++)
-            {
-                int bubbleIndex = i;
-                var node = binaryHeap[i];
-                uint nodeF = node.F;
-                while (bubbleIndex != 1)
-                {
-                    int parentIndex = bubbleIndex / D;
-
-                    if (nodeF < binaryHeap[parentIndex].F)
-                    {
-                        binaryHeap[bubbleIndex] = binaryHeap[parentIndex];
-                        binaryHeap[parentIndex] = node;
-                        bubbleIndex = parentIndex;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     public struct Int3
     {
         public readonly int X;
@@ -270,21 +67,29 @@ namespace Assets.Engine.Pathfinding
         public bool wasOpen;
         public bool IsBlocked;
 
+        public readonly int Index;
         private readonly int hashCode;
         public readonly Int3 Location;
-        public readonly List<GraphNode> Connections = new List<GraphNode>(8);
-
+        public readonly List<GraphNode> ConnectionsList = new List<GraphNode>(8);
+        public GraphNode[] Connections;
+        
 
         public GraphNode(Int3 location)
         {
             this.Location = location;
             this.hashCode = location.GetHashCode();
+            this.Index = (Location.Z + 100) * 200 + Location.X + 100;
         }
 
 
+        public void Lock()
+        {
+            this.Connections = this.ConnectionsList.ToArray();
+        }
+
         public override int GetHashCode()
         {
-            return Location.GetHashCode();
+            return hashCode;
         }
     }
 
@@ -293,7 +98,7 @@ namespace Assets.Engine.Pathfinding
         public readonly GraphNode GraphNode;
 
         public readonly uint FunctionCost;
-        public readonly uint CostFromStart;
+        private readonly uint CostFromStart;
 
         public readonly uint DestinationHeuristic;
         public readonly PathNode From;
@@ -376,34 +181,35 @@ namespace Assets.Engine.Pathfinding
                     {
                         if (x > 0)
                         {
-                            node.Connections.Add(this.Nodes[y - 1,x - 1]);
+                            node.ConnectionsList.Add(this.Nodes[y - 1,x - 1]);
                         }
-                        node.Connections.Add(this.Nodes[y - 1,x]);
+                        node.ConnectionsList.Add(this.Nodes[y - 1,x]);
                         if (x < this.width - 1)
                         {
-                            node.Connections.Add(this.Nodes[y - 1,x + 1]);
+                            node.ConnectionsList.Add(this.Nodes[y - 1,x + 1]);
                         }
                     }
                     if (x > 0)
                     {
-                        node.Connections.Add(this.Nodes[y,x - 1]);
+                        node.ConnectionsList.Add(this.Nodes[y,x - 1]);
                     }
                     if (x < this.width - 1)
                     {
-                        node.Connections.Add(this.Nodes[y,x + 1]);
+                        node.ConnectionsList.Add(this.Nodes[y,x + 1]);
                     }
                     if (y < this.height - 1)
                     {
                         if (x > 0)
                         {
-                            node.Connections.Add(this.Nodes[y + 1,x - 1]);
+                            node.ConnectionsList.Add(this.Nodes[y + 1,x - 1]);
                         }
-                        node.Connections.Add(this.Nodes[y + 1,x]);
+                        node.ConnectionsList.Add(this.Nodes[y + 1,x]);
                         if (x < this.width - 1)
                         {
-                            node.Connections.Add(this.Nodes[y + 1,x + 1]);
+                            node.ConnectionsList.Add(this.Nodes[y + 1,x + 1]);
                         }
                     }
+                    node.Lock();
                 }
             }
 
@@ -551,9 +357,6 @@ namespace Assets.Engine.Pathfinding
         private int time = 0;
         public PathNode GetPath(GraphNode startNode, GraphNode destinationNode)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             // TODO Remove, for debugging
             var ySize = this.graph.Nodes.GetLength(0);
             var xSize = this.graph.Nodes.GetLength(1);
@@ -564,18 +367,28 @@ namespace Assets.Engine.Pathfinding
             opCounter = 0;
             var sw1 = new Stopwatch();
 
-            PathNode bestPath = null;
+            sw1.Start();
+            var gcount = 0;
+            for (int g = 0; g < 40000; g++)
+            {
+                gcount++;
+            }
+            sw1.Stop();
+
+            var bestPath = new PathNode(startNode, destinationNode);
             var openNodes = new BinaryHeap(128);
-            var openGraphNodesGrid = new bool[40000];
-            var closedGraphNodesGrid = new bool[40000];
-            openNodes.Add(new PathNode(startNode, destinationNode));
+            var visitedNodes = new bool[40000];
+            openNodes.Add(bestPath);
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             do
             {
+                //sw1.Start();
                 var currentPath = openNodes.Remove();
-                closedGraphNodesGrid[(currentPath.GraphNode.Location.Z + 100)*200+ currentPath.GraphNode.Location.X + 100] = true;
+                //sw1.Stop();
+                visitedNodes[currentPath.GraphNode.Index] = true;
 
-                if (bestPath == null)
-                    bestPath = currentPath;
                 if (currentPath.DestinationHeuristic < bestPath.DestinationHeuristic || currentPath.IsEnd)
                     bestPath = currentPath;
 
@@ -584,30 +397,30 @@ namespace Assets.Engine.Pathfinding
 
                 // Go through connected nodes
                 var neighbours = currentPath.GraphNode.Connections;
-                for (int index = 0; index < neighbours.Count; index++)
+                var neighboursCount = neighbours.Length;
+                for (int index = 0; index < neighboursCount; index++)
                 {
                     var graphNode = neighbours[index];
-                    var loc = (graphNode.Location.Z + 100) * 200 + graphNode.Location.X + 100;
+                    var loc = graphNode.Index;
                     if (graphNode.IsBlocked ||
-                        openGraphNodesGrid[loc] ||
-                        closedGraphNodesGrid[loc])
+                        visitedNodes[loc])
                         continue;
-                    openGraphNodesGrid[loc] = true;
+                    visitedNodes[loc] = true;
 
                     // TODO Remove, for debugging
                     graphNode.wasOpen = true;
-
+                    //sw1.Start();
                     var newNode = new PathNode(graphNode, currentPath, destinationNode);
                     openNodes.Add(newNode);
-                    
+                    //sw1.Stop();
                 }
 
                 opCounter++;
             } while (openNodes.NumberOfItems > 0);
 
             sw.Stop();
-            Debug.Log("Found path in " + sw.ElapsedMilliseconds + " ms");
-            Debug.Log("Total neighbours handling: " + sw1.ElapsedMilliseconds);
+            Debug.Log("Found path in " + sw.ElapsedTicks + " ticks");
+            Debug.Log("Total neighbours handling: " + sw1.ElapsedTicks);
             Debug.Log("Total operations: " + opCounter);
             time = (int)sw.ElapsedMilliseconds;
 
@@ -631,7 +444,7 @@ namespace Assets.Engine.Pathfinding
                 for (int oX = 0; oX < size.x && oX < xSize; oX++)
                 {
                     var node = this.graph.Nodes[oY, oX];
-                    for (int cIndex = 0; cIndex < node.Connections.Count; cIndex++)
+                    for (int cIndex = 0; cIndex < node.Connections.Length; cIndex++)
                     {
                         var conn = node.Connections[cIndex];
                         if (conn.wasOpen)
