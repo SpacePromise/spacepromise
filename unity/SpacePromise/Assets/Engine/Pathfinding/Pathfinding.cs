@@ -120,7 +120,7 @@ namespace Assets.Engine.Pathfinding
             {
                 this.CostFromStart =
                     this.From.CostFromStart +
-                    (uint) (Int3.Distance(this.From.GraphNode.Location, graphNode.Location) * 1000);
+                    (uint) (Int3.Distance(currentNode.GraphNode.Location, graphNode.Location) * 1000);
             }
 
             if (graphNode.Equals(destinationNode))
@@ -131,6 +131,16 @@ namespace Assets.Engine.Pathfinding
             else
             {
                 this.DestinationHeuristic = (uint)(Int3.Distance(destinationNode.Location, graphNode.Location) * 1000);
+
+                if (this.From != null)
+                {
+                    var dx1 = currentNode.GraphNode.Location.X - destinationNode.Location.X;
+                    var dy1 = currentNode.GraphNode.Location.Y - destinationNode.Location.Y;
+                    var dx2 = 0 - destinationNode.Location.X;
+                    var dy2 = 0 - destinationNode.Location.Y;
+                    var cross = Math.Abs(dx1 * dy2 - dx2 * dy1);
+                    this.DestinationHeuristic += (uint) cross;
+                }
             }
 
             this.FunctionCost = this.CostFromStart + this.DestinationHeuristic;
