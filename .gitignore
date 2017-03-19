@@ -36,7 +36,7 @@ sysinfo.txt
 # =========================
 
 # Visual Studio cache directory
-/.vs/
+**/.vs/
 
 # User-specific files
 *.userosscache
@@ -44,16 +44,16 @@ sysinfo.txt
 
 
 # MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+**/[Tt]est[Rr]esult*/
+**/[Bb]uild[Ll]og.*
 
 # NUNIT
 *.VisualState.xml
 TestResult.xml
 
 # Build Results of an ATL Project
-[Dd]ebugPS/
-[Rr]eleasePS/
+**/[Dd]ebugPS/
+**/[Rr]eleasePS/
 dlldata.c
 
 
@@ -89,13 +89,13 @@ dlldata.c
 *.sap
 
 # TFS 2012 Local Workspace
-$tf/
+**/$tf/
 
 # Guidance Automation Toolkit
 *.gpState
 
 # ReSharper is a .NET coding add-in
-_ReSharper*/
+**/_ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
