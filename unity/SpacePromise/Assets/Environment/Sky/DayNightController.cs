@@ -201,7 +201,7 @@ namespace Assets.Environment.Sky
         public void SetDawn()
         {
             this.lightSource.enabled = true;
-            RenderSettings.ambientMode = AmbientMode.Flat;
+            //RenderSettings.ambientMode = AmbientMode.Flat;
             this.CurrentPhase = DayPhase.Dawn;
         }
 
@@ -248,16 +248,16 @@ namespace Assets.Environment.Sky
                 var relativeTime = CurrentCycleTime - dawnTime;
                 var relative = relativeTime / quarterDay;
                 this.lightSource.intensity = Mathf.Clamp01(this.lightIntensity * this.sunIntensity.Evaluate(relative / 2f));
-                RenderSettings.ambientLight = this.dawnGradient.Evaluate(relative);
+                //RenderSettings.ambientLight = this.dawnGradient.Evaluate(relative);
             }
             else if (CurrentPhase == DayPhase.Dusk)
             {
                 float relativeTime = CurrentCycleTime - duskTime;
                 var relative = (quarterDay - relativeTime) / quarterDay;
                 this.lightSource.intensity = Mathf.Clamp01(this.lightIntensity * this.sunIntensity.Evaluate((1f - relative) / 2f + 0.5f));
-                RenderSettings.ambientLight = this.duskGradient.Evaluate(1f - relative);
+                //RenderSettings.ambientLight = this.duskGradient.Evaluate(1f - relative);
             }
-            
+
             this.transform.rotation = Quaternion.Euler(CurrentCycleTime / dayCycleLength * 360f + 90, -90, -90);
         }
 
