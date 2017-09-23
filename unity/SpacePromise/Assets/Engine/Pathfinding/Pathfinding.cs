@@ -228,6 +228,41 @@ namespace Assets.Engine.Pathfinding
         }
     }
 
+    public class BoolArrayPool
+    {
+        private readonly object queueLock = new object();
+        private readonly Queue<bool[]> availableQueue = new Queue<bool[]>();
+
+        public int ArraySize;
+
+
+        public bool[] Allocate()
+        {
+            lock (this.queueLock)
+            {
+                if (this.availableQueue.Count <= 0)        
+                    this.Instantiate();
+
+                return this.availableQueue.Dequeue();
+            }
+        }
+
+        private void Instantiate()
+        {
+            this.availableQueue.Enqueue(new bool[ArraySize]);
+        }
+
+        public void Release(bool[] array)
+        {
+            Array.Clear(array, 0, array.Length);
+
+            lock (this.queueLock)
+            {
+                this.availableQueue.Enqueue(array);
+            }
+        }
+    }
+
     public class Pathfinding : MonoBehaviour
     {
         private Graph graph;
@@ -235,6 +270,7 @@ namespace Assets.Engine.Pathfinding
         private Vector3 lastDestinationLocation;
         private Vector3 size;
         private int graphSize;
+        private readonly BoolArrayPool boolPool = new BoolArrayPool{ArraySize = 40000};
 
         public void Start()
         {
@@ -363,18 +399,16 @@ namespace Assets.Engine.Pathfinding
             GL.PopMatrix();
         }
 
-        private int opCounter = 0;
         private int time = 0;
         public PathNode GetPath(GraphNode startNode, GraphNode destinationNode)
         {
             // TODO Remove, for debugging
-            var ySize = this.graph.Nodes.GetLength(0);
-            var xSize = this.graph.Nodes.GetLength(1);
-            for (int oY = 0; oY < size.z && oY < ySize; oY++)
-                for (int oX = 0; oX < size.x && oX < xSize; oX++)
-                    this.graph.Nodes[oY, oX].wasOpen = false;
-
-            opCounter = 0;
+            //var ySize = this.graph.Nodes.GetLength(0);
+            //var xSize = this.graph.Nodes.GetLength(1);
+            //for (int oY = 0; oY < size.z && oY < ySize; oY++)
+            //    for (int oX = 0; oX < size.x && oX < xSize; oX++)
+            //        this.graph.Nodes[oY, oX].wasOpen = false;
+            
             var sw1 = new Stopwatch();
 
             sw1.Start();
@@ -387,7 +421,7 @@ namespace Assets.Engine.Pathfinding
 
             var bestPath = new PathNode(startNode, destinationNode);
             var openNodes = new BinaryHeap(128);
-            var visitedNodes = new bool[40000];
+            var visitedNodes = this.boolPool.Allocate();
             openNodes.Add(bestPath);
 
             Stopwatch sw = new Stopwatch();
@@ -416,69 +450,59 @@ namespace Assets.Engine.Pathfinding
                         visitedNodes[loc])
                         continue;
                     visitedNodes[loc] = true;
-
-                    // TODO Remove, for debugging
-                    graphNode.wasOpen = true;
-                    //sw1.Start();
-                    var newNode = new PathNode(graphNode, currentPath, destinationNode);
-                    openNodes.Add(newNode);
-                    //sw1.Stop();
+                    
+                    openNodes.Add(new PathNode(graphNode, currentPath, destinationNode));
                 }
-
-                opCounter++;
+                
             } while (openNodes.NumberOfItems > 0);
 
+            this.boolPool.Release(visitedNodes);
+
             sw.Stop();
-            Debug.Log("Found path in " + sw.ElapsedTicks + " ticks");
-            Debug.Log("Total neighbours handling: " + sw1.ElapsedTicks);
-            Debug.Log("Total operations: " + opCounter);
+            Debug.Log("Found path in " + sw.ElapsedMilliseconds + " ms");
+            Debug.Log("Total neighbours handling: " + sw1.ElapsedMilliseconds);
             time = (int)sw.ElapsedMilliseconds;
 
             return bestPath;
         }
-
-        //private List<GraphNode> GetInterestingNeighvours(GraphNode start, GraphNode end)
-        //{
-            
-        //}
-
+        
         public void OnDrawGizmos()
         {
-            if (graph == null)
-                return;
+            //if (graph == null)
+            //    return;
 
-            var ySize = this.graph.Nodes.GetLength(0);
-            var xSize = this.graph.Nodes.GetLength(1);
-            for (int oY = 0; oY < size.z && oY < ySize; oY++)
-            {
-                for (int oX = 0; oX < size.x && oX < xSize; oX++)
-                {
-                    var node = this.graph.Nodes[oY, oX];
-                    for (int cIndex = 0; cIndex < node.Connections.Length; cIndex++)
-                    {
-                        var conn = node.Connections[cIndex];
-                        if (conn.wasOpen)
-                            Gizmos.color = Color.blue;
+            //var ySize = this.graph.Nodes.GetLength(0);
+            //var xSize = this.graph.Nodes.GetLength(1);
+            //for (int oY = 0; oY < size.z && oY < ySize; oY++)
+            //{
+            //    for (int oX = 0; oX < size.x && oX < xSize; oX++)
+            //    {
+            //        var node = this.graph.Nodes[oY, oX];
+            //        for (int cIndex = 0; cIndex < node.Connections.Length; cIndex++)
+            //        {
+            //            var conn = node.Connections[cIndex];
+            //            if (conn.wasOpen)
+            //                Gizmos.color = Color.blue;
 
-                        if (!conn.IsBlocked)
-                            Gizmos.DrawLine((Vector3)node.Location, (Vector3)conn.Location);
-                        Gizmos.color = Color.white;
-                    }
-                }
-            }
+            //            if (!conn.IsBlocked)
+            //                Gizmos.DrawLine((Vector3)node.Location, (Vector3)conn.Location);
+            //            Gizmos.color = Color.white;
+            //        }
+            //    }
+            //}
 
-            if (lastFoundPath != null)
-            {
-                Gizmos.color = Color.red;
-                var currentNode = this.lastFoundPath;
-                while (currentNode != null)
-                {
-                    if (currentNode.From != null)
-                        Gizmos.DrawLine((Vector3)currentNode.GraphNode.Location, (Vector3)currentNode.From.GraphNode.Location);
+            //if (lastFoundPath != null)
+            //{
+            //    Gizmos.color = Color.red;
+            //    var currentNode = this.lastFoundPath;
+            //    while (currentNode != null)
+            //    {
+            //        if (currentNode.From != null)
+            //            Gizmos.DrawLine((Vector3)currentNode.GraphNode.Location, (Vector3)currentNode.From.GraphNode.Location);
 
-                    currentNode = currentNode.From;
-                }
-            }
+            //        currentNode = currentNode.From;
+            //    }
+            //}
         }
     }
 
