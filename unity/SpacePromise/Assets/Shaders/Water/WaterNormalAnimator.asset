@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78b2425a2284af743826c689403a4924, type: 3}
+  m_Name: WaterNormalAnimator
+  m_EditorClassIdentifier: 
+  m_functionInfo: "// Made with Amplify Shader Editor\n// Available at the Unity Asset
+    Store - http://u3d.as/y3X \n/*ASEBEGIN\nVersion=14201\n-1565;67;1523;936;1386.023;522.2198;1.28698;True;False\nNode;AmplifyShaderEditor.FunctionInput;1;-843.9881,-198.7854;Float;False;World
+    UV;2;0;False;1;0;FLOAT2;0,0;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.TimeNode;6;-622.3498,202.6764;Float;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;3;-549.2697,-194.9246;Float;False;2;2;0;FLOAT2;0.0;False;1;FLOAT;0,0;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.PannerNode;7;-276.2227,-195.2652;Float;False;3;0;FLOAT2;0,0;False;2;FLOAT2;0,0;False;1;FLOAT;1.0;False;1;FLOAT2;0\nNode;AmplifyShaderEditor.FunctionInput;2;-829.8315,-109.9837;Float;False;Tiling;1;1;False;1;0;FLOAT;0.0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionInput;4;-832.405,-7.025479;Float;False;Speed;1;2;False;1;0;FLOAT;0.0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.SimpleMultiplyOpNode;8;-555.9213,-3.566698;Float;False;2;2;0;FLOAT;0.0;False;1;FLOAT;0.0;False;1;FLOAT;0\nNode;AmplifyShaderEditor.RangedFloatNode;9;-869.9447,103.2527;Float;False;Constant;_Float0;Float
+    0;0;0;Create;0.01;0;0;0;0;1;FLOAT;0\nNode;AmplifyShaderEditor.FunctionOutput;0;39.89639,-198.1951;Float;False;True;Output;0;False;1;0;FLOAT2;0.0;False;1;FLOAT2;0\nWireConnection;3;0;1;0\nWireConnection;3;1;2;0\nWireConnection;7;0;3;0\nWireConnection;7;2;8;0\nWireConnection;7;1;6;1\nWireConnection;8;0;4;0\nWireConnection;8;1;9;0\nWireConnection;0;0;7;0\nASEEND*/\n//CHKSM=177C0A1E70EAF3BBB8A7948D9FF41D73F1935787"
+  m_functionName: 
+  m_description: 'Animates the water UV.
+
+'
+  m_additionalIncludes:
+    m_additionalIncludes: []
+    m_outsideIncludes: []
+  m_additionalPragmas:
+    m_additionalPragmas: []
+    m_outsidePragmas: []
+  m_nodeCategory: 3
+  m_customNodeCategory: 

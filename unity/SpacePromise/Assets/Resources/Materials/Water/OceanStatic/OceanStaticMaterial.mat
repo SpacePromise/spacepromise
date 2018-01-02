@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: OceanStaticMaterial
+  m_Shader: {fileID: 4800000, guid: a15bb2a675546fa41acf1ffca985703a, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTexture:
+        m_Texture: {fileID: 2800000, guid: b413b696bc1dcd84e8b064025fef03c3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LargeWavesTexture:
+        m_Texture: {fileID: 2800000, guid: 46bc4fbd372093b4e9eee49dd0bbb8fb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MediumWavesTexture:
+        m_Texture: {fileID: 2800000, guid: f8a00a19488d121478b84869f34bc2f0, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SmallWavesTexture:
+        m_Texture: {fileID: 2800000, guid: ecfc88f5990da574d9cc49f445004aa9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _AmbientOcclusion: 0.6
+    - _BumpScale: 1
+    - _ChromaticAberration: 0.1
+    - _Coloramount: 0.15
+    - _Cutoff: 0.5
+    - _DepthFalloff: 1.3
+    - _DetailNormalMapScale: 1
+    - _DistanceWavesDistance: 1400
+    - _DistanceWavesFalloff: 0.4117647
+    - _DistanceWavesRefraction: 0.1
+    - _DistanceWavesSpeed: 1.5
+    - _DistanceWavesTiling: 0.05
+    - _Distortion: 1.3529412
+    - _Distortiondepth: 5
+    - _DstBlend: 0
+    - _Float3: 1
+    - _Float4: 0.1
+    - _Float5: 3
+    - _Float6: 1
+    - _FoamActivity: 50
+    - _FoamDepthFade: 1
+    - _FoamDistance: 0.02
+    - _FoamSpeed: 150
+    - _FoamTiling: 2
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _LargeWavesRefraction: 1
+    - _LargeWavesSpeed: 3
+    - _LargeWavesTiling: 0.05
+    - _MediumWavesRefraction: 1.5
+    - _MediumWavesSpeed: -15
+    - _MediumWavesTiling: 0.2
+    - _Metallic: 0
+    - _MinColor: 0.15
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmallWavesRefraction: 1.2
+    - _SmallWavesSpeed: 15
+    - _SmallWavesTiling: 0.2
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _TransAmbient: 0.2
+    - _TransDirect: 1
+    - _TransNormalDistortion: 0.1
+    - _TransScattering: 2
+    - _TransShadow: 0.9
+    - _Translucency: 1
+    - _UVSec: 0
+    - _WaterDepth: 20
+    - _WaterFresnel: 1.337
+    - _ZWrite: 1
+    - __dirty: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color0: {r: 0.6544118, g: 0.6544118, b: 0.6544118, a: 0}
+    - _DeepWaterColor: {r: 0, g: 0.11754545, b: 0.27941158, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FoamColor: {r: 0.6985294, g: 0.6985294, b: 0.6985294, a: 0}
+    - _ShallowWaterColor: {r: 0, g: 0.6985294, b: 0.6696247, a: 0}
+    - _Vector0: {r: 50, g: 50, b: 0, a: 0}
