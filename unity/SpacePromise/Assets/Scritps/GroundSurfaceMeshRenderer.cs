@@ -195,7 +195,7 @@ public class GroundSurfaceMeshRenderer : MonoBehaviour {
 			mesh.RecalculateNormals();
 			meshFilter.sharedMesh = mesh;
 
-			meshRenderer.sharedMaterial = Resources.Load<Material>("Materials/MockMaterial");
+			meshRenderer.sharedMaterial = Resources.Load<Material>("Materials/Terrain/TerrainMaterial");
 		}
 
 		{
