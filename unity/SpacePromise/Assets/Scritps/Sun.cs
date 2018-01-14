@@ -41,6 +41,8 @@ public class Sun : MonoBehaviour
 		if (this.sun == null)
 			return;
 
+	    return;
+
 		this.counter += Time.deltaTime;
 
 		// Rotate sun

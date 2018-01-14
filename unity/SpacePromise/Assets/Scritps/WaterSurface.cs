@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-[ExecuteInEditMode]
-[DisallowMultipleComponent]
 public class WaterSurface : MonoBehaviour 
 {
     private void Start()
