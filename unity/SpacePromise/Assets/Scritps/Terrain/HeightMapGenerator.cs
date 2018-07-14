@@ -16,7 +16,13 @@ public class HeightMapGenerator : MonoBehaviour
     public float AmplitudePerOctave;
     public float FreqPerOctave;
     public Vector2 offset;
+    public float TerrainScale;
     public AnimationCurve HeightPower;
+    public AnimationCurve HeightFilter;
+
+    public float WaterLevel;
+
+    public Terrain terrain;
 
     private float[,] map;
 
@@ -59,18 +65,36 @@ public class HeightMapGenerator : MonoBehaviour
                         Mathf.Abs(x / (float) width * 2 - 1),
                         Mathf.Abs(y / (float) height * 2 - 1)),
                     1, 2.2f))
-            // Height power
-            .Multiply(width, height, (x, y, val) => this.HeightPower.Evaluate(val));
+            .Multiply(width, height, (x, y, val) => this.TerrainScale);
+            //.Assign(width, height, (x, y, val) => val < this.WaterLevel * this.TerrainScale + 0.01f ? val : this.WaterLevel * this.TerrainScale + 0.01f);
+        // Height power
+        //.Multiply(width, height, (x, y, val) => this.HeightPower.Evaluate(val));
+        //.Assign(width, height, (x, y, val) => this.HeightFilter.Evaluate(val));
 
         sw.Stop();
         this.lastRenderIn = sw.Elapsed.TotalMilliseconds;
 
         FindObjectOfType<HeightMapDisplay>().DrawHeightMap(this.map);
+
+        this.terrain.terrainData.SetHeights(0, 0, this.map);
     }
 }
 
 public static class NoiseGenerator
 {
+    public static float[,] Assign(this float[,] data, int width, int height, Func<int, int, float, float> func)
+    {
+        for (var x = 0; x < width; x++)
+        {
+            for (var y = 0; y < height; y++)
+            {
+                data[x, y] = func(x, y, data[x, y]);
+            }
+        }
+
+        return data;
+    }
+
     public static float[,] Multiply(this float[,] data, int width, int height, Func<int, int, float, float> func)
     {
         for (var x = 0; x < width; x++)

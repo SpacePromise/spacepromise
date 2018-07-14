@@ -41,19 +41,20 @@ public class Sun : MonoBehaviour
 		if (this.sun == null)
 			return;
 
-	    return;
+	    //return;
 
 		this.counter += Time.deltaTime;
 
 		// Rotate sun
-		this.sun.transform.Rotate(Vector3.up, (360f / (15f * 60f)) * Time.deltaTime);
+		this.sun.transform.Rotate(Vector3.up, (360f / (/*15f * 60f*/60f)) * Time.deltaTime);
 
 		// Trigger reflection rendering
-		if (this.reflectionRenderingId == 0 || 
-		    cameraReflectionProbe.IsFinishedRendering(this.reflectionRenderingId))
-			this.reflectionRenderingId = cameraReflectionProbe.RenderProbe();
+		if (this.cameraReflectionProbe != null && 
+		    (this.reflectionRenderingId == 0 || 
+		    this.cameraReflectionProbe.IsFinishedRendering(this.reflectionRenderingId)))
+			this.reflectionRenderingId = this.cameraReflectionProbe.RenderProbe();
 
 		// Update intensity
-		this.sun.intensity = this.IntensityAnimation.Evaluate(this.sun.transform.rotation.eulerAngles.x/180f);
+		this.sun.intensity = this.IntensityAnimation.Evaluate((this.sun.transform.rotation.eulerAngles.x)/180f);
 	}
 }
