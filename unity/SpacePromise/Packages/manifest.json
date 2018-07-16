@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "com.unity.ads": "exclude",
+    "com.unity.analytics": "exclude",
+    "com.unity.standardevents": "exclude",
+    "com.unity.purchasing": "exclude",
+    "com.unity.entities": "0.0.12-preview.5",
+    "com.unity.incrementalcompiler": "0.0.42-preview.1"
+  }
+}
