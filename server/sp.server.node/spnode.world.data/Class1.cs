@@ -7,6 +7,7 @@ namespace spnode.world.data
     {
         /// <summary>
         /// The island identifier.
+        /// Use <see cref="MiniGuid"/> to minify GUID string.
         /// </summary>
         public string Id { get; set; }
 
@@ -20,6 +21,7 @@ namespace spnode.world.data
     {
         /// <summary>
         /// The planet identifier.
+        /// Use <see cref="MiniGuid"/> to minify GUID string.
         /// </summary>
         public string Id { get; set; }
 
