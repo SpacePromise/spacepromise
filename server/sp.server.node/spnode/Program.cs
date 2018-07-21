@@ -8,13 +8,14 @@ namespace spnode
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var nameService = new AliasGenerator();
             for (int index = 0; index < 100; index++)
             {
-                Console.WriteLine(nameService.Generate(AliasKind.City));
+                Console.WriteLine(await nameService.GenerateAsync(AliasKind.City));
             }
+
 
             Console.ReadLine();
         }

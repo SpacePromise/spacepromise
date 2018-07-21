@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using spnode.world.procedural.Extensions;
 using spnode.world.procedural.Utils.MarkovChain;
@@ -18,22 +18,22 @@ namespace spnode.world.procedural.Generators.Data.Alias
 
         private readonly Dictionary<AliasKind, MarkovChain<char>> chainCache = new Dictionary<AliasKind, MarkovChain<char>>();
 
-        public string Generate(AliasKind kind) => this.Generate(kind, new Random());
+        public Task<string> GenerateAsync(AliasKind kind) => this.GenerateAsync(kind, new Random());
 
-        public string Generate(AliasKind kind, int seed) => this.Generate(kind, new Random(seed));
+        public Task<string> GenerateAsync(AliasKind kind, int seed) => this.GenerateAsync(kind, new Random(seed));
 
-        public string Generate(AliasKind kind, Random random)
+        public async Task<string> GenerateAsync(AliasKind kind, Random random)
         {
-            return string.Concat(this.GetChain(kind).Chain(random)).ToTitleCase();
+            return string.Concat((await this.GetChainAsync(kind)).Chain(random)).ToTitleCase();
         }
 
-        private MarkovChain<char> GetChain(AliasKind kind)
+        private async Task<MarkovChain<char>> GetChainAsync(AliasKind kind)
         {
             if (this.chainCache.ContainsKey(kind))
                 return this.chainCache[kind];
 
             var chain = new MarkovChain<char>(KindOrder[kind]);
-            foreach (var item in GetSource(kind))
+            foreach (var item in await GetSourceAsync(kind))
                 chain.Add(item);
 
             if (!this.chainCache.ContainsKey(kind))
@@ -42,16 +42,16 @@ namespace spnode.world.procedural.Generators.Data.Alias
             return chain;
         }
 
-        private static IEnumerable<string> GetSource(AliasKind kind)
+        private static async Task<IEnumerable<string>> GetSourceAsync(AliasKind kind)
         {
             switch (kind)
             {
                 case AliasKind.City:
-                    return JsonConvert.DeserializeObject<List<string>>(ProceduralSources.ProceduralSourceFiles.AliasCitiesJson());
+                    return JsonConvert.DeserializeObject<List<string>>(await ProceduralSources.ProceduralSourceFiles.AliasCitiesJsonAsync());
                 case AliasKind.Island:
-                    return JsonConvert.DeserializeObject<List<string>>(ProceduralSources.ProceduralSourceFiles.AliasPlanetsJson());
+                    return JsonConvert.DeserializeObject<List<string>>(await ProceduralSources.ProceduralSourceFiles.AliasIslandsJsonAsync());
                 case AliasKind.Planet:
-                    return JsonConvert.DeserializeObject<List<string>>(ProceduralSources.ProceduralSourceFiles.AliasIslandsJson());
+                    return JsonConvert.DeserializeObject<List<string>>(await ProceduralSources.ProceduralSourceFiles.AliasPlanetsJsonAsync());
                 default: return new List<string>();
             }
         }
