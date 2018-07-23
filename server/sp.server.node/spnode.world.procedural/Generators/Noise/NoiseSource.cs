@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using spnode.world.procedural.Utils.Noise;
 using SixLabors.ImageSharp.PixelFormats;
@@ -32,12 +33,42 @@ namespace spnode.world.procedural.Generators.Noise
             var data = new double[size];
             for (var indexY = 0; indexY < height; indexY++)
             for (var indexX = 0; indexX < width; indexX++)
-                data[indexX + indexY * width] = noise.Evaluate(
+                data[indexX + indexY * width] = ((noise.Evaluate(
                                                     (offsetX + indexX) / scale * freq,
-                                                    (offsetY + indexY) / scale * freq)
-                                                * amplitude;
+                                                    (offsetY + indexY) / scale * freq) + 1) / 2d) * amplitude;
             return data;
         }
+
+        public static double[] OpenSimplex2DOctaves(
+            int seed,
+            int size, int offsetX, int offsetY, double scale, double initialFrequency, 
+            int octaves, int octaveOffsetScale, double amplitudePerOctave, double freqPerOctave)
+        {
+            var random = new Random(seed);
+
+            var data = new double[size * size];
+
+            var currentAmplitude = 1d;
+            var currentFrequency = initialFrequency;
+            var maxNoise = 0d;
+            var octaveOffsets = new Vector2[octaves];
+
+            for (var octaveIndex = 0; octaveIndex < octaves; octaveIndex++)
+            {
+                octaveOffsets[octaveIndex] = new Vector2(
+                    random.Next(-octaveOffsetScale, octaveOffsetScale) + offsetX,
+                    random.Next(-octaveOffsetScale, octaveOffsetScale) + offsetY);
+                data.Add(OpenSimplex2D(seed, octaveOffsets[octaveIndex].X, octaveOffsets[octaveIndex].Y, size, size, scale, currentFrequency, currentAmplitude));
+                maxNoise += currentAmplitude;
+                currentAmplitude *= amplitudePerOctave;
+                currentFrequency *= freqPerOctave;
+            }
+
+            return data.Mul(1d / maxNoise);
+        }
+
+        public static double FalloffFunc(double value, double falloff, double baseSize) => 
+            Math.Pow(value, falloff) / (Math.Pow(value, falloff) + Math.Pow(baseSize - baseSize * value, falloff));
     }
     
     public static class NoiseExtensions 
@@ -56,7 +87,6 @@ namespace spnode.world.procedural.Generators.Noise
                 source[index] = func(index, source[index]);
             return source;
         }
-
         
         public static double[] Add(this double[] source, double add) =>
             source.Add((i, val) => add);
@@ -80,5 +110,8 @@ namespace spnode.world.procedural.Generators.Noise
         {
             return source.Select((index, val) => new Bgra32(val, val, val));
         }
+
+        public static ReadOnlySpan<Bgra32> AsPixelData(this byte[] source, Func<int, byte, Bgra32> func) => 
+            source.Select(func);
     } 
 }

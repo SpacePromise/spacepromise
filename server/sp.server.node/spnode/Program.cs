@@ -2,11 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Numerics;
 using System.Threading.Tasks;
-using spnode.world.procedural.Generators.Data.Alias;
 using spnode.world.procedural.Generators.Noise;
-using spnode.world.procedural.Utils.Noise;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -16,46 +14,59 @@ namespace spnode
     {
         static async Task Main(string[] args)
         {
-            var size = 1024;
-            var increment = 0.1d;
+            var random = new Random();
+            for (int index = 0; index < 1; index++)
+            {
+                var seed = random.Next(1, int.MaxValue);
+                await NewTerrain(seed);
+            }
 
-//            var data = new Bgra32[size*size];
-//            var noise = new OpenSimplexNoise();
-//            for (var yIndex = 0; yIndex < size; yIndex+=1)
-//            for (var xIndex = 0; xIndex < size; xIndex += 1)
-//            {
-//                var val = (byte) (noise.Evaluate(xIndex * increment, yIndex * increment) * 255);
-//                data[xIndex + yIndex * size] = new Bgra32(val, val, val);
-//            }
+            Console.WriteLine("Done.");
+            Console.ReadLine();
+        }
 
+        private static async Task NewTerrain(int seed)
+        {
             var sw = Stopwatch.StartNew();
 
-            var noiseSource = new NoiseSource();
-            var data = new double[size * size];
+            var size = 1024;
+            var offsetX = size / 2;
+            var offsetY = size / 2;
+            var scale = 5d;
+            var initialFrequency = 0.5d;
+            var octaves = 6;
+            var octaveOffsetScale = 100000;
+            var amplitudePerOctave = 1.5d;
+            var freqPerOctave = 0.5d;
 
-            // 567ms
-//            data.Add(NoiseSource.OpenSimplex2D(0, 0, 0, size, size, increment*2, increment*2));
-//            data.Add(NoiseSource.OpenSimplex2D(0, 0, 0, size, size, increment /2, increment / 2).Mul(0.7));
-//            data.Add(NoiseSource.OpenSimplex2D(0, 0, 0, size, size, increment / 10, increment / 10).Mul(0.5));
+            var data = NoiseSource.OpenSimplex2DOctaves(seed, size, offsetX, offsetY, scale, initialFrequency, octaves, octaveOffsetScale, amplitudePerOctave, freqPerOctave);
+            data.Add((i, val) =>
+            {
+                var x = (double)i % size / size;
+                var y = (double)i / size / size;
+                var d = Math.Max(Math.Abs(x * 2 - 1), Math.Abs(y * 2 - 1));
+                var f  = NoiseSource.FalloffFunc(d, 1d, 5d);
+                return f;
+            });
 
-            data.Add(NoiseSource.OpenSimplex2D(DateTime.Now.Ticks, 0, 0, size, size, 5d, 10d, 2d));
-//            
-            var dataScaled = data
-                .Select((i, val) => (byte) ((val) * 255));
-            
+            var minHeight = data.Min();
+            var maxHeight = data.Max();
+
+            var dataScaled = data.Select((i, val) => (byte)((val / maxHeight) * 255));
+
             sw.Stop();
             Console.WriteLine("In " + sw.ElapsedMilliseconds + "ms");
-            
-            using (var fs = File.OpenWrite("./image.bmp"))
-            using (var image = Image.LoadPixelData(dataScaled.AsPixelData(), size, size))
+
+            using (var fs = File.OpenWrite("./image" + seed + ".bmp"))
+            using (var image = Image.LoadPixelData(dataScaled.AsPixelData((i, b) =>
+                {
+                    return new Bgra32(b < 255 / 2 ? (byte)b : (byte)0, b < 255 / 2 ? (byte)b : (byte)0, b);
+                }), size, size))
             {
                 image.SaveAsBmp(fs);
                 await fs.FlushAsync();
                 fs.Close();
             }
-
-            Console.WriteLine("Done.");
-            Console.ReadLine();
         }
     }
 }
