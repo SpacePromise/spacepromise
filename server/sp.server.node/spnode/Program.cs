@@ -184,8 +184,8 @@ namespace spnode
         {
             var nodeInfo = NodeMonitor<SpNode>.Instance.GetNodeInfo();
             Log.Logger?.Information("CPU cores: {ProcessorCount}", nodeInfo.ProcessorCount);
-            Log.Logger?.Information("OS: {Os}, {OsVersion}, {OsArchitecture}, {OsDescription}", nodeInfo.Os,
-                nodeInfo.OsVersion, nodeInfo.OsArchitecture, nodeInfo.OsDescription);
+            Log.Logger?.Information("OS: {Os}, {OsVersion}, {OsArchitecture}, {OsDescription}", 
+                nodeInfo.Os, nodeInfo.OsVersion, nodeInfo.OsArchitecture, nodeInfo.OsDescription);
             Log.Logger?.Information("Process ID: {ProcessId}", nodeInfo.ProcessId);
             Log.Logger?.Information("Framework: {FrameworkDescription}", nodeInfo.FrameworkDescription);
             Log.Logger?.Information("Node Version: {NodeVersion}", nodeInfo.Version);
