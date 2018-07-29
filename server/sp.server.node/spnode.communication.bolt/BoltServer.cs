@@ -19,7 +19,7 @@ namespace spnode.communication.bolt
                 {
                     // Ensure server content path exists
                     var contentRoot = "BoltRoot";
-                    var contentPath = Path.Combine(Directory.GetCurrentDirectory(), contentRoot);
+                    var contentPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, contentRoot);
                     if (!Directory.Exists(contentPath))
                         Directory.CreateDirectory(contentPath);
 
