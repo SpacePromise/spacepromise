@@ -135,7 +135,7 @@ Material:
       second: 2.19
     - first:
         name: __dirty
-      second: 0
+      second: 1
     m_Colors:
     - first:
         name: <noninit>

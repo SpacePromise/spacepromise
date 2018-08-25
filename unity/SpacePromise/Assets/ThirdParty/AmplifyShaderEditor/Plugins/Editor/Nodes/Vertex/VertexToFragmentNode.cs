@@ -25,12 +25,13 @@ namespace AmplifyShaderEditor
 			m_inputPorts[ 0 ].Name = "(VS) In";
 			m_outputPorts[ 0 ].Name = "Out";
 			m_useInternalPortData = false;
+			m_previewShaderGUID = "74e4d859fbdb2c0468de3612145f4929";
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string varName = GenerateInputInVertex( ref dataCollector, 0, "vertexToFrag" + OutputId,true );
 			m_outputPorts[ 0 ].SetLocalValue( varName, dataCollector.PortCategory );

@@ -65,8 +65,8 @@ namespace AmplifyShaderEditor
 			{
 				if( m_inputPorts[ 0 ].IsConnected )
 				{
-					if( m_outputPorts[ 0 ].IsLocalValue )
-						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 
 					string value = dataCollector.TemplateDataCollectorInstance.GetWorldReflection( m_currentPrecisionType, m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) );
@@ -75,7 +75,7 @@ namespace AmplifyShaderEditor
 						value = string.Format( NormalizeFunc, value );
 					}
 					RegisterLocalVariable( 0, value, ref dataCollector, "worldRefl" + OutputId );
-					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue);
+					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 				}
 				else
 				{
@@ -100,8 +100,8 @@ namespace AmplifyShaderEditor
 			{
 				if( m_inputPorts[ 0 ].IsConnected )
 				{
-					if( m_outputPorts[ 0 ].IsLocalValue )
-						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 					string normal = GeneratorUtils.GenerateWorldNormal( ref dataCollector, UniqueId );
 					string tangent = GeneratorUtils.GenerateWorldTangent( ref dataCollector, UniqueId );
@@ -119,12 +119,12 @@ namespace AmplifyShaderEditor
 					}
 
 					RegisterLocalVariable( 0, value, ref dataCollector, "modReflection" + OutputId );
-					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 				}
 				else
 				{
-					if( m_outputPorts[ 0 ].IsLocalValue )
-						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 					string worldNormal = GeneratorUtils.GenerateWorldNormal( ref dataCollector, UniqueId );
 					string viewDir = GeneratorUtils.GenerateViewDirection( ref dataCollector, UniqueId );
@@ -135,13 +135,13 @@ namespace AmplifyShaderEditor
 						value = string.Format( NormalizeFunc, value );
 					}
 					RegisterLocalVariable( 0, value, ref dataCollector, ReflectionVecValStr + OutputId );
-					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 				}
 			}
 			else
 			{
-				if( m_outputPorts[ 0 ].IsLocalValue )
-					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+				if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 				
 				dataCollector.AddToInput( UniqueId, SurfaceInputs.WORLD_REFL, m_currentPrecisionType );
 
@@ -151,7 +151,7 @@ namespace AmplifyShaderEditor
 					dataCollector.AddToInput( UniqueId, SurfaceInputs.INTERNALDATA, addSemiColon: false );
 					dataCollector.ForceNormal = true;
 
-					result = "WorldReflectionVector( " + Constants.InputVarStr + " , " + m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalVar ) + " )";
+					result = "WorldReflectionVector( " + Constants.InputVarStr + " , " + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + " )";
 					if( m_normalize )
 					{
 						result = String.Format( NormalizeFunc, result );
@@ -166,7 +166,7 @@ namespace AmplifyShaderEditor
 					{
 						dataCollector.AddToLocalVariables( UniqueId, string.Format( ReflectionVecDecStr, ReflectionVecValStr + OutputId, result ) );
 						RegisterLocalVariable( 0, result, ref dataCollector, ReflectionVecValStr + OutputId );
-						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 					}
 				}
 				else

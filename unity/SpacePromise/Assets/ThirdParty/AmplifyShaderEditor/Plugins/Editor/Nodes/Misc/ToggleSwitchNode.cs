@@ -190,6 +190,12 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		public override void DrawProperties()
+		{
+			base.DrawProperties();
+			NodeUtils.DrawPropertyGroup( ref m_visibleCustomAttrFoldout, CustomAttrStr, DrawCustomAttributes, DrawCustomAttrAddRemoveButtons );
+		}
+
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
@@ -219,7 +225,7 @@ namespace AmplifyShaderEditor
 		}
 		public override string GetPropertyValue()
 		{
-			return "[Toggle]" + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + m_currentSelectedInput;
+			return PropertyAttributes + "[Toggle]" + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + m_currentSelectedInput;
 		}
 
 		public override string GetUniformValue()

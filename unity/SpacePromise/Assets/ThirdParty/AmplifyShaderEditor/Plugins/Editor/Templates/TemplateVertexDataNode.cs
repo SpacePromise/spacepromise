@@ -1,5 +1,6 @@
 // Amplify Shader Editor - Visual Shader Editing Tool
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
+
 using UnityEngine;
 using UnityEditor;
 using System;
@@ -9,11 +10,8 @@ namespace AmplifyShaderEditor
 {
 	[Serializable]
 	[NodeAttributes( "Template Vertex Data", "Vertex Data", "Select and use available vertex data from the template" )]
-	public class TemplateVertexDataNode : ParentNode
+	public class TemplateVertexDataNode : TemplateNodeParent
 	{
-		private const string ErrorMessageStr = "This node can only be used inside a Template category!";
-		private const string DataLabelStr = "Data";
-
 		private List<TemplateVertexData> m_interpolatorData = null;
 
 		[SerializeField]
@@ -24,95 +22,11 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		private string m_inVarName = string.Empty;
 
-
 		private string[] m_dataLabels = null;
 
 		private bool m_fetchDataId = false;
 		private UpperLeftWidgetHelper m_upperLeftWidgetHelper = new UpperLeftWidgetHelper();
-
-		protected override void CommonInit( int uniqueId )
-		{
-			base.CommonInit( uniqueId );
-			AddOutputPort( WirePortDataType.FLOAT, "Out" );
-			AddOutputPort( WirePortDataType.FLOAT, "X" );
-			AddOutputPort( WirePortDataType.FLOAT, "Y" );
-			AddOutputPort( WirePortDataType.FLOAT, "Z" );
-			AddOutputPort( WirePortDataType.FLOAT, "W" );
-			m_textLabelWidth = 67;
-			m_hasLeftDropdown = true;
-		}
-
-		public override void AfterCommonInit()
-		{
-			base.AfterCommonInit();
-
-			if( PaddingTitleLeft == 0 )
-			{
-				PaddingTitleLeft = Constants.PropertyPickerWidth + Constants.IconsLeftRightMargin;
-				if( PaddingTitleRight == 0 )
-					PaddingTitleRight = Constants.PropertyPickerWidth + Constants.IconsLeftRightMargin;
-			}
-		}
-
-		void ConfigurePorts()
-		{
-			switch( m_outputPorts[ 0 ].DataType )
-			{
-				default:
-				{
-					for( int i = 1; i < 5; i++ )
-					{
-						m_outputPorts[ i ].Visible = false;
-					}
-				}
-				break;
-				case WirePortDataType.FLOAT2:
-				{
-					for( int i = 1; i < 5; i++ )
-					{
-						m_outputPorts[ i ].Visible = ( i < 3 );
-						if( m_outputPorts[ i ].Visible )
-						{
-							m_outputPorts[ i ].Name = Constants.ChannelNamesVector[ i - 1 ];
-						}
-					}
-				}
-				break;
-				case WirePortDataType.FLOAT3:
-				{
-					for( int i = 1; i < 5; i++ )
-					{
-						m_outputPorts[ i ].Visible = ( i < 4 );
-						if( m_outputPorts[ i ].Visible )
-						{
-							m_outputPorts[ i ].Name = Constants.ChannelNamesVector[ i - 1 ];
-						}
-					}
-				}
-				break;
-				case WirePortDataType.FLOAT4:
-				{
-					for( int i = 1; i < 5; i++ )
-					{
-						m_outputPorts[ i ].Visible = true;
-						m_outputPorts[ i ].Name = Constants.ChannelNamesVector[ i - 1 ];
-					}
-				}
-				break;
-				case WirePortDataType.COLOR:
-				{
-					for( int i = 1; i < 5; i++ )
-					{
-						m_outputPorts[ i ].Visible = true;
-						m_outputPorts[ i ].Name = Constants.ChannelNamesColor[ i - 1 ];
-					}
-				}
-				break;
-			}
-			m_sizeIsDirty = true;
-
-		}
-
+		
 		void FetchDataId()
 		{
 			if( m_interpolatorData != null )
@@ -140,6 +54,19 @@ namespace AmplifyShaderEditor
 		{
 			if( m_interpolatorData != null )
 			{
+				if( m_interpolatorData.Count == 0 )
+				{
+					for( int i = 0; i < 4; i++ )
+						m_containerGraph.DeleteConnection( false, UniqueId, i, false, true );
+
+					m_headerColor = UIUtils.GetColorFromCategory( "Default" );
+					m_content.text = "None";
+					m_additionalContent.text = string.Empty;
+					m_outputPorts[ 0 ].ChangeProperties( "None", WirePortDataType.OBJECT, false );
+					ConfigurePorts();
+					return;
+				}
+
 				bool areCompatible = TemplateHelperFunctions.CheckIfCompatibles( m_outputPorts[ 0 ].DataType, m_interpolatorData[ m_currentDataIdx ].DataType );
 				switch( m_interpolatorData[ m_currentDataIdx ].DataType )
 				{
@@ -176,21 +103,14 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		void CheckWarningState()
-		{
-			if( m_containerGraph.CurrentCanvasMode != NodeAvailability.TemplateShader )
-			{
-				ShowTab( NodeMessageType.Error, ErrorMessageStr );
-			}
-			else
-			{
-				m_showErrorMessage = false;
-			}
-		}
-
 		public override void DrawProperties()
 		{
 			base.DrawProperties();
+			if( m_multiPassMode )
+			{
+				DrawMultipassProperties();
+			}
+
 			if( m_currentDataIdx > -1 )
 			{
 				EditorGUI.BeginChangeCheck();
@@ -200,6 +120,23 @@ namespace AmplifyShaderEditor
 					UpdateFromId();
 				}
 			}
+		}
+		protected override void OnSubShaderChange()
+		{
+			FetchInterpolator();
+			FetchDataId();
+		}
+
+		protected override void OnPassChange()
+		{
+			FetchInterpolator();
+			FetchDataId();
+		}
+
+		void DrawMultipassProperties()
+		{
+			DrawSubShaderUI();
+			DrawPassUI();
 		}
 
 		public override void Draw( DrawInfo drawInfo )
@@ -211,16 +148,7 @@ namespace AmplifyShaderEditor
 			if( m_interpolatorData == null || m_interpolatorData.Count == 0 )
 			{
 				MasterNode masterNode = m_containerGraph.CurrentMasterNode;
-				if( masterNode.CurrentMasterNodeCategory == AvailableShaderTypes.Template )
-				{
-					TemplateData currentTemplate = ( masterNode as TemplateMasterNode ).CurrentTemplate;
-					if( currentTemplate != null )
-					{
-						m_inVarName = currentTemplate.VertexFunctionData.InVarName + ".";
-						m_interpolatorData = currentTemplate.VertexDataList;
-						m_fetchDataId = true;
-					}
-				}
+				FetchInterpolator( masterNode );
 			}
 
 			if( m_fetchDataId )
@@ -244,14 +172,25 @@ namespace AmplifyShaderEditor
 		{
 			if( dataCollector.MasterNodeCategory != AvailableShaderTypes.Template )
 			{
-				UIUtils.ShowMessage( "Template Data node is only intended for templates use only" );
+				UIUtils.ShowMessage( "Template Vertex Data node is only intended for templates use only" );
 				return m_outputPorts[ 0 ].ErrorValue;
 			}
 
 			if( dataCollector.IsFragmentCategory )
 			{
-				UIUtils.ShowMessage( "Template Data node node is only intended for vertex use use only" );
+				UIUtils.ShowMessage( "Template Vertex Data node node is only intended for vertex use use only" );
 				return m_outputPorts[ 0 ].ErrorValue;
+			}
+
+			if( m_multiPassMode )
+			{
+				if( dataCollector.TemplateDataCollectorInstance.MultipassSubshaderIdx != SubShaderIdx ||
+					dataCollector.TemplateDataCollectorInstance.MultipassPassIdx != PassIdx
+					)
+				{
+					UIUtils.ShowMessage( string.Format( "{0} is only intended for subshader {1} and pass {2}", m_dataLabels[ m_currentDataIdx ], SubShaderIdx, PassIdx ) );
+					return m_outputPorts[ outputId ].ErrorValue;
+				}
 			}
 
 			return GetOutputVectorItem( 0, outputId, m_inVarName + m_dataName );
@@ -270,17 +209,35 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_dataName );
 		}
 
-		public override void OnMasterNodeReplaced( MasterNode newMasterNode )
+		protected override bool ValidatePass( int passIdx )
 		{
-			base.OnMasterNodeReplaced( newMasterNode );
-			if( newMasterNode.CurrentMasterNodeCategory == AvailableShaderTypes.Template )
+			return (	m_templateMPData.SubShaders[ SubShaderIdx ].Passes[ passIdx ].VertexFunctionData != null &&
+						m_templateMPData.SubShaders[ SubShaderIdx ].Passes[ passIdx ].VertexDataContainer != null );
+		}
+
+		void FetchInterpolator( MasterNode masterNode = null )
+		{
+			FetchMultiPassTemplate( masterNode );
+			if( m_multiPassMode )
 			{
-				TemplateData currentTemplate = ( newMasterNode as TemplateMasterNode ).CurrentTemplate;
+				if( m_templateMPData != null )
+				{
+					m_inVarName = m_templateMPData.SubShaders[ SubShaderIdx ].Passes[ PassIdx ].VertexFunctionData.InVarName + ".";
+					m_interpolatorData = m_templateMPData.SubShaders[ SubShaderIdx ].Passes[ PassIdx ].VertexDataContainer.VertexData;
+					m_fetchDataId = true;
+				}
+			}
+			else
+			{
+				if( masterNode == null )
+					masterNode = m_containerGraph.CurrentMasterNode;
+
+				TemplateData currentTemplate = ( masterNode as TemplateMasterNode ).CurrentTemplate;
 				if( currentTemplate != null )
 				{
 					m_inVarName = currentTemplate.VertexFunctionData.InVarName + ".";
 					m_interpolatorData = currentTemplate.VertexDataList;
-					FetchDataId();
+					m_fetchDataId = true;
 				}
 				else
 				{
@@ -288,14 +245,22 @@ namespace AmplifyShaderEditor
 					m_currentDataIdx = -1;
 				}
 			}
+		}
+
+		public override void OnMasterNodeReplaced( MasterNode newMasterNode )
+		{
+			base.OnMasterNodeReplaced( newMasterNode );
+			if( newMasterNode.CurrentMasterNodeCategory == AvailableShaderTypes.Template )
+			{
+				FetchInterpolator( newMasterNode );
+			}
 			else
 			{
 				m_interpolatorData = null;
 				m_currentDataIdx = -1;
 			}
 		}
-
-
+		
 		public override void Destroy()
 		{
 			base.Destroy();

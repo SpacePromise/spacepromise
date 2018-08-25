@@ -1,9 +1,10 @@
 using System;
+using Assets.ThirdParty.PostProcessing.Runtime;
 using UnityEngine;
 
 namespace UnityEditor.PostProcessing
 {
-    using MonitorSettings = UnityEngine.PostProcessing.PostProcessingProfile.MonitorSettings;
+    using MonitorSettings = PostProcessingProfile.MonitorSettings;
 
     public abstract class PostProcessingMonitor : IDisposable
     {

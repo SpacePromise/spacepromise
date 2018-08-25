@@ -1,4 +1,7 @@
-namespace UnityEngine.PostProcessing
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     public sealed class DitheringComponent : PostProcessingComponentRenderTexture<DitheringModel>
     {
@@ -12,8 +15,8 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && !context.interrupted;
+                return this.model.enabled
+                       && !this.context.interrupted;
             }
         }
 
@@ -25,15 +28,15 @@ namespace UnityEngine.PostProcessing
 
         public override void OnDisable()
         {
-            noiseTextures = null;
+            this.noiseTextures = null;
         }
 
         void LoadNoiseTextures()
         {
-            noiseTextures = new Texture2D[k_TextureCount];
+            this.noiseTextures = new Texture2D[k_TextureCount];
 
             for (int i = 0; i < k_TextureCount; i++)
-                noiseTextures[i] = Resources.Load<Texture2D>("Bluenoise64/LDR_LLL1_" + i);
+                this.noiseTextures[i] = Resources.Load<Texture2D>("Bluenoise64/LDR_LLL1_" + i);
         }
 
         public override void Prepare(Material uberMaterial)
@@ -46,23 +49,23 @@ namespace UnityEngine.PostProcessing
             rndOffsetX = 0f;
             rndOffsetY = 0f;
 #else
-            if (++textureIndex >= k_TextureCount)
-                textureIndex = 0;
+            if (++this.textureIndex >= k_TextureCount)
+                this.textureIndex = 0;
 
             rndOffsetX = Random.value;
             rndOffsetY = Random.value;
 #endif
 
-            if (noiseTextures == null)
-                LoadNoiseTextures();
+            if (this.noiseTextures == null)
+                this.LoadNoiseTextures();
 
-            var noiseTex = noiseTextures[textureIndex];
+            var noiseTex = this.noiseTextures[this.textureIndex];
 
             uberMaterial.EnableKeyword("DITHERING");
             uberMaterial.SetTexture(Uniforms._DitheringTex, noiseTex);
             uberMaterial.SetVector(Uniforms._DitheringCoords, new Vector4(
-                (float)context.width / (float)noiseTex.width,
-                (float)context.height / (float)noiseTex.height,
+                (float)this.context.width / (float)noiseTex.width,
+                (float)this.context.height / (float)noiseTex.height,
                 rndOffsetX,
                 rndOffsetY
             ));

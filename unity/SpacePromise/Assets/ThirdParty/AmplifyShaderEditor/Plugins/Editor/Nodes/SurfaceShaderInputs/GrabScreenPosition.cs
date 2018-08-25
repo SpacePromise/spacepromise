@@ -76,8 +76,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return GetOutputColorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return GetOutputColorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 			string localVarName = string.Empty;
 
@@ -86,7 +86,7 @@ namespace AmplifyShaderEditor
 			else
 				localVarName = GeneratorUtils.GenerateGrabScreenPosition( ref dataCollector, UniqueId, m_currentPrecisionType, !dataCollector.UsingCustomScreenPos );
 
-			m_outputPorts[ 0 ].SetLocalValue( localVarName );
+			m_outputPorts[ 0 ].SetLocalValue( localVarName, dataCollector.PortCategory );
 			return GetOutputColorItem( 0, outputId, localVarName );
 		}
 

@@ -104,7 +104,7 @@ namespace AmplifyShaderEditor
 			m_popContent.image = UIUtils.PopupIcon;
 
 			m_previewShaderGUID = "0b708c11c68e6a9478ac97fe3643eab1";
-			m_showAutoRegisterUI = false;
+			m_showAutoRegisterUI = true;
 		}
 
 		public override void SetPreviewInputs()
@@ -123,7 +123,10 @@ namespace AmplifyShaderEditor
 		protected override void OnUniqueIDAssigned()
 		{
 			base.OnUniqueIDAssigned();
-			UIUtils.RegisterPropertyNode( this );
+			if( m_createToggle )
+				UIUtils.RegisterPropertyNode( this );
+			else
+				UIUtils.UnregisterPropertyNode( this );
 		}
 
 		public override void Destroy()
@@ -180,9 +183,9 @@ namespace AmplifyShaderEditor
 		{
 			if( m_createToggle )
 				if( m_keywordModeType == KeywordModeType.KeywordEnum && m_keywordEnumAmount > 0 )
-					return "[" + m_keywordModeType.ToString() + "(" + GetKeywordEnumPropertyList() + ")] " + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + m_defaultValue;
+					return PropertyAttributes + "[" + m_keywordModeType.ToString() + "(" + GetKeywordEnumPropertyList() + ")] " + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + m_defaultValue;
 				else
-					return "[" + m_keywordModeType.ToString() + "(" + GetPropertyValStr() + ")] " + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + m_defaultValue;
+					return PropertyAttributes + "[" + m_keywordModeType.ToString() + "(" + GetPropertyValStr() + ")] " + m_propertyName + "(\"" + m_propertyInspectorName + "\", Float) = " + m_defaultValue;
 			else
 				return string.Empty;
 		}
@@ -250,6 +253,7 @@ namespace AmplifyShaderEditor
 		{
 			//base.DrawProperties();
 			NodeUtils.DrawPropertyGroup( ref m_propertiesFoldout, Constants.ParameterLabelStr, PropertyGroup );
+			NodeUtils.DrawPropertyGroup( ref m_visibleCustomAttrFoldout, CustomAttrStr, DrawCustomAttributes, DrawCustomAttrAddRemoveButtons );
 			CheckPropertyFromInspector();
 		}
 
@@ -259,6 +263,7 @@ namespace AmplifyShaderEditor
 			m_keywordEnumAmount = EditorGUILayoutIntSlider( AmountStr, m_keywordEnumAmount, 2, 9 );
 			if( EditorGUI.EndChangeCheck() )
 			{
+				CurrentSelectedInput = Mathf.Clamp( CurrentSelectedInput, 0, m_keywordEnumAmount - 1 );
 				UpdateLabels();
 			}
 			EditorGUI.indentLevel++;
@@ -280,7 +285,7 @@ namespace AmplifyShaderEditor
 		public void UpdateLabels()
 		{
 			int maxinputs = m_keywordModeType == KeywordModeType.KeywordEnum ? m_keywordEnumAmount : 2;
-
+			m_keywordEnumAmount = Mathf.Clamp( m_keywordEnumAmount, 0, maxinputs );
 			m_keywordEnumList = new string[ maxinputs ];
 
 			for( int i = 0; i < maxinputs; i++ )
@@ -364,6 +369,7 @@ namespace AmplifyShaderEditor
 				DrawEnumList();
 			}
 
+			ShowAutoRegister();
 			EditorGUI.BeginChangeCheck();
 			m_createToggle = EditorGUILayoutToggle( MaterialToggleStr, m_createToggle );
 			if( EditorGUI.EndChangeCheck() )
@@ -563,15 +569,9 @@ namespace AmplifyShaderEditor
 				}
 			}
 		}
-		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
+
+		void RegisterPragmas( ref MasterNodeDataCollector dataCollector )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
-
-			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
-
-			//if( m_keywordModeType == KeywordModeType.KeywordEnum )
-
 			if( m_variableMode == VariableMode.Create )
 			{
 				if( m_keywordModeType == KeywordModeType.KeywordEnum )
@@ -589,12 +589,35 @@ namespace AmplifyShaderEditor
 						dataCollector.AddToPragmas( UniqueId, "shader_feature " + PropertyName + OnOffStr );
 				}
 			}
+		}
+
+		protected override void RegisterProperty( ref MasterNodeDataCollector dataCollector )
+		{
+			base.RegisterProperty( ref dataCollector );
+			RegisterPragmas( ref dataCollector );
+		}
+
+		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
+		{
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
+
+			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
+
+			//if( m_keywordModeType == KeywordModeType.KeywordEnum )
+
+			RegisterPragmas( ref dataCollector );
 
 			string outType = UIUtils.PrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType );
 
 			if( m_keywordModeType == KeywordModeType.KeywordEnum )
 			{
 				string defaultKey = "\t" + outType + " staticSwitch" + OutputId + " = " + m_inputPorts[ m_defaultValue ].GeneratePortInstructions( ref dataCollector ) + ";";
+
+				string[] allOutputs = new string[ m_keywordEnumAmount ];
+				for( int i = 0; i < m_keywordEnumAmount; i++ )
+					allOutputs[ i ] = m_inputPorts[ i ].GeneratePortInstructions( ref dataCollector );
+
 				for( int i = 0; i < m_keywordEnumAmount; i++ )
 				{
 					string keyword = PropertyName + "_" + m_keywordEnumList[ i ].ToUpper(); ;
@@ -606,7 +629,7 @@ namespace AmplifyShaderEditor
 					if( m_defaultValue == i )
 						dataCollector.AddLocalVariable( UniqueId, defaultKey, true );
 					else
-						dataCollector.AddLocalVariable( UniqueId, "\t" + outType + " staticSwitch" + OutputId + " = " + m_inputPorts[ i ].GeneratePortInstructions( ref dataCollector ) + ";", true );
+						dataCollector.AddLocalVariable( UniqueId, "\t" + outType + " staticSwitch" + OutputId + " = " + allOutputs[ i ] + ";", true );
 				}
 				dataCollector.AddLocalVariable( UniqueId, "#else", true );
 				dataCollector.AddLocalVariable( UniqueId, defaultKey, true );
@@ -627,8 +650,8 @@ namespace AmplifyShaderEditor
 				dataCollector.AddLocalVariable( UniqueId, "#endif", true );
 			}
 
-			m_outputPorts[ 0 ].SetLocalValue( "staticSwitch" + OutputId );
-			return m_outputPorts[ 0 ].LocalValue;
+			m_outputPorts[ 0 ].SetLocalValue( "staticSwitch" + OutputId , dataCollector.PortCategory );
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void DrawTitle( Rect titlePos )
@@ -726,6 +749,11 @@ namespace AmplifyShaderEditor
 
 				UpdateLabels();
 			}
+
+			if( m_createToggle )
+				UIUtils.RegisterPropertyNode( this );
+			else
+				UIUtils.UnregisterPropertyNode( this );
 		}
 
 		public override void ReadFromDeprecated( ref string[] nodeParams, Type oldType = null )

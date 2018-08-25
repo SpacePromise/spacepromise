@@ -22,6 +22,7 @@ namespace AmplifyShaderEditor
 			AddInputPort( WirePortDataType.FLOAT, false, "False" );
 			m_textLabelWidth = 100;
 			m_useInternalPortData = true;
+			m_previewShaderGUID = "363192dbd019ad2478f2fe6c277b7e48";
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )

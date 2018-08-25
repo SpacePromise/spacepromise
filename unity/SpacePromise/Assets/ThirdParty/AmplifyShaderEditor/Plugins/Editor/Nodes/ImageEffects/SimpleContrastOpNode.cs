@@ -21,6 +21,7 @@ namespace AmplifyShaderEditor
 			AddPorts();
 			m_textLabelWidth = 70;
 			m_useInternalPortData = true;
+			m_previewShaderGUID = "8d76799413f9f0547ac9b1de7ba798f1";
 		}
 
 		void AddPorts()
@@ -32,8 +33,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string contrastValue = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
 			string colorTarget = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );

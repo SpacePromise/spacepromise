@@ -51,8 +51,8 @@ namespace AmplifyShaderEditor
 			if( dataCollector.MasterNodeCategory == AvailableShaderTypes.SurfaceShader )
 				UIUtils.ShowMessage( HelperMessage, MessageSeverity.Warning );
 
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			dataCollector.AddToIncludes( UniqueId, Constants.UnityCgLibFuncs );
 
@@ -63,7 +63,7 @@ namespace AmplifyShaderEditor
 
 			RegisterLocalVariable( 0, value, ref dataCollector, "shadeVertexLight"+OutputId );
 
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )

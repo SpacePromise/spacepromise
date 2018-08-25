@@ -1,4 +1,7 @@
-namespace UnityEngine.PostProcessing
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     public sealed class VignetteComponent : PostProcessingComponentRenderTexture<VignetteModel>
     {
@@ -15,14 +18,14 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && !context.interrupted;
+                return this.model.enabled
+                       && !this.context.interrupted;
             }
         }
 
         public override void Prepare(Material uberMaterial)
         {
-            var settings = model.settings;
+            var settings = this.model.settings;
             uberMaterial.SetColor(Uniforms._Vignette_Color, settings.color);
 
             if (settings.mode == VignetteModel.Mode.Classic)

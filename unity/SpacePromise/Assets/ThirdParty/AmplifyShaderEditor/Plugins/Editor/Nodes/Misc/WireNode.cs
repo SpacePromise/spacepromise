@@ -261,7 +261,6 @@ namespace AmplifyShaderEditor
 
 			// Output Ports
 			int outputCount = m_outputPorts.Count;
-			GUIStyle outputPortStyle = UIUtils.GetCustomStyle( CustomStyle.OutputPortLabel );
 			for( int i = 0; i < outputCount; i++ )
 			{
 				if( m_outputPorts[ i ].Visible )
@@ -288,12 +287,12 @@ namespace AmplifyShaderEditor
 						if( m_outputPorts[ i ].Locked )
 						{
 							GUI.color = Constants.PortLockedTextColor;
-							GUI.Label( m_outputPorts[ i ].LabelPosition, m_outputPorts[ i ].Name, outputPortStyle );
+							GUI.Label( m_outputPorts[ i ].LabelPosition, m_outputPorts[ i ].Name, UIUtils.OutputPortLabel );
 							GUI.color = m_colorBuffer;
 						}
 						else
 						{
-							GUI.Label( m_outputPorts[ i ].LabelPosition, m_outputPorts[ i ].Name, outputPortStyle );
+							GUI.Label( m_outputPorts[ i ].LabelPosition, m_outputPorts[ i ].Name, UIUtils.OutputPortLabel );
 						}
 					}
 				}
@@ -330,6 +329,9 @@ namespace AmplifyShaderEditor
 
 		bool TestIfValid()
 		{
+			if( !Alive )
+				return false;
+
 			bool result = true;
 			if( !m_inputPorts[ 0 ].IsConnected )
 			{
@@ -364,13 +366,13 @@ namespace AmplifyShaderEditor
 
 				if( m_outputPorts[ 0 ].ConnectionCount > 0 )
 				{
-					otherInputNode = UIUtils.GetNode( m_outputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
+					otherInputNode = m_containerGraph.GetNode( m_outputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
 					otherInputPort = otherInputNode.GetInputPortByUniqueId( m_outputPorts[ 0 ].ExternalReferences[ 0 ].PortId );
 				}
 
 				if( m_inputPorts[ 0 ].ConnectionCount > 0 )
 				{
-					otherOutputNode = UIUtils.GetNode( m_inputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
+					otherOutputNode = m_containerGraph.GetNode( m_inputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
 					otherOutputPort = otherOutputNode.GetOutputPortByUniqueId( m_inputPorts[ 0 ].ExternalReferences[ 0 ].PortId );
 				}
 
@@ -394,9 +396,9 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public override void ReadFromString( ref string[] nodeParams )
+		public override void RefreshExternalReferences()
 		{
-			base.ReadFromString( ref nodeParams );
+			base.RefreshExternalReferences();
 
 			m_extraSize.Set( 20f, 20f );
 			m_position.width = m_extraSize.x + UIUtils.PortsSize.x;
@@ -405,11 +407,17 @@ namespace AmplifyShaderEditor
 			Vec2Position += Position.size * 0.5f;
 		}
 
+		public override void OnAfterDeserialize()
+		{
+			base.OnAfterDeserialize();
+			m_sizeIsDirty = false;
+		}
+
 		public WireReference FindNewValidInputNode( WireNode current )
 		{
 			if( current.InputPorts[ 0 ].IsConnected )
 			{
-				ParentNode node = UIUtils.GetNode( current.InputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
+				ParentNode node = m_containerGraph.GetNode( current.InputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
 				if( node != null )
 				{
 					WireNode wireNode = node as WireNode;
@@ -430,7 +438,7 @@ namespace AmplifyShaderEditor
 		{
 			if( current.OutputPorts[ 0 ].IsConnected )
 			{
-				ParentNode node = UIUtils.GetNode( current.OutputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
+				ParentNode node = m_containerGraph.GetNode( current.OutputPorts[ 0 ].ExternalReferences[ 0 ].NodeId );
 
 				if( node != null )
 				{

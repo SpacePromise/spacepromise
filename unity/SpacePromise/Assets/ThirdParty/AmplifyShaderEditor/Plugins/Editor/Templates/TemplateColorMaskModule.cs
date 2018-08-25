@@ -7,8 +7,10 @@ using UnityEditor;
 namespace AmplifyShaderEditor
 {
 	[Serializable]
-	class TemplateColorMaskModule : TemplateModuleParent
+	public class TemplateColorMaskModule : TemplateModuleParent
 	{
+		private const string ColorMaskOp = "ColorMask ";
+		private const string ColorMaskOff = "ColorMask RGBA";
 		private GUIContent ColorMaskContent = new GUIContent( "Color Mask", "Sets color channel writing mask, turning all off makes the object completely invisible\nDefault: RGBA" );
 		private readonly char[] m_colorMaskChar = { 'R', 'G', 'B', 'A' };
 
@@ -16,20 +18,63 @@ namespace AmplifyShaderEditor
 		private GUIStyle m_middleToggleColorMask;
 		private GUIStyle m_rightToggleColorMask;
 
-        public TemplateColorMaskModule() : base("Color Mask"){ }
+		public TemplateColorMaskModule() : base( "Color Mask" ) { }
 
-        [ SerializeField]
+		[SerializeField]
 		private bool[] m_colorMask = { true, true, true, true };
-		
+
+		[SerializeField]
+		private InlineProperty m_inlineColorMask = new InlineProperty();
+
+		public void CopyFrom( TemplateColorMaskModule other, bool allData )
+		{
+			if( allData )
+				m_independentModule = other.IndependentModule;
+
+			for( int i = 0; i < m_colorMask.Length; i++ )
+			{
+				m_colorMask[ i ] = other.ColorMask[ i ];
+			}
+			m_inlineColorMask.CopyFrom( other.InlineColorMask );
+		}
+
 		public void ConfigureFromTemplateData( TemplateColorMaskData data )
 		{
-			for( int i = 0; i < 4; i++ )
+			bool newValidData = ( data.DataCheck == TemplateDataCheck.Valid );
+			if( newValidData && m_validData != newValidData )
 			{
-				m_colorMask[ i ] = data.ColorMaskData[ i ];
+				m_independentModule = data.IndependentModule;
+				if( string.IsNullOrEmpty( data.InlineData ) )
+				{
+					for( int i = 0; i < 4; i++ )
+					{
+						m_colorMask[ i ] = data.ColorMaskData[ i ];
+					}
+					m_inlineColorMask.ResetProperty();
+				}
+				else
+				{
+					m_inlineColorMask.SetInlineByName( data.InlineData );
+				}
+			}
+			
+			m_validData = newValidData;
+		}
+
+		public override void Draw( UndoParentNode owner, bool style = true )
+		{
+			EditorGUI.BeginChangeCheck();
+			{
+				m_inlineColorMask.CustomDrawer( ref owner, DrawColorMaskControls, ColorMaskContent.text );
+			}
+
+			if( EditorGUI.EndChangeCheck() )
+			{
+				m_isDirty = true;
 			}
 		}
-		
-		public override void Draw( ParentNode owner )
+
+		private void DrawColorMaskControls( UndoParentNode owner )
 		{
 			if( m_leftToggleColorMask == null || m_leftToggleColorMask.normal.background == null )
 			{
@@ -45,7 +90,7 @@ namespace AmplifyShaderEditor
 			{
 				m_rightToggleColorMask = GUI.skin.GetStyle( "ButtonRight" );
 			}
-			
+
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.LabelField( ColorMaskContent, GUILayout.Width( 90 ) );
 
@@ -57,8 +102,11 @@ namespace AmplifyShaderEditor
 			EditorGUILayout.EndHorizontal();
 		}
 
-		public override string GenerateShaderData()
+		public override string GenerateShaderData( bool isSubShader )
 		{
+			if( m_inlineColorMask.IsValid )
+				return ColorMaskOp + m_inlineColorMask.GetValueOrProperty();
+
 			int count = 0;
 			string colorMask = string.Empty;
 			for( int i = 0; i < m_colorMask.Length; i++ )
@@ -72,33 +120,57 @@ namespace AmplifyShaderEditor
 
 			if( count != m_colorMask.Length )
 			{
-				return "ColorMask " + ( ( count == 0 ) ? "0" : colorMask );
+				return ColorMaskOp + ( ( count == 0 ) ? "0" : colorMask );
 			}
 
-			return string.Empty;
+			return ColorMaskOff;
 		}
 
 		public override void ReadFromString( ref uint index, ref string[] nodeParams )
 		{
-			for( int i = 0; i < m_colorMask.Length; i++ )
+			bool validDataOnMeta = m_validData;
+			if( UIUtils.CurrentShaderVersion() > TemplatesManager.MPShaderVersion )
 			{
-				m_colorMask[ i ] = Convert.ToBoolean( nodeParams[ index++ ] );
+				validDataOnMeta = Convert.ToBoolean( nodeParams[ index++ ] );
+			}
+
+			if( validDataOnMeta )
+			{
+				for( int i = 0; i < m_colorMask.Length; i++ )
+				{
+					m_colorMask[ i ] = Convert.ToBoolean( nodeParams[ index++ ] );
+				}
+
+				if( UIUtils.CurrentShaderVersion() > 15303 )
+				{
+					m_inlineColorMask.ReadFromString( ref index, ref nodeParams );
+				}
 			}
 		}
 
 		public override void WriteToString( ref string nodeInfo )
 		{
-			for( int i = 0; i < m_colorMask.Length; i++ )
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_validData );
+			if( m_validData )
 			{
-				IOUtils.AddFieldValueToString( ref nodeInfo, m_colorMask[ i ] );
+				for( int i = 0; i < m_colorMask.Length; i++ )
+				{
+					IOUtils.AddFieldValueToString( ref nodeInfo, m_colorMask[ i ] );
+				}
+				m_inlineColorMask.WriteToString( ref nodeInfo );
 			}
 		}
+
+		public bool[] ColorMask { get { return m_colorMask; } }
 
 		public override void Destroy()
 		{
 			m_leftToggleColorMask = null;
 			m_middleToggleColorMask = null;
 			m_rightToggleColorMask = null;
+			m_inlineColorMask = null;
 		}
+
+		public InlineProperty InlineColorMask { get { return m_inlineColorMask; } }
 	}
 }

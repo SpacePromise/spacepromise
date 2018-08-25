@@ -13,6 +13,7 @@ namespace AmplifyShaderEditor
 		{
 			base.CommonInit( uniqueId );
 			AddOutputPort( WirePortDataType.FLOAT, "Out" );
+			m_previewShaderGUID = "4b0b5b9f16353b840a5f5ad2baab3c3c";
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )

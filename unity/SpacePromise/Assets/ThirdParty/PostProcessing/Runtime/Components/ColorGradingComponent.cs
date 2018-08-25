@@ -1,4 +1,8 @@
-namespace UnityEngine.PostProcessing
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     using DebugMode = BuiltinDebugViewsModel.Mode;
 
@@ -39,8 +43,8 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && !context.interrupted;
+                return this.model.enabled
+                       && !this.context.interrupted;
             }
         }
 
@@ -76,11 +80,11 @@ namespace UnityEngine.PostProcessing
             // Get the CIE xy chromaticity of the reference white point.
             // Note: 0.31271 = x value on the D65 white point
             float x = 0.31271f - t1 * (t1 < 0f ? 0.1f : 0.05f);
-            float y = StandardIlluminantY(x) + t2 * 0.05f;
+            float y = this.StandardIlluminantY(x) + t2 * 0.05f;
 
             // Calculate the coefficients in the LMS space.
             var w1 = new Vector3(0.949237f, 1.03542f, 1.08728f); // D65 white point
-            var w2 = CIExyToLMS(x, y);
+            var w2 = this.CIExyToLMS(x, y);
             return new Vector3(w1.x / w2.x, w1.y / w2.y, w1.z / w2.z);
         }
 
@@ -233,9 +237,9 @@ namespace UnityEngine.PostProcessing
 
         Texture2D GetCurveTexture()
         {
-            if (m_GradingCurves == null)
+            if (this.m_GradingCurves == null)
             {
-                m_GradingCurves = new Texture2D(k_CurvePrecision, 2, GetCurveFormat(), false, true)
+                this.m_GradingCurves = new Texture2D(k_CurvePrecision, 2, this.GetCurveFormat(), false, true)
                 {
                     name = "Internal Curves Texture",
                     hideFlags = HideFlags.DontSave,
@@ -245,7 +249,7 @@ namespace UnityEngine.PostProcessing
                 };
             }
 
-            var curves = model.settings.curves;
+            var curves = this.model.settings.curves;
             curves.hueVShue.Cache();
             curves.hueVSsat.Cache();
 
@@ -258,20 +262,20 @@ namespace UnityEngine.PostProcessing
                 float y = curves.hueVSsat.Evaluate(t);
                 float z = curves.satVSsat.Evaluate(t);
                 float w = curves.lumVSsat.Evaluate(t);
-                m_pixels[i] = new Color(x, y, z, w);
+                this.m_pixels[i] = new Color(x, y, z, w);
 
                 // YRGB
                 float m = curves.master.Evaluate(t);
                 float r = curves.red.Evaluate(t);
                 float g = curves.green.Evaluate(t);
                 float b = curves.blue.Evaluate(t);
-                m_pixels[i + k_CurvePrecision] = new Color(r, g, b, m);
+                this.m_pixels[i + k_CurvePrecision] = new Color(r, g, b, m);
             }
 
-            m_GradingCurves.SetPixels(m_pixels);
-            m_GradingCurves.Apply(false, false);
+            this.m_GradingCurves.SetPixels(this.m_pixels);
+            this.m_GradingCurves.Apply(false, false);
 
-            return m_GradingCurves;
+            return this.m_GradingCurves;
         }
 
         bool IsLogLutValid(RenderTexture lut)
@@ -289,13 +293,13 @@ namespace UnityEngine.PostProcessing
 
         void GenerateLut()
         {
-            var settings = model.settings;
+            var settings = this.model.settings;
 
-            if (!IsLogLutValid(model.bakedLut))
+            if (!this.IsLogLutValid(this.model.bakedLut))
             {
-                GraphicsUtils.Destroy(model.bakedLut);
+                GraphicsUtils.Destroy(this.model.bakedLut);
 
-                model.bakedLut = new RenderTexture(k_InternalLogLutSize * k_InternalLogLutSize, k_InternalLogLutSize, 0, GetLutFormat())
+                this.model.bakedLut = new RenderTexture(k_InternalLogLutSize * k_InternalLogLutSize, k_InternalLogLutSize, 0, this.GetLutFormat())
                 {
                     name = "Color Grading Log LUT",
                     hideFlags = HideFlags.DontSave,
@@ -305,7 +309,7 @@ namespace UnityEngine.PostProcessing
                 };
             }
 
-            var lutMaterial = context.materialFactory.Get("Hidden/Post FX/Lut Generator");
+            var lutMaterial = this.context.materialFactory.Get("Hidden/Post FX/Lut Generator");
             lutMaterial.SetVector(Uniforms._LutParams, new Vector4(
                     k_InternalLogLutSize,
                     0.5f / (k_InternalLogLutSize * k_InternalLogLutSize),
@@ -356,7 +360,7 @@ namespace UnityEngine.PostProcessing
             lutMaterial.SetFloat(Uniforms._HueShift, settings.basic.hueShift / 360f);
             lutMaterial.SetFloat(Uniforms._Saturation, settings.basic.saturation);
             lutMaterial.SetFloat(Uniforms._Contrast, settings.basic.contrast);
-            lutMaterial.SetVector(Uniforms._Balance, CalculateColorBalance(settings.basic.temperature, settings.basic.tint));
+            lutMaterial.SetVector(Uniforms._Balance, this.CalculateColorBalance(settings.basic.temperature, settings.basic.tint));
 
             // Lift / Gamma / Gain
             Vector3 lift, gamma, gain;
@@ -390,47 +394,47 @@ namespace UnityEngine.PostProcessing
             lutMaterial.SetVector(Uniforms._ChannelMixerBlue, settings.channelMixer.blue);
 
             // Selective grading & YRGB curves
-            lutMaterial.SetTexture(Uniforms._Curves, GetCurveTexture());
+            lutMaterial.SetTexture(Uniforms._Curves, this.GetCurveTexture());
 
             // Generate the lut
-            Graphics.Blit(null, model.bakedLut, lutMaterial, 0);
+            Graphics.Blit(null, this.model.bakedLut, lutMaterial, 0);
         }
 
         public override void Prepare(Material uberMaterial)
         {
-            if (model.isDirty || !IsLogLutValid(model.bakedLut))
+            if (this.model.isDirty || !this.IsLogLutValid(this.model.bakedLut))
             {
-                GenerateLut();
-                model.isDirty = false;
+                this.GenerateLut();
+                this.model.isDirty = false;
             }
 
             uberMaterial.EnableKeyword(
-                context.profile.debugViews.IsModeActive(DebugMode.PreGradingLog)
+                this.context.profile.debugViews.IsModeActive(DebugMode.PreGradingLog)
                 ? "COLOR_GRADING_LOG_VIEW"
                 : "COLOR_GRADING"
                 );
 
-            var bakedLut = model.bakedLut;
+            var bakedLut = this.model.bakedLut;
             uberMaterial.SetTexture(Uniforms._LogLut, bakedLut);
             uberMaterial.SetVector(Uniforms._LogLut_Params, new Vector3(1f / bakedLut.width, 1f / bakedLut.height, bakedLut.height - 1f));
 
-            float ev = Mathf.Exp(model.settings.basic.postExposure * 0.69314718055994530941723212145818f);
+            float ev = Mathf.Exp(this.model.settings.basic.postExposure * 0.69314718055994530941723212145818f);
             uberMaterial.SetFloat(Uniforms._ExposureEV, ev);
         }
 
         public void OnGUI()
         {
-            var bakedLut = model.bakedLut;
-            var rect = new Rect(context.viewport.x * Screen.width + 8f, 8f, bakedLut.width, bakedLut.height);
+            var bakedLut = this.model.bakedLut;
+            var rect = new Rect(this.context.viewport.x * Screen.width + 8f, 8f, bakedLut.width, bakedLut.height);
             GUI.DrawTexture(rect, bakedLut);
         }
 
         public override void OnDisable()
         {
-            GraphicsUtils.Destroy(m_GradingCurves);
-            GraphicsUtils.Destroy(model.bakedLut);
-            m_GradingCurves = null;
-            model.bakedLut = null;
+            GraphicsUtils.Destroy(this.m_GradingCurves);
+            GraphicsUtils.Destroy(this.model.bakedLut);
+            this.m_GradingCurves = null;
+            this.model.bakedLut = null;
         }
     }
 }

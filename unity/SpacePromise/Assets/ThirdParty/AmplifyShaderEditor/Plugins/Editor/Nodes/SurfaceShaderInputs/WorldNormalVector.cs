@@ -24,6 +24,7 @@ namespace AmplifyShaderEditor
 			base.CommonInit( uniqueId );
 			AddInputPort( WirePortDataType.FLOAT3, false, "Normal" );
 			AddOutputVectorPorts( WirePortDataType.FLOAT3, "XYZ" );
+			m_inputPorts[ 0 ].Vector3InternalData = Vector3.forward;
 			m_previewShaderGUID = "5f55f4841abb61e45967957788593a9d";
 			m_drawPreviewAsSphere = true;
 			m_autoWrapProperties = true;
@@ -59,17 +60,17 @@ namespace AmplifyShaderEditor
 			{
 				if( m_inputPorts[ 0 ].IsConnected )
 				{
-					if( m_outputPorts[ 0 ].IsLocalValue )
-						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+						return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 
-					string value = dataCollector.TemplateDataCollectorInstance.GetWorldNormal( m_currentPrecisionType, m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) );
+					string value = dataCollector.TemplateDataCollectorInstance.GetWorldNormal( UniqueId, m_currentPrecisionType, m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ), OutputId );
 					if( m_normalize )
 					{
 						value = string.Format( NormalizeFunc, value );
 					}
 					RegisterLocalVariable( 0, value, ref dataCollector, "worldNormal" + OutputId );
-					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+					return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 				}
 				else
 				{
@@ -99,7 +100,7 @@ namespace AmplifyShaderEditor
 					dataCollector.AddToInput( UniqueId, SurfaceInputs.INTERNALDATA, addSemiColon: false );
 					dataCollector.ForceNormal = true;
 
-					result = "WorldNormalVector( " + Constants.InputVarStr + " , " + m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalvar ) + " )";
+					result = "WorldNormalVector( " + Constants.InputVarStr + " , " + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + " )";
 					if( m_normalize )
 					{
 						result = string.Format( NormalizeFunc, result );

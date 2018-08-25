@@ -33,13 +33,16 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	public class MasterNode : OutputNode
 	{
-		private const string PropertyOderFoldoutStr = " Material Properties";
+		protected const string CustomInspectorStr = "Custom Editor";
+		protected const string CustomInspectorFormat = "CustomEditor \"{0}\"";
+
+		private const string PropertyOrderFoldoutStr = " Material Properties";
+		private const string PropertyOrderTemplateFoldoutStr = "Material Properties";
 
 		protected MasterNodeDataCollector m_currentDataCollector;
 
 		protected const string ShaderNameStr = "Shader Name";
 		protected GUIContent m_shaderNameContent;
-		private const string DefaultShaderName = "New AmplifyShader";
 
 		private const string IndentationHelper = "\t\t{0}\n";
 		private const string ShaderLODFormat = "\t\tLOD {0}\n";
@@ -72,7 +75,10 @@ namespace AmplifyShaderEditor
 		private Rect m_masterNodeIconCoords;
 
 		[SerializeField]
-		protected string m_shaderName = "New AmplifyShader";
+		protected string m_shaderName = Constants.DefaultShaderName;
+
+		[SerializeField]
+		protected string m_croppedShaderName = Constants.DefaultShaderName;
 
 		[SerializeField]
 		protected string m_customInspectorName = Constants.DefaultCustomInspector;
@@ -115,10 +121,12 @@ namespace AmplifyShaderEditor
 		private List<PropertyNode> m_propertyNodesVisibleList = new List<PropertyNode>();
 
 		private ReorderableList m_propertyReordableList;
+		protected bool m_propertyOrderChanged = false;
 		//private int m_availableCount = 0;
 		private int m_lastCount = 0;
 
 		private GUIStyle m_propertyAdjustment;
+		protected bool m_shaderNameIsTitle = true;
 
 		void CommonInit()
 		{
@@ -136,17 +144,17 @@ namespace AmplifyShaderEditor
 
 		void InitAvailableCategories()
 		{
-			int templateCount = TemplatesManager.TemplateCount;
+			int templateCount =  m_containerGraph.ParentWindow.TemplatesManagerInstance.TemplateCount;
 			m_availableCategories = new MasterNodeCategoriesData[ templateCount + 1 ];
 			m_availableCategoryLabels = new GUIContent[ templateCount + 1 ];
 
 			m_availableCategories[ 0 ] = new MasterNodeCategoriesData( AvailableShaderTypes.SurfaceShader, string.Empty );
-			m_availableCategoryLabels[ 0 ] = new GUIContent( "Surface Shader" );
+			m_availableCategoryLabels[ 0 ] = new GUIContent( "Surface" );
 
 			for( int i = 0; i < templateCount; i++ )
 			{
 				int idx = i + 1;
-				TemplateData templateData = TemplatesManager.GetTemplate( i );
+				TemplateDataParent templateData = m_containerGraph.ParentWindow.TemplatesManagerInstance.GetTemplate( i );
 				m_availableCategories[ idx ] = new MasterNodeCategoriesData( AvailableShaderTypes.Template, templateData.GUID );
 				m_availableCategoryLabels[ idx ] = new GUIContent( templateData.Name );
 			}
@@ -199,8 +207,20 @@ namespace AmplifyShaderEditor
 			m_masterNodeCategory = EditorGUILayoutPopup( m_categoryLabel, m_masterNodeCategory, m_availableCategoryLabels );
 			if( oldType != m_masterNodeCategory )
 			{
-				m_containerGraph.ParentWindow.ReplaceMasterNode( m_availableCategories[ m_masterNodeCategory ] );
+				m_containerGraph.ParentWindow.ReplaceMasterNode( m_availableCategories[ m_masterNodeCategory ] , false );
 			}
+		}
+
+		protected void DrawCustomInspector( )
+		{
+			EditorGUILayout.BeginHorizontal();
+			m_customInspectorName = EditorGUILayoutTextField( CustomInspectorStr, m_customInspectorName );
+			if( GUILayoutButton( string.Empty, UIUtils.GetCustomStyle( CustomStyle.ResetToDefaultInspectorButton ), GUILayout.Width( 15 ), GUILayout.Height( 15 ) ) )
+			{
+				GUIUtility.keyboardControl = 0;
+				m_customInspectorName = Constants.DefaultCustomInspector;
+			}
+			EditorGUILayout.EndHorizontal();
 		}
 
 		protected void DrawShaderName()
@@ -215,9 +235,10 @@ namespace AmplifyShaderEditor
 				}
 				else
 				{
-					newShaderName = DefaultShaderName;
+					newShaderName = Constants.DefaultShaderName;
 				}
 				ShaderName = newShaderName;
+				ContainerGraph.ParentWindow.UpdateTabTitle( ShaderName, true );
 			}
 			m_shaderNameContent.tooltip = m_shaderName;
 		}
@@ -292,9 +313,11 @@ namespace AmplifyShaderEditor
 				InitAvailableCategories();
 
 			base.Draw( drawInfo );
+		}
 
-			if( drawInfo.CurrentEventType != EventType.Repaint )
-				return;
+		public override void OnNodeRepaint( DrawInfo drawInfo )
+		{
+			base.OnNodeRepaint( drawInfo );
 
 			if( m_isMainOutputNode )
 			{
@@ -330,17 +353,12 @@ namespace AmplifyShaderEditor
 				{
 					m_gpuInstanceOnTex = UIUtils.GPUInstancedOnTexture;
 				}
-
-				//if ( UIUtils.IsInstancedShader() )
-				//{
-				//	DrawInstancedIcon( drawInfo );
-				//}
 			}
 		}
 
 		protected void DrawInstancedIcon( DrawInfo drawInfo )
 		{
-			if( drawInfo.CurrentEventType != EventType.Repaint )
+			if( m_gpuInstanceOffTex == null || drawInfo.CurrentEventType != EventType.Repaint )
 				return;
 
 			m_masterNodeIconCoords = m_globalPosition;
@@ -374,6 +392,10 @@ namespace AmplifyShaderEditor
 			{
 				m_shaderModelIdx = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
 				m_currentPrecisionType = (PrecisionType)Enum.Parse( typeof( PrecisionType ), GetCurrentParam( ref nodeParams ) );
+				if( m_currentPrecisionType == PrecisionType.Fixed )
+				{
+					m_currentPrecisionType = PrecisionType.Half;
+				}
 			}
 
 			if( UIUtils.CurrentShaderVersion() > 2404 )
@@ -415,6 +437,22 @@ namespace AmplifyShaderEditor
 			if( OnShaderUpdatedEvent != null )
 				OnShaderUpdatedEvent( this );
 		}
+
+		public void RegisterStandaloneFuntions()
+		{
+			List<CustomExpressionNode> nodes = m_containerGraph.CustomExpressionOnFunctionMode.NodesList;
+			int count = nodes.Count;
+			Dictionary<int, CustomExpressionNode> examinedNodes = new Dictionary<int, CustomExpressionNode>();
+			for( int i = 0; i < count; i++ )
+			{
+				if( nodes[ i ].AutoRegisterMode )
+				{
+					nodes[ i ].CheckDependencies( ref m_currentDataCollector, ref examinedNodes);
+				}
+			}
+			examinedNodes.Clear();
+			examinedNodes = null;
+		} 
 
 		// What operation this node does
 		public virtual void Execute( Shader selectedShader )
@@ -477,25 +515,29 @@ namespace AmplifyShaderEditor
 				AssetDatabase.Refresh( ImportAssetOptions.ForceUpdate );
 				CurrentShader = Shader.Find( ShaderName );
 			}
-			else
-			{
-				// need to always get asset datapath because a user can change and asset location from the project window 
-				AssetDatabase.ImportAsset( AssetDatabase.GetAssetPath( m_currentShader ) );
-				//ShaderUtil.UpdateShaderAsset( m_currentShader, ShaderBody );
-			}
+			//else
+			//{
+			//	// need to always get asset datapath because a user can change and asset location from the project window 
+			//	AssetDatabase.ImportAsset( AssetDatabase.GetAssetPath( m_currentShader ) );
+			//	//ShaderUtil.UpdateShaderAsset( m_currentShader, ShaderBody );
+			//	//ShaderImporter importer = (ShaderImporter)ShaderImporter.GetAtPath( AssetDatabase.GetAssetPath( CurrentShader ) );
+			//	//importer.SaveAndReimport();
+			//}
 
 			if( m_currentShader != null )
 			{
+				m_currentDataCollector.UpdateShaderImporter( ref m_currentShader );
 				if( m_currentMaterial != null )
 				{
-					m_currentMaterial.shader = m_currentShader;
+					if( m_currentMaterial.shader != m_currentShader )
+						m_currentMaterial.shader = m_currentShader;
+
 					m_currentDataCollector.UpdateMaterialOnPropertyNodes( m_currentMaterial );
 					FireMaterialChangedEvt();
 					// need to always get asset datapath because a user can change and asset location from the project window
-					AssetDatabase.ImportAsset( AssetDatabase.GetAssetPath( m_currentMaterial ) );
+					//AssetDatabase.ImportAsset( AssetDatabase.GetAssetPath( m_currentMaterial ) );
 				}
 
-				m_currentDataCollector.UpdateShaderOnPropertyNodes( ref m_currentShader );
 			}
 
 			m_currentDataCollector.Destroy();
@@ -524,22 +566,31 @@ namespace AmplifyShaderEditor
 			m_propertyNodesVisibleList.Sort( ( x, y ) => { return x.OrderIndex.CompareTo( y.OrderIndex ); } );
 		}
 
-		public void DrawMaterialInputs( GUIStyle toolbarstyle )
+		public void DrawMaterialInputs( GUIStyle toolbarstyle , bool style = true)
 		{
+			m_propertyOrderChanged = false;
 			Color cachedColor = GUI.color;
 			GUI.color = new Color( cachedColor.r, cachedColor.g, cachedColor.b, 0.5f );
 			EditorGUILayout.BeginHorizontal( toolbarstyle );
 			GUI.color = cachedColor;
 
 			EditorGUI.BeginChangeCheck();
-			ContainerGraph.ParentWindow.ExpandedProperties = GUILayoutToggle( ContainerGraph.ParentWindow.ExpandedProperties, PropertyOderFoldoutStr, UIUtils.MenuItemToggleStyle );
+			if( style )
+			{
+				ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedProperties = GUILayoutToggle( ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedProperties, PropertyOrderFoldoutStr, UIUtils.MenuItemToggleStyle );
+			}
+			else
+			{
+				ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedProperties = GUILayoutToggle( ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedProperties, PropertyOrderTemplateFoldoutStr, UIUtils.MenuItemToggleStyle );
+			}
+
 			if( EditorGUI.EndChangeCheck() )
 			{
-				EditorPrefs.SetBool( "ExpandedProperties", ContainerGraph.ParentWindow.ExpandedProperties );
+				EditorPrefs.SetBool( "ExpandedProperties", ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedProperties );
 			}
 
 			EditorGUILayout.EndHorizontal();
-			if( !ContainerGraph.ParentWindow.ExpandedProperties )
+			if( !ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedProperties )
 				return;
 
 			cachedColor = GUI.color;
@@ -571,6 +622,7 @@ namespace AmplifyShaderEditor
 					onReorderCallback = ( list ) =>
 					{
 						ReorderList( ref nodes );
+						m_propertyOrderChanged = true;
 						//RecursiveLog();
 					}
 				};
@@ -658,6 +710,13 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		public void CopyPropertyListFrom( MasterNode masterNode )
+		{
+			m_lastCount = masterNode.ReordableListLastCount;
+			m_propertyNodesVisibleList.Clear();
+			m_propertyNodesVisibleList.AddRange( masterNode.PropertyNodesVisibleList );
+		}
+
 		public virtual void UpdateFromShader( Shader newShader ) { }
 
 		public void ClearUpdateEvents()
@@ -681,7 +740,7 @@ namespace AmplifyShaderEditor
 			}
 			get { return m_currentShader; }
 		}
-
+		public virtual void OnRefreshLinkedPortsComplete() { }
 		public virtual void ReleaseResources() { }
 		public override void Destroy()
 		{
@@ -785,13 +844,22 @@ namespace AmplifyShaderEditor
 			set
 			{
 				m_shaderName = value;
-				m_content.text = GenerateClippedTitle( value );
+				string[] shaderNameArr = m_shaderName.Split( '/' );
+				m_croppedShaderName = shaderNameArr[ shaderNameArr.Length - 1 ];
+
+				if( m_shaderNameIsTitle )
+					m_content.text = GenerateClippedTitle( m_croppedShaderName );
+
 				m_sizeIsDirty = true;
 			}
 		}
-
+		public string CustomInspectorFormatted { get { return string.Format( CustomInspectorFormat, m_customInspectorName ); } }
+		public string CroppedShaderName { get { return m_croppedShaderName; } }
 		public AvailableShaderTypes CurrentMasterNodeCategory { get { return ( m_masterNodeCategory == 0 ) ? AvailableShaderTypes.SurfaceShader : AvailableShaderTypes.Template; } }
 		public int CurrentMasterNodeCategoryIdx { get { return m_masterNodeCategory; } }
 		public MasterNodeDataCollector CurrentDataCollector { get { return m_currentDataCollector; } set { m_currentDataCollector = value; } }
+		public List<PropertyNode> PropertyNodesVisibleList { get { return m_propertyNodesVisibleList; } }
+		public ReorderableList PropertyReordableList { get { return m_propertyReordableList; } }
+		public int ReordableListLastCount { get { return m_lastCount; } }
 	}
 }

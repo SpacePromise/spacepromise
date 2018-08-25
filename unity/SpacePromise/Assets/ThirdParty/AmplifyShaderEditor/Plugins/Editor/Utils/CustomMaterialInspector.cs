@@ -7,6 +7,32 @@ using System;
 using System.Reflection;
 using AmplifyShaderEditor;
 
+
+public static class MaterialPropertyHandlerEx
+{
+	private static System.Type type = null;
+	public static System.Type Type { get { return ( type == null ) ? type = System.Type.GetType( "UnityEditor.MaterialPropertyHandler, UnityEditor" ) : type; } }
+	public static object GetHandler( Shader shader, string name )
+	{
+		return MaterialPropertyHandlerEx.Type.InvokeMember( "GetHandler", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, new object[] { shader, name } );
+	}
+
+	public static void OnGUI( object obj, ref Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor )
+	{
+		Type.InvokeMember( "OnGUI", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, obj, new object[] { position, prop, label, editor } );
+	}
+
+	public static float GetPropertyHeight( object obj, MaterialProperty prop, string label, MaterialEditor editor )
+	{
+		return (float)Type.InvokeMember( "GetPropertyHeight", BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod, null, obj, new object[] { prop, label, editor } );
+	}
+
+	public static object PropertyDrawer( object obj )
+	{
+		return Type.InvokeMember( "propertyDrawer", BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty, null, obj, new object[] {} );
+	}
+}
+
 internal class ASEMaterialInspector : ShaderGUI
 {
 	private const string CopyButtonStr = "Copy Values";
@@ -14,9 +40,9 @@ internal class ASEMaterialInspector : ShaderGUI
 	private const string PreviewModelPref = "ASEMI_PREVIEWMODEL";
 
 	private static MaterialEditor m_instance = null;
-    private static bool m_refreshOnUndo = false;
+	private static bool m_refreshOnUndo = false;
 
-    private bool m_initialized = false;
+	private bool m_initialized = false;
 	private double m_lastRenderedTime;
 	private PreviewRenderUtility m_previewRenderUtility;
 	private Mesh m_targetMesh;
@@ -31,18 +57,35 @@ internal class ASEMaterialInspector : ShaderGUI
 	private MethodInfo m_dragMethod = null;
 	private FieldInfo m_selectedField = null;
 	private FieldInfo m_infoField = null;
-    
 
-    void UndoRedoPerformed()
-    {
-        m_refreshOnUndo = true;
-    }
-    
-    ~ASEMaterialInspector()
-    {
-        Undo.undoRedoPerformed -= UndoRedoPerformed;
-    }
-    public override void OnGUI( MaterialEditor materialEditor, MaterialProperty[] properties )
+#if UNITY_2018_2_OR_NEWER
+	public override void OnClosed( Material material )
+	{
+		base.OnClosed( material );
+		CleanUp();
+	}
+#endif
+	
+	void CleanUp()
+	{
+		if( m_previewRenderUtility != null )
+		{
+			m_previewRenderUtility.Cleanup();
+			m_previewRenderUtility = null;
+		}
+	}
+
+	void UndoRedoPerformed()
+	{
+		m_refreshOnUndo = true;
+	}
+
+	~ASEMaterialInspector()
+	{
+		Undo.undoRedoPerformed -= UndoRedoPerformed;
+		CleanUp();
+	}
+	public override void OnGUI( MaterialEditor materialEditor, MaterialProperty[] properties )
 	{
 		IOUtils.Init();
 		Material mat = materialEditor.target as Material;
@@ -56,8 +99,8 @@ internal class ASEMaterialInspector : ShaderGUI
 		{
 			Init();
 			m_initialized = true;
-            Undo.undoRedoPerformed += UndoRedoPerformed;
-        }
+			Undo.undoRedoPerformed += UndoRedoPerformed;
+		}
 
 		if( Event.current.type == EventType.Repaint &&
 			mat.HasProperty( IOUtils.DefaultASEDirtyCheckId ) &&
@@ -84,6 +127,8 @@ internal class ASEMaterialInspector : ShaderGUI
 				{
 					if( GUILayout.Button( CopyButtonStr ) )
 					{
+						System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
 						Shader shader = mat.shader;
 						int propertyCount = UnityEditor.ShaderUtil.GetPropertyCount( shader );
 						string allProperties = string.Empty;
@@ -128,6 +173,12 @@ internal class ASEMaterialInspector : ShaderGUI
 								{
 									Texture value = mat.GetTexture( name );
 									valueStr = AssetDatabase.GetAssetPath( value );
+									Vector2 offset = mat.GetTextureOffset( name );
+									Vector2 scale = mat.GetTextureScale( name );
+									valueStr += IOUtils.VECTOR_SEPARATOR + scale.x.ToString() +
+										IOUtils.VECTOR_SEPARATOR + scale.y.ToString() +
+										IOUtils.VECTOR_SEPARATOR + offset.x.ToString() +
+										IOUtils.VECTOR_SEPARATOR + offset.y.ToString();
 								}
 								break;
 							}
@@ -140,10 +191,12 @@ internal class ASEMaterialInspector : ShaderGUI
 							}
 						}
 						EditorPrefs.SetString( IOUtils.MAT_CLIPBOARD_ID, allProperties );
+						System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 					}
 
 					if( GUILayout.Button( PasteButtonStr ) )
 					{
+						System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 						string propertiesStr = EditorPrefs.GetString( IOUtils.MAT_CLIPBOARD_ID, string.Empty );
 						if( !string.IsNullOrEmpty( propertiesStr ) )
 						{
@@ -213,7 +266,19 @@ internal class ASEMaterialInspector : ShaderGUI
 											break;
 											case UnityEditor.ShaderUtil.ShaderPropertyType.TexEnv:
 											{
-												mat.SetTexture( valuesArr[ 0 ], AssetDatabase.LoadAssetAtPath<Texture>( valuesArr[ 2 ] ) );
+												string[] texVals = valuesArr[ 2 ].Split( IOUtils.VECTOR_SEPARATOR );
+												if( texVals.Length != 5 )
+												{
+													Debug.LogWarning( "Material clipboard data is corrupted" );
+													validData = false;
+													break;
+												}
+												else
+												{
+													mat.SetTexture( valuesArr[ 0 ], AssetDatabase.LoadAssetAtPath<Texture>( texVals[ 0 ] ) );
+													mat.SetTextureScale( valuesArr[ 0 ], new Vector2( Convert.ToSingle( texVals[ 1 ] ), Convert.ToSingle( texVals[ 2 ] ) ) );
+													mat.SetTextureOffset( valuesArr[ 0 ], new Vector2( Convert.ToSingle( texVals[ 3 ] ), Convert.ToSingle( texVals[ 4 ] ) ) );
+												}
 											}
 											break;
 										}
@@ -237,6 +302,7 @@ internal class ASEMaterialInspector : ShaderGUI
 								EditorPrefs.SetString( IOUtils.MAT_CLIPBOARD_ID, string.Empty );
 							}
 						}
+						System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
 					}
 				}
 				GUILayout.EndHorizontal();
@@ -264,13 +330,31 @@ internal class ASEMaterialInspector : ShaderGUI
 		{
 			GUIUtility.GetControlID( "EditorTextField".GetHashCode(), FocusType.Passive, new Rect( 0f, 0f, 0f, 0f ) );
 		}
+
 		for( int i = 0; i < properties.Length; i++ )
 		{
 			if( ( properties[ i ].flags & ( MaterialProperty.PropFlags.HideInInspector | MaterialProperty.PropFlags.PerRendererData ) ) == MaterialProperty.PropFlags.None )
 			{
 				if( ( properties[ i ].flags & MaterialProperty.PropFlags.NoScaleOffset ) == MaterialProperty.PropFlags.NoScaleOffset )
 				{
-					materialEditor.TexturePropertySingleLine( new GUIContent( properties[ i ].displayName ), properties[ i ] );
+					object obj = MaterialPropertyHandlerEx.GetHandler( mat.shader, properties[ i ].name );
+					if( obj != null )
+					{
+						float height = MaterialPropertyHandlerEx.GetPropertyHeight( obj, properties[ i ], properties[ i ].displayName, materialEditor );
+						//Rect rect = (Rect)materialEditor.GetType().InvokeMember( "GetPropertyRect", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.InvokeMethod, null, materialEditor, new object[] { properties[ i ], properties[ i ].displayName, true } );
+						Rect rect = EditorGUILayout.GetControlRect( true, height, EditorStyles.layerMaskField );
+						MaterialPropertyHandlerEx.OnGUI( obj, ref rect, properties[ i ], new GUIContent( properties[ i ].displayName ), materialEditor );
+
+						if( MaterialPropertyHandlerEx.PropertyDrawer( obj ) != null )
+							continue;
+
+						rect = EditorGUILayout.GetControlRect( true, height, EditorStyles.layerMaskField );
+						materialEditor.TexturePropertyMiniThumbnail( rect, properties[ i ], properties[ i ].displayName, string.Empty );
+					}
+					else
+					{
+						materialEditor.TexturePropertySingleLine( new GUIContent( properties[ i ].displayName ), properties[ i ] );
+					}
 				}
 				else
 				{
@@ -292,9 +376,9 @@ internal class ASEMaterialInspector : ShaderGUI
 		materialEditor.LightmapEmissionProperty();
 		if( m_refreshOnUndo || EditorGUI.EndChangeCheck() )
 		{
-            m_refreshOnUndo = false;
+			m_refreshOnUndo = false;
 
-            string isEmissive = mat.GetTag( "IsEmissive", false, "false" );
+			string isEmissive = mat.GetTag( "IsEmissive", false, "false" );
 			if( isEmissive.Equals( "true" ) )
 			{
 				mat.globalIlluminationFlags &= (MaterialGlobalIlluminationFlags)3;

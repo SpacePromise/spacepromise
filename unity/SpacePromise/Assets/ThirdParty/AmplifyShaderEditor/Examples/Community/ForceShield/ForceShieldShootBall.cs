@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TFHC_ForceShield_Shader_Sample
+namespace Assets.ThirdParty.AmplifyShaderEditor.Examples.Community.ForceShield
 {
     public class ForceShieldShootBall : MonoBehaviour
     {
@@ -18,11 +16,11 @@ namespace TFHC_ForceShield_Shader_Sample
         {
             if (Input.GetButtonDown("Fire1"))
             {
-                Vector3 targetpoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
+                Vector3 targetpoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, this.distance);
                 targetpoint = Camera.main.ScreenToWorldPoint(targetpoint);
-                Rigidbody bulletInstance = Instantiate(bullet, transform.position, Quaternion.identity) as Rigidbody;
+                Rigidbody bulletInstance = Instantiate(this.bullet, this.transform.position, Quaternion.identity) as Rigidbody;
                 bulletInstance.transform.LookAt(targetpoint);
-                bulletInstance.AddForce(bulletInstance.transform.forward * speed);
+                bulletInstance.AddForce(bulletInstance.transform.forward * this.speed);
             }
 
         }

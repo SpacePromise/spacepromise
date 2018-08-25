@@ -12,6 +12,9 @@ namespace AmplifyShaderEditor
 		{
 			base.CommonInit( uniqueId );
 			m_funcType = "UnityObjectToViewPos";
+			//TODO: revisit this later
+			m_funcLWFormatOverride = "TransformWorldToView( TransformObjectToWorld( {0}) )";
+			m_funcHDFormatOverride = "TransformWorldToView( TransformObjectToWorld( {0}) )";
 			m_inputPorts[ 0 ].ChangeType( WirePortDataType.FLOAT3, false );
 			m_outputPorts[ 0 ].ChangeType( WirePortDataType.FLOAT3, false );
 			m_outputPorts[ 0 ].Name = "XYZ";

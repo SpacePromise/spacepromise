@@ -1,6 +1,8 @@
 using System;
+using Assets.ThirdParty.PostProcessing.Runtime.Attributes;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime
 {
     [Serializable]
     public abstract class PostProcessingModel
@@ -9,13 +11,13 @@ namespace UnityEngine.PostProcessing
         bool m_Enabled;
         public bool enabled
         {
-            get { return m_Enabled; }
+            get { return this.m_Enabled; }
             set
             {
-                m_Enabled = value;
+                this.m_Enabled = value;
 
                 if (value)
-                    OnValidate();
+                    this.OnValidate();
             }
         }
 

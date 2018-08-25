@@ -21,9 +21,11 @@ namespace AmplifyShaderEditor
 			base.CommonInit( uniqueId );
 			AddInputPort( WirePortDataType.COLOR, false, "RGBA", -1, MasterNodePortCategory.Fragment, 1 );
 			AddInputPort( WirePortDataType.INT, false, "Power", -1, MasterNodePortCategory.Fragment, 0 );
+			m_inputPorts[ 1 ].AutoDrawInternalData = true;
 			AddOutputPort( WirePortDataType.COLOR, Constants.EmptyPortValue );
 			m_textLabelWidth = 60;
 			m_autoWrapProperties = true;
+			m_previewShaderGUID = "ecb3048ef0eec1645bad1d72a98d8279";
 		}
 
 		public override void DrawProperties()
@@ -31,15 +33,20 @@ namespace AmplifyShaderEditor
 			base.DrawProperties();
 			EditorGUILayout.BeginVertical();
 			{
+				EditorGUI.BeginChangeCheck();
 				m_posterizationPower = EditorGUILayoutIntSlider( PosterizationPowerStr, m_posterizationPower, 1, 256 );
+				if( EditorGUI.EndChangeCheck() )
+				{
+					GetInputPortByUniqueId( 0 ).IntInternalData = m_posterizationPower;
+				}
 			}
 			EditorGUILayout.EndVertical();
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string posterizationPower = "1";
 			if( m_inputPorts[ 1 ].IsConnected )
@@ -59,7 +66,7 @@ namespace AmplifyShaderEditor
 
 			RegisterLocalVariable( 0, result, ref dataCollector, "posterize" + OutputId );
 
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void RefreshExternalReferences()

@@ -4,16 +4,19 @@
 using UnityEngine;
 using UnityEngine.Sprites;
 
-[ExecuteInEditMode]
-public class SpriteMaskController : MonoBehaviour
+namespace Assets.ThirdParty.AmplifyShaderEditor.Examples.Official.TemplateExamples.Sprites.SpriteMask
 {
-	private SpriteRenderer m_spriteRenderer;
-	private Vector4 m_uvs;
+    [ExecuteInEditMode]
+    public class SpriteMaskController : MonoBehaviour
+    {
+        private SpriteRenderer m_spriteRenderer;
+        private Vector4 m_uvs;
 
-	void OnEnable ()
-	{
-		m_spriteRenderer = GetComponent<SpriteRenderer>();
-		m_uvs = DataUtility.GetInnerUV( m_spriteRenderer.sprite );
-		m_spriteRenderer.sharedMaterial.SetVector( "_CustomUVS", m_uvs );
-	}
+        void OnEnable ()
+        {
+            this.m_spriteRenderer = this.GetComponent<SpriteRenderer>();
+            this.m_uvs = DataUtility.GetInnerUV( this.m_spriteRenderer.sprite );
+            this.m_spriteRenderer.sharedMaterial.SetVector( "_CustomUVS", this.m_uvs );
+        }
+    }
 }

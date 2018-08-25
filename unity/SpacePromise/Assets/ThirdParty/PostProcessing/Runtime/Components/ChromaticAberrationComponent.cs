@@ -1,4 +1,8 @@
-namespace UnityEngine.PostProcessing
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     public sealed class ChromaticAberrationComponent : PostProcessingComponentRenderTexture<ChromaticAberrationModel>
     {
@@ -14,28 +18,28 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && model.settings.intensity > 0f
-                       && !context.interrupted;
+                return this.model.enabled
+                       && this.model.settings.intensity > 0f
+                       && !this.context.interrupted;
             }
         }
 
         public override void OnDisable()
         {
-            GraphicsUtils.Destroy(m_SpectrumLut);
-            m_SpectrumLut = null;
+            GraphicsUtils.Destroy(this.m_SpectrumLut);
+            this.m_SpectrumLut = null;
         }
 
         public override void Prepare(Material uberMaterial)
         {
-            var settings = model.settings;
+            var settings = this.model.settings;
             var spectralLut = settings.spectralTexture;
 
             if (spectralLut == null)
             {
-                if (m_SpectrumLut == null)
+                if (this.m_SpectrumLut == null)
                 {
-                    m_SpectrumLut = new Texture2D(3, 1, TextureFormat.RGB24, false)
+                    this.m_SpectrumLut = new Texture2D(3, 1, TextureFormat.RGB24, false)
                     {
                         name = "Chromatic Aberration Spectrum Lookup",
                         filterMode = FilterMode.Bilinear,
@@ -48,11 +52,11 @@ namespace UnityEngine.PostProcessing
                     pixels[0] = new Color(1f, 0f, 0f);
                     pixels[1] = new Color(0f, 1f, 0f);
                     pixels[2] = new Color(0f, 0f, 1f);
-                    m_SpectrumLut.SetPixels(pixels);
-                    m_SpectrumLut.Apply();
+                    this.m_SpectrumLut.SetPixels(pixels);
+                    this.m_SpectrumLut.Apply();
                 }
 
-                spectralLut = m_SpectrumLut;
+                spectralLut = this.m_SpectrumLut;
             }
 
             uberMaterial.EnableKeyword("CHROMATIC_ABERRATION");

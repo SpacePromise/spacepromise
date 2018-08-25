@@ -55,12 +55,19 @@ namespace AmplifyShaderEditor
         [SerializeField]
         private List<DependenciesData> m_availableDependencies = new List<DependenciesData>();
 
-        public void Draw( ParentNode owner )
+        public void Draw( ParentNode owner, bool isNested = false )
         {
             m_currentOwner = owner;
-            bool value = EditorVariablesManager.ExpandedDependencies.Value;
-            NodeUtils.DrawPropertyGroup( ref value, CustomDependencysStr, DrawMainBody, DrawButtons );
-            EditorVariablesManager.ExpandedDependencies.Value = value;
+            bool value = owner.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedDependencies;
+			if( isNested )
+			{
+				NodeUtils.DrawNestedPropertyGroup( ref value, CustomDependencysStr, DrawMainBody, DrawButtons );
+			}
+			else
+			{
+				NodeUtils.DrawPropertyGroup( ref value, CustomDependencysStr, DrawMainBody, DrawButtons );
+			}
+			owner.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedDependencies = value;
         }
 
         void DrawButtons()
@@ -191,7 +198,7 @@ namespace AmplifyShaderEditor
             return result;
         }
 
-        public void Destroy()
+		public void Destroy()
         {
             m_availableDependencies.Clear();
             m_availableDependencies = null;

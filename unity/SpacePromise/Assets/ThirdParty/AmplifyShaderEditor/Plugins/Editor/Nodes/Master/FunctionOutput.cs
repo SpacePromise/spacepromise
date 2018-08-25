@@ -39,8 +39,9 @@ namespace AmplifyShaderEditor
 		private Rect m_titleClickArea;
 		private bool m_showTitleWhenNotEditing = true;
 
+		[SerializeField]
+		private string m_subTitle = string.Empty;
 
-		
 
 		void CommonInit()
 		{
@@ -61,8 +62,8 @@ namespace AmplifyShaderEditor
 		{
 			//base.SetupNodeCategories();
 			ContainerGraph.ResetNodesData();
-
-			if( ContainerGraph.ParentWindow.CurrentGraph.CurrentStandardSurface != null )
+			MasterNode masterNode = ContainerGraph.ParentWindow.CurrentGraph.CurrentMasterNode;
+			if( masterNode != null )
 			{
 				int count = m_inputPorts.Count;
 				for( int i = 0; i < count; i++ )
@@ -71,7 +72,7 @@ namespace AmplifyShaderEditor
 					{
 						NodeData nodeData = new NodeData( m_inputPorts[ i ].Category );
 						ParentNode node = m_inputPorts[ i ].GetOutputNode();
-						MasterNodeDataCollector temp = ContainerGraph.ParentWindow.CurrentGraph.CurrentStandardSurface.CurrentDataCollector;
+						MasterNodeDataCollector temp = masterNode.CurrentDataCollector;
 						node.PropagateNodeData( nodeData, ref temp );
 						temp = null;
 					}
@@ -256,10 +257,16 @@ namespace AmplifyShaderEditor
 
 			if( m_function == null )
 				m_function = UIUtils.CurrentWindow.OpenedShaderFunction;
+
+			if( m_isMainOutputNode && m_function != null )
+			{
+				m_function.UpdateDirectivesList();
+			}
+
 			SetTitleText( m_outputName );
 			UIUtils.UpdateFunctionOutputData( UniqueId, m_outputName );
 		}
-
+		
 		public AmplifyShaderFunction Function
 		{
 			get { return m_function; }
@@ -275,6 +282,12 @@ namespace AmplifyShaderEditor
 		{
 			get { return m_orderIndex; }
 			set { m_orderIndex = value; }
+		}
+
+		public string SubTitle
+		{
+			get { return m_subTitle; }
+			set { m_subTitle = value; }
 		}
 
 		public bool PreviewNode

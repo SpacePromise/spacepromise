@@ -21,14 +21,14 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
-			string value = m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT4x4, ignoreLocalvar, true );
+			string value = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector  );
 			string result = string.Format( "float4( {0},{1},{2},{3})", value + "[3][0]", value + "[3][1]", value + "[3][2]", value + "[3][3]" );
 			RegisterLocalVariable( 0, result, ref dataCollector, "matrixToPos" + OutputId );
 
-			return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 		}
 	}
 }

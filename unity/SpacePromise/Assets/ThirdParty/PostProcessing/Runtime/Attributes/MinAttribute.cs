@@ -1,4 +1,6 @@
-namespace UnityEngine.PostProcessing
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Attributes
 {
     public sealed class MinAttribute : PropertyAttribute
     {

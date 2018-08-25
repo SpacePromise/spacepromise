@@ -63,6 +63,7 @@ namespace AmplifyShaderEditor
 		{
 			base.CommonInit( uniqueId );
 			AddInputPort( WirePortDataType.FLOAT, false, Constants.EmptyPortValue );
+			m_inputPorts[ 0 ].AutoDrawInternalData = true;
 			//m_inputPorts[ 0 ].Visible = false;
 			AddOutputPort( WirePortDataType.FLOAT, Constants.EmptyPortValue );
 			m_autoWrapProperties = true;
@@ -362,8 +363,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ outputId ].IsLocalValue )
-				return m_outputPorts[ outputId ].LocalValue;
+			if( m_outputPorts[ outputId ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 
 			string result = string.Empty;
 			if( OnPortGeneration != null )
@@ -376,7 +377,7 @@ namespace AmplifyShaderEditor
 			else
 				m_outputPorts[ outputId ].SetLocalValue( result, dataCollector.PortCategory );
 
-			return m_outputPorts[ outputId ].LocalValue;
+			return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )

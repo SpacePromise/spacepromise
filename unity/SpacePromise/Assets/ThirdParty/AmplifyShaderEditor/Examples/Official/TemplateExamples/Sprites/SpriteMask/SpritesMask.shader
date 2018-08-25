@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "ASESampleShaders/SpritesMask"
+Shader "ASESampleShaders/Sprites/SpritesMask"
 {
 	Properties
 	{
@@ -172,7 +172,7 @@ Node;AmplifyShaderEditor.SimpleMultiplyOpNode;13;398.4996,6.999654;Float;False;3
 Node;AmplifyShaderEditor.SwizzleNode;26;562.9934,10.30279;Float;False;FLOAT3;0;1;2;3;1;0;FLOAT4;0.0,0,0,0;False;1;FLOAT3
 Node;AmplifyShaderEditor.DynamicAppendNode;25;748.3942,40.50196;Float;False;FLOAT4;4;0;FLOAT3;0,0,0;False;1;FLOAT;0.0;False;2;FLOAT;0.0;False;3;FLOAT;0.0;False;1;FLOAT4
 Node;AmplifyShaderEditor.BillboardNode;56;972.7048,258.8051;Float;False;Cylindrical;False;0;1;FLOAT3
-Node;AmplifyShaderEditor.TemplateMasterNode;0;1038.105,-20.79832;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/SpritesMask;0f8ba0101102bb14ebf021ddadce9b49;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMasterNode;0;1038.105,-20.79832;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/Sprites/SpritesMask;0f8ba0101102bb14ebf021ddadce9b49;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
 WireConnection;22;0;57;0
 WireConnection;49;0;48;1
 WireConnection;49;1;43;1

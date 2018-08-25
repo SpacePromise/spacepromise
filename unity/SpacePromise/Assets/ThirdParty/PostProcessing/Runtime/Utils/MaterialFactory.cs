@@ -1,24 +1,24 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Utils
 {
-    using UnityObject = Object;
-
     public sealed class MaterialFactory : IDisposable
     {
         Dictionary<string, Material> m_Materials;
 
         public MaterialFactory()
         {
-            m_Materials = new Dictionary<string, Material>();
+            this.m_Materials = new Dictionary<string, Material>();
         }
 
         public Material Get(string shaderName)
         {
             Material material;
 
-            if (!m_Materials.TryGetValue(shaderName, out material))
+            if (!this.m_Materials.TryGetValue(shaderName, out material))
             {
                 var shader = Shader.Find(shaderName);
 
@@ -31,7 +31,7 @@ namespace UnityEngine.PostProcessing
                     hideFlags = HideFlags.DontSave
                 };
 
-                m_Materials.Add(shaderName, material);
+                this.m_Materials.Add(shaderName, material);
             }
 
             return material;
@@ -39,14 +39,14 @@ namespace UnityEngine.PostProcessing
 
         public void Dispose()
         {
-            var enumerator = m_Materials.GetEnumerator();
+            var enumerator = this.m_Materials.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 var material = enumerator.Current.Value;
                 GraphicsUtils.Destroy(material);
             }
 
-            m_Materials.Clear();
+            this.m_Materials.Clear();
         }
     }
 }

@@ -26,6 +26,20 @@ namespace AmplifyShaderEditor
 		}
 
 
+		public void SetOutputReference( int nodeId, int portId, WirePortDataType dataType, bool typeLocked )
+		{
+			if( InputPortReference.IsValid )
+				InputPortReference.Invalidate();
+			OutputPortReference.SetReference( nodeId, portId, dataType, typeLocked );
+		}
+
+		public void SetInputReference( int nodeId, int portId, WirePortDataType dataType, bool typeLocked )
+		{
+			if( OutputPortReference.IsValid )
+				OutputPortReference.Invalidate();
+			InputPortReference.SetReference( nodeId, portId, dataType, typeLocked );
+		}
+
 		public void ActivateSnap( Vector2 position, WirePort port )
 		{
 			SnapPort.SetReference( port );

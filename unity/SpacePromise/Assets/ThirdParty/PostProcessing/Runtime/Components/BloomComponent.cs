@@ -1,4 +1,7 @@
-namespace UnityEngine.PostProcessing
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     public sealed class BloomComponent : PostProcessingComponentRenderTexture<BloomModel>
     {
@@ -24,17 +27,17 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && model.settings.bloom.intensity > 0f
-                       && !context.interrupted;
+                return this.model.enabled
+                       && this.model.settings.bloom.intensity > 0f
+                       && !this.context.interrupted;
             }
         }
 
         public void Prepare(RenderTexture source, Material uberMaterial, Texture autoExposure)
         {
-            var bloom = model.settings.bloom;
-            var lensDirt = model.settings.lensDirt;
-            var material = context.materialFactory.Get("Hidden/Post FX/Bloom");
+            var bloom = this.model.settings.bloom;
+            var lensDirt = this.model.settings.lensDirt;
+            var material = this.context.materialFactory.Get("Hidden/Post FX/Bloom");
             material.shaderKeywords = null;
 
             // Apply auto exposure before the prefiltering pass
@@ -42,8 +45,8 @@ namespace UnityEngine.PostProcessing
 
             // Do bloom on a half-res buffer, full-res doesn't bring much and kills performances on
             // fillrate limited platforms
-            var tw = context.width / 2;
-            var th = context.height / 2;
+            var tw = this.context.width / 2;
+            var th = this.context.height / 2;
 
             // Blur buffer format
             // TODO: Extend the use of RGBM to the whole chain for mobile platforms
@@ -75,7 +78,7 @@ namespace UnityEngine.PostProcessing
                 material.EnableKeyword("ANTI_FLICKER");
 
             // Prefilter pass
-            var prefiltered = context.renderTextureFactory.Get(tw, th, 0, rtFormat);
+            var prefiltered = this.context.renderTextureFactory.Get(tw, th, 0, rtFormat);
             Graphics.Blit(source, prefiltered, material, 0);
 
             // Construct a mip pyramid
@@ -83,28 +86,28 @@ namespace UnityEngine.PostProcessing
 
             for (int level = 0; level < iterations; level++)
             {
-                m_BlurBuffer1[level] = context.renderTextureFactory.Get(
+                this.m_BlurBuffer1[level] = this.context.renderTextureFactory.Get(
                         last.width / 2, last.height / 2, 0, rtFormat
                         );
 
                 int pass = (level == 0) ? 1 : 2;
-                Graphics.Blit(last, m_BlurBuffer1[level], material, pass);
+                Graphics.Blit(last, this.m_BlurBuffer1[level], material, pass);
 
-                last = m_BlurBuffer1[level];
+                last = this.m_BlurBuffer1[level];
             }
 
             // Upsample and combine loop
             for (int level = iterations - 2; level >= 0; level--)
             {
-                var baseTex = m_BlurBuffer1[level];
+                var baseTex = this.m_BlurBuffer1[level];
                 material.SetTexture(Uniforms._BaseTex, baseTex);
 
-                m_BlurBuffer2[level] = context.renderTextureFactory.Get(
+                this.m_BlurBuffer2[level] = this.context.renderTextureFactory.Get(
                         baseTex.width, baseTex.height, 0, rtFormat
                         );
 
-                Graphics.Blit(last, m_BlurBuffer2[level], material, 3);
-                last = m_BlurBuffer2[level];
+                Graphics.Blit(last, this.m_BlurBuffer2[level], material, 3);
+                last = this.m_BlurBuffer2[level];
             }
 
             var bloomTex = last;
@@ -112,17 +115,17 @@ namespace UnityEngine.PostProcessing
             // Release the temporary buffers
             for (int i = 0; i < k_MaxPyramidBlurLevel; i++)
             {
-                if (m_BlurBuffer1[i] != null)
-                    context.renderTextureFactory.Release(m_BlurBuffer1[i]);
+                if (this.m_BlurBuffer1[i] != null)
+                    this.context.renderTextureFactory.Release(this.m_BlurBuffer1[i]);
 
-                if (m_BlurBuffer2[i] != null && m_BlurBuffer2[i] != bloomTex)
-                    context.renderTextureFactory.Release(m_BlurBuffer2[i]);
+                if (this.m_BlurBuffer2[i] != null && this.m_BlurBuffer2[i] != bloomTex)
+                    this.context.renderTextureFactory.Release(this.m_BlurBuffer2[i]);
 
-                m_BlurBuffer1[i] = null;
-                m_BlurBuffer2[i] = null;
+                this.m_BlurBuffer1[i] = null;
+                this.m_BlurBuffer2[i] = null;
             }
 
-            context.renderTextureFactory.Release(prefiltered);
+            this.context.renderTextureFactory.Release(prefiltered);
 
             // Push everything to the uber material
             uberMaterial.SetTexture(Uniforms._BloomTex, bloomTex);

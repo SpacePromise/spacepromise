@@ -13,13 +13,13 @@ namespace AmplifyShaderEditor
 		private bool m_connectedToMasterNode;
 
 		[SerializeField]
-		private bool m_isLocalValue;
+		private bool[] m_isLocalValue = { false, false};
 
 		[SerializeField]
-		private string m_localOutputValue;
+		private string[] m_localOutputValue = { string.Empty,string.Empty};
 
-		[SerializeField]
-		private int m_isLocalWithPortType = 0;
+		//[SerializeField]
+		//private int m_isLocalWithPortType = 0;
 
 		private RenderTexture m_outputPreview = null;
 		private Material m_outputMaskMaterial = null;
@@ -39,12 +39,12 @@ namespace AmplifyShaderEditor
 					case WirePortDataType.OBJECT:
 					case WirePortDataType.INT:
 					case WirePortDataType.FLOAT: value = "0"; break;
-					case WirePortDataType.FLOAT2: value = "fixed2(0,0)"; break;
-					case WirePortDataType.FLOAT3: value = "fixed3(0,0,0)"; break;
+					case WirePortDataType.FLOAT2: value = "half2(0,0)"; break;
+					case WirePortDataType.FLOAT3: value = "half3(0,0,0)"; break;
 					case WirePortDataType.COLOR:
-					case WirePortDataType.FLOAT4: value = "fixed4(0,0,0,0)"; break;
-					case WirePortDataType.FLOAT3x3: value = "fixed3x3(0,0,0,0,0,0,0,0,0)"; break;
-					case WirePortDataType.FLOAT4x4: value = "fixed4x4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)"; break;
+					case WirePortDataType.FLOAT4: value = "half4(0,0,0,0)"; break;
+					case WirePortDataType.FLOAT3x3: value = "half3x3(0,0,0,0,0,0,0,0,0)"; break;
+					case WirePortDataType.FLOAT4x4: value = "half4x4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)"; break;
 				}
 				return value;
 			}
@@ -159,33 +159,60 @@ namespace AmplifyShaderEditor
             PortId = newPortId;
         }
 
-        public string ConfigOutputLocalValue( PrecisionType precisionType, string value, string customName = null, MasterNodePortCategory category = MasterNodePortCategory.Fragment )
+        public string ConfigOutputLocalValue( PrecisionType precisionType, string value, string customName, MasterNodePortCategory category )
 		{
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
 			ParentGraph currentGraph = UIUtils.GetNode( NodeId ).ContainerGraph;
 			string autoGraphId = currentGraph.GraphId > 0 ? "_g" + currentGraph.GraphId : string.Empty;
-			m_localOutputValue = string.IsNullOrEmpty( customName ) ? ( "temp_output_" + m_nodeId + "_" + PortId + autoGraphId ) : customName;
-			m_isLocalValue = true;
-			m_isLocalWithPortType |= (int)category;
-			return string.Format( Constants.LocalValueDecWithoutIdent, UIUtils.PrecisionWirePortToCgType( precisionType, DataType ), m_localOutputValue, value );
+			m_localOutputValue[idx] = string.IsNullOrEmpty( customName ) ? ( "temp_output_" + m_nodeId + "_" + PortId + autoGraphId ) : customName;
+			m_isLocalValue[idx] = true;
+			//m_isLocalWithPortType |= (int)category;
+			return string.Format( Constants.LocalValueDecWithoutIdent, UIUtils.PrecisionWirePortToCgType( precisionType, DataType ), m_localOutputValue[idx], value );
 		}
 
-		public void SetLocalValue( string value, MasterNodePortCategory category = MasterNodePortCategory.Fragment )
+		public void SetLocalValue( string value, MasterNodePortCategory category )
 		{
-			m_isLocalValue = true;
-			m_localOutputValue = value;
-			m_isLocalWithPortType |= (int)category;
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
+			m_isLocalValue[idx] = true;
+			m_localOutputValue[ idx ] = value;
+			//m_isLocalWithPortType |= (int)category;
 		}
 
 		public void ResetLocalValue()
 		{
-			m_isLocalValue = false;
-			m_localOutputValue = string.Empty;
-			m_isLocalWithPortType = 0;
+			for( int i = 0; i < m_localOutputValue.Length; i++ )
+			{
+				m_localOutputValue[ i ] = string.Empty;
+				m_isLocalValue[i] = false;
+			}
+			//m_isLocalWithPortType = 0;
+		}
+
+		public void ResetLocalValueIfNot( MasterNodePortCategory category )
+		{
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
+			for( int i = 0; i < m_localOutputValue.Length; i++ )
+			{
+				if( i != idx )
+				{
+					m_localOutputValue[ i ] = string.Empty;
+					m_isLocalValue[ i ] = false;
+				}
+			}
+		}
+
+		public void ResetLocalValueOnCategory( MasterNodePortCategory category )
+		{
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
+			m_localOutputValue[ idx ] = string.Empty;
+			m_isLocalValue[ idx ] = false;
 		}
 
 		public bool IsLocalOnCategory( MasterNodePortCategory category )
 		{
-			return ( m_isLocalWithPortType & (int)category ) != 0; ;
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
+			return m_isLocalValue[ idx ];
+			//return ( m_isLocalWithPortType & (int)category ) != 0; ;
 		}
 
 		public override void ForceClearConnection()
@@ -193,10 +220,17 @@ namespace AmplifyShaderEditor
 			UIUtils.DeleteConnection( false, m_nodeId, m_portId, false, true );
 		}
 
-		public bool IsLocalValue { get { return m_isLocalValue; } }
-		public int LocalWithPortType { get { return m_isLocalWithPortType; } }
+		public bool IsLocalValue( MasterNodePortCategory category )
+		{
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
+			return m_isLocalValue[ idx ];
+		}
 
-		public string LocalValue { get { return m_localOutputValue; } }
+		public string LocalValue(MasterNodePortCategory category)
+		{
+			int idx = UIUtils.PortCategorytoAttayIdx( category );
+			return m_localOutputValue[idx];
+		}
 
 		public RenderTexture OutputPreviewTexture
 		{

@@ -65,22 +65,23 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string timePort = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
 			
 			if( !m_inputPorts[ 2 ].IsConnected )
 			{
-				dataCollector.AddToIncludes( UniqueId, Constants.UnityShaderVariables );
+				if( !( dataCollector.IsTemplate && dataCollector.IsSRP ) )
+					dataCollector.AddToIncludes( UniqueId, Constants.UnityShaderVariables );
 				timePort += " * _Time.y";
 			}
 
 			string speed = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
-			string result = "( " + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + " + " + timePort + " * " + speed + ")";
+			string result = "( " + timePort + " * " + speed + " + " + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + ")";
 
 			RegisterLocalVariable( 0, result, ref dataCollector, "panner" + OutputId );
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )

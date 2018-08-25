@@ -12,9 +12,15 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		protected string m_value;
 
+		[SerializeField]
+		protected string m_HDValue;
+
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
+			if( dataCollector.IsTemplate && dataCollector.TemplateDataCollectorInstance.CurrentSRPType == TemplateSRPType.HD && !string.IsNullOrEmpty( m_HDValue ) )
+				return m_HDValue;
+
 			return m_value;
 		}
 	}

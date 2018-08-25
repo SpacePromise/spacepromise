@@ -1,6 +1,8 @@
 using System;
+using Assets.ThirdParty.PostProcessing.Runtime.Attributes;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class BloomModel : PostProcessingModel
@@ -16,8 +18,8 @@ namespace UnityEngine.PostProcessing
 
             public float thresholdLinear
             {
-                set { threshold = Mathf.LinearToGammaSpace(value); }
-                get { return Mathf.GammaToLinearSpace(threshold); }
+                set { this.threshold = Mathf.LinearToGammaSpace(value); }
+                get { return Mathf.GammaToLinearSpace(this.threshold); }
             }
 
             [Range(0f, 1f), Tooltip("Makes transition between under/over-threshold gradual (0 = hard threshold, 1 = soft threshold).")]
@@ -90,13 +92,13 @@ namespace UnityEngine.PostProcessing
         Settings m_Settings = Settings.defaultSettings;
         public Settings settings
         {
-            get { return m_Settings; }
-            set { m_Settings = value; }
+            get { return this.m_Settings; }
+            set { this.m_Settings = value; }
         }
 
         public override void Reset()
         {
-            m_Settings = Settings.defaultSettings;
+            this.m_Settings = Settings.defaultSettings;
         }
     }
 }

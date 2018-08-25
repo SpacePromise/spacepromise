@@ -120,6 +120,7 @@ namespace AmplifyShaderEditor
 			m_autoWrapProperties = true;
 			m_hasLeftDropdown = true;
 			SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_type ) );
+			m_previewShaderGUID = "cd2d37ef5da190b42a91a5a690ba2a7d";
 		}
 
 		public override void AfterCommonInit()
@@ -171,12 +172,14 @@ namespace AmplifyShaderEditor
 				case NoiseGeneratorType.Simplex2D:
 				{
 					m_inputPorts[ 0 ].ChangeType( WirePortDataType.FLOAT2, false );
+					m_previewMaterialPassId = 0;
 				}
 				break;
 
 				case NoiseGeneratorType.Simplex3D:
 				{
 					m_inputPorts[ 0 ].ChangeType( WirePortDataType.FLOAT3, false );
+					m_previewMaterialPassId = 1;
 				}
 				break;
 			}
@@ -184,9 +187,9 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
 			{
-				return m_outputPorts[ 0 ].LocalValue;
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 			}
 			switch( m_type )
 			{
@@ -232,7 +235,7 @@ namespace AmplifyShaderEditor
 				}
 				break;
 			}
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )

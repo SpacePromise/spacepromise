@@ -138,6 +138,8 @@ namespace AmplifyShaderEditor
 								m_items.Add( newItem );
 							else if( UIUtils.GetNodeAvailabilityInBitArray( attribute.NodeAvailabilityFlags, currentGraph.ParentWindow.CurrentNodeAvailability ) )
 								m_items.Add( newItem );
+							else if( UIUtils.GetNodeAvailabilityInBitArray( attribute.NodeAvailabilityFlags, currentGraph.CurrentCanvasMode ) )
+								m_items.Add( newItem );
 
 							m_itemsDict.Add( type, attribute );
 							m_itemFunctions.Add( newItem );

@@ -26,7 +26,7 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			return Tau;
+			return dataCollector.IsSRP? "TWO_PI": Tau;
 		}
 	}
 }

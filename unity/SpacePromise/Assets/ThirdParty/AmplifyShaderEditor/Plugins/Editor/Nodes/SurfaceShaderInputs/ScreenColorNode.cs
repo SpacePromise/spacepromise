@@ -17,15 +17,7 @@ namespace AmplifyShaderEditor
 		private const string SamplerType = "tex2D";
 		private const string GrabTextureDefault = "_GrabTexture";
 		private const string ScreenColorStr = "screenColor";
-
-		[SerializeField]
-		private bool m_isTextureFetched;
-
-		[SerializeField]
-		private string m_textureFetchedValue;
-
-		/////////////////////////////////////////////////////////
-
+		
 		[SerializeField]
 		private TexReferenceType m_referenceType = TexReferenceType.Object;
 
@@ -58,7 +50,7 @@ namespace AmplifyShaderEditor
 
 			AddInputPort( WirePortDataType.FLOAT2, false, "UV" );
 			AddOutputColorPorts( "RGBA" );
-
+			
 			m_currentParameterType = PropertyType.Global;
 			m_underscoredGlobal = true;
 			m_useVarSubtitle = true;
@@ -67,7 +59,8 @@ namespace AmplifyShaderEditor
 			m_drawAttributes = false;
 			m_showTitleWhenNotEditing = false;
 			m_textLabelWidth = 125;
-			m_showAutoRegisterUI = false;
+			m_showAutoRegisterUI = true;
+			m_globalDefaultBehavior = false;
 		}
 
 		protected override void OnUniqueIDAssigned()
@@ -80,6 +73,21 @@ namespace AmplifyShaderEditor
 		void UpdateHeaderColor()
 		{
 			m_headerColorModifier = ( m_referenceType == TexReferenceType.Object ) ? Color.white : ReferenceHeaderColor;
+		}
+
+		public override void OnNodeLogicUpdate( DrawInfo drawInfo )
+		{
+			base.OnNodeLogicUpdate( drawInfo );
+			if( m_referenceNodeId > -1 && m_referenceNode == null )
+			{
+				m_referenceNode = m_containerGraph.GetNode( m_referenceNodeId ) as ScreenColorNode;
+				if( m_referenceNode == null )
+				{
+					m_referenceNodeId = -1;
+					m_referenceArrayId = -1;
+					m_sizeIsDirty = true;
+				}
+			}
 		}
 
 		protected override void ChangeSizeFinished()
@@ -156,6 +164,7 @@ namespace AmplifyShaderEditor
 
 		public override void DrawMainPropertyBlock()
 		{
+			ShowAutoRegister();
 			EditorGUI.BeginChangeCheck();
 			m_referenceType = (TexReferenceType)EditorGUILayoutPopup( Constants.ReferenceTypeStr, (int)m_referenceType, Constants.ReferenceArrayLabels );
 			if( EditorGUI.EndChangeCheck() )
@@ -251,12 +260,17 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return GetOutputColorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			if( dataCollector.IsTemplate && dataCollector.IsSRP )
+			{
+				UIUtils.ShowMessage( "GrabPasses are not supported on Unity Scriptable Rendering Pipelines." );
+				return GetOutputColorItem( 0, outputId,"(0).xxxx");
+			}
+
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return GetOutputColorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalVar );
-
-
+			
 			string propertyName = CurrentPropertyReference;
 
 			OnPropertyNameChanged();
@@ -267,7 +281,7 @@ namespace AmplifyShaderEditor
 
 			string valueName = SetFetchedData( ref dataCollector, ignoreLocalVar );
 
-			m_outputPorts[ 0 ].SetLocalValue( valueName );
+			m_outputPorts[ 0 ].SetLocalValue( valueName, dataCollector.PortCategory );
 			return GetOutputColorItem( 0, outputId, valueName );
 		}
 
@@ -286,27 +300,13 @@ namespace AmplifyShaderEditor
 				return samplerValue;
 			}
 
-			if( m_isTextureFetched )
-				return m_textureFetchedValue;
+			if( m_outputPorts[0].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string samplerOp = SamplerType + ( isProjecting ? "proj" : "" ) + "( " + propertyName + ", " + GetUVCoords( ref dataCollector, ignoreLocalVar, isProjecting ) + " )";
 
 			dataCollector.AddLocalVariable( UniqueId, UIUtils.PrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType ) + " " + ScreenColorStr + OutputId + " = " + samplerOp + ";" );
 			return ScreenColorStr + OutputId;
-		}
-
-		public override void ResetOutputLocals()
-		{
-			base.ResetOutputLocals();
-			m_isTextureFetched = false;
-			m_textureFetchedValue = string.Empty;
-		}
-
-		public override void ResetOutputLocalsIfNot( MasterNodePortCategory category )
-		{
-			base.ResetOutputLocalsIfNot( category );
-			m_isTextureFetched = false;
-			m_textureFetchedValue = string.Empty;
 		}
 
 		public string GetUVCoords( ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar, bool isProjecting )
@@ -330,7 +330,7 @@ namespace AmplifyShaderEditor
 					result = GeneratorUtils.GenerateGrabScreenPositionNormalized( ref dataCollector, UniqueId, m_currentPrecisionType, !dataCollector.UsingCustomScreenPos, customScreenPos );
 			}
 
-			if( isProjecting )
+			if( isProjecting && !dataCollector.IsSRP )
 				return "UNITY_PROJ_COORD( " + result + " )";
 			else
 				return result;
@@ -514,6 +514,17 @@ namespace AmplifyShaderEditor
 			dataType = "sampler2D";
 			dataName = PropertyName;
 			return true;
+		}
+
+		public override void CheckIfAutoRegister( ref MasterNodeDataCollector dataCollector )
+		{
+			if( m_autoRegister && m_connStatus != NodeConnectionStatus.Connected )
+			{
+				RegisterProperty( ref dataCollector );
+				string propertyName = CurrentPropertyReference;
+				bool emptyName = string.IsNullOrEmpty( m_propertyInspectorName ) || propertyName == GrabTextureDefault;
+				dataCollector.AddGrabPass( emptyName ? string.Empty : propertyName );
+			}
 		}
 	}
 }

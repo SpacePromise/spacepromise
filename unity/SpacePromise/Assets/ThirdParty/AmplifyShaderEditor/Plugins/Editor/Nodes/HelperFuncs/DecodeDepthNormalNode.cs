@@ -21,8 +21,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ outputId ].IsLocalValue )
-				return m_outputPorts[ outputId ].LocalValue;
+			if( m_outputPorts[ outputId ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 
 			dataCollector.AddToIncludes( UniqueId, Constants.UnityCgLibFuncs );
 			string encodedValue = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
@@ -31,7 +31,7 @@ namespace AmplifyShaderEditor
 			RegisterLocalVariable( 0, "0", ref dataCollector, depthDecodedVal );
 			RegisterLocalVariable( 1, "float3(0,0,0)", ref dataCollector, normalDecodedVal );
 			dataCollector.AddLocalVariable( UniqueId, string.Format( DecodeDepthNormalFunc, encodedValue , depthDecodedVal, normalDecodedVal) );
-			return m_outputPorts[ outputId ].LocalValue;
+			return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 		}
 	}
 }

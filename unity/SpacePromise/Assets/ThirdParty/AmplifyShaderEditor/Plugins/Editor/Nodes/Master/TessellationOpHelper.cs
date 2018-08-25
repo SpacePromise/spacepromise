@@ -134,10 +134,10 @@ namespace AmplifyShaderEditor
 			EditorGUILayout.BeginHorizontal( toolbarstyle );
 			GUI.color = cachedColor;
 			EditorGUI.BeginChangeCheck();
-			m_parentSurface.ContainerGraph.ParentWindow.ExpandedTesselation = GUILayout.Toggle( m_parentSurface.ContainerGraph.ParentWindow.ExpandedTesselation, " Tessellation", UIUtils.MenuItemToggleStyle, GUILayout.ExpandWidth( true ) );
+			m_parentSurface.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedTesselation = GUILayout.Toggle( m_parentSurface.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedTesselation, " Tessellation", UIUtils.MenuItemToggleStyle, GUILayout.ExpandWidth( true ) );
 			if ( EditorGUI.EndChangeCheck() )
 			{
-				EditorPrefs.SetBool( "ExpandedTesselation", m_parentSurface.ContainerGraph.ParentWindow.ExpandedTesselation );
+				EditorPrefs.SetBool( "ExpandedTesselation", m_parentSurface.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedTesselation );
 			}
 
 			EditorGUI.BeginChangeCheck();
@@ -154,7 +154,7 @@ namespace AmplifyShaderEditor
 
 			m_enabled = m_enabled || connectedInput;
 
-			if ( m_parentSurface.ContainerGraph.ParentWindow.ExpandedTesselation )
+			if ( m_parentSurface.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedTesselation )
 			{
 				cachedColor = GUI.color;
 				GUI.color = new Color( cachedColor.r, cachedColor.g, cachedColor.b, ( EditorGUIUtility.isProSkin ? 0.5f : 0.25f ) );

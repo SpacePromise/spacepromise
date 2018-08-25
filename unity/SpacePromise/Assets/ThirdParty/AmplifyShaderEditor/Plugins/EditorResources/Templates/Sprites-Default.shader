@@ -1,4 +1,4 @@
-Shader /*ase_name*/"ASETemplateShaders/Sprites Default"/*end*/
+Shader /*ase_name*/"ASETemplateShaders/Legacy/Sprites Default"/*end*/
 {
 	Properties
 	{
@@ -24,8 +24,8 @@ Shader /*ase_name*/"ASETemplateShaders/Sprites Default"/*end*/
 		Lighting Off
 		ZWrite Off
 		Blend One OneMinusSrcAlpha
-		/*ase_pass*/
 		
+		/*ase_pass*/
 		Pass
 		{
 		CGPROGRAM
@@ -52,7 +52,7 @@ Shader /*ase_name*/"ASETemplateShaders/Sprites Default"/*end*/
 				fixed4 color    : COLOR;
 				float2 texcoord  : TEXCOORD0;
 				UNITY_VERTEX_OUTPUT_STEREO
-				/*ase_interp(1,7):sp=sp.xyzw;uv0=tc0.xy;c=c*/
+				/*ase_interp(1,):sp=sp.xyzw;uv0=tc0.xy;c=c*/
 			};
 			
 			uniform fixed4 _Color;

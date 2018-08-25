@@ -65,8 +65,8 @@ namespace AmplifyShaderEditor
 
         public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
         {
-            if( m_outputPorts[ 0 ].IsLocalValue )
-                return m_outputPorts[ 0 ].LocalValue;
+            if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+                return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
             string normalizeRotAxis = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
             if( m_normalizeAxis )
@@ -78,7 +78,7 @@ namespace AmplifyShaderEditor
             string position = m_inputPorts[ 3 ].GeneratePortInstructions( ref dataCollector );
             dataCollector.AddFunction( FunctionHeader, FunctionBody, false );
             RegisterLocalVariable( 0, string.Format( FunctionCall, pivotPoint, position, normalizeRotAxis, rotationAngle ), ref dataCollector, "rotatedValue" + OutputId );
-            return m_outputPorts[ 0 ].LocalValue;
+            return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
         }
         public override void ReadFromString( ref string[] nodeParams )
         {

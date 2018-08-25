@@ -1,4 +1,4 @@
-Shader /*ase_name*/"ASETemplateShaders/UIDefault"/*end*/
+Shader /*ase_name*/"ASETemplateShaders/Legacy/UIDefault"/*end*/
 {
 	Properties
 	{
@@ -76,7 +76,7 @@ Shader /*ase_name*/"ASETemplateShaders/UIDefault"/*end*/
 				half2 texcoord  : TEXCOORD0;
 				float4 worldPosition : TEXCOORD1;
 				UNITY_VERTEX_OUTPUT_STEREO
-				/*ase_interp(2,7):sp=sp.xyzw;uv0=tc0.xy;c=c;uv1=tc1.xyzw*/
+				/*ase_interp(2,):sp=sp.xyzw;uv0=tc0.xy;c=c;uv1=tc1.xyzw*/
 			};
 			
 			uniform fixed4 _Color;
@@ -88,7 +88,7 @@ Shader /*ase_name*/"ASETemplateShaders/UIDefault"/*end*/
 			v2f vert( appdata_t IN /*ase_vert_input*/ )
 			{
 				v2f OUT;
-				UNITY_SETUP_INSTANCE_ID(v);
+				UNITY_SETUP_INSTANCE_ID( IN );
                 UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
 				OUT.worldPosition = IN.vertex;
 				/*ase_vert_code:IN=appdata_t;OUT=v2f*/

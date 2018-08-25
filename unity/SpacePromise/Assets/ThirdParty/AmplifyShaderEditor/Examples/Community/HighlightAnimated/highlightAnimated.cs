@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace TFHC_Shader_Samples
+namespace Assets.ThirdParty.AmplifyShaderEditor.Examples.Community.HighlightAnimated
 {
 
 	public class highlightAnimated : MonoBehaviour
@@ -12,22 +10,22 @@ namespace TFHC_Shader_Samples
 
         void Start()
         {
-            mat = GetComponent<Renderer>().material;
+            this.mat = this.GetComponent<Renderer>().material;
         }
 
         void OnMouseEnter()
         {
-            switchhighlighted(true);
+            this.switchhighlighted(true);
 		}
 
         void OnMouseExit()
         {
-            switchhighlighted(false);
+            this.switchhighlighted(false);
         }
 
         void switchhighlighted(bool highlighted)
         {
-            mat.SetFloat("_Highlighted", (highlighted ? 1.0f : 0.0f));
+            this.mat.SetFloat("_Highlighted", (highlighted ? 1.0f : 0.0f));
         }
 
     }

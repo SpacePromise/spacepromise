@@ -54,8 +54,8 @@ namespace AmplifyShaderEditor
 				m_inputPorts[ 1 ].DataType == WirePortDataType.FLOAT3x3 ||
 				m_inputPorts[ 1 ].DataType == WirePortDataType.FLOAT4x4 )
 			{
-				m_inputA = m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, m_inputPorts[ 0 ].DataType, ignoreLocalvar );
-				m_inputB = m_inputPorts[ 1 ].GenerateShaderForOutput( ref dataCollector, m_inputPorts[ 1 ].DataType, ignoreLocalvar );
+				m_inputA = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+				m_inputB = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
 
 
 				WirePortDataType autoCast = WirePortDataType.OBJECT;

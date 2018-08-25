@@ -8,6 +8,7 @@ namespace AmplifyShaderEditor
 	[NodeAttributes( "Matrix From Vectors", "Matrix Operators", "Matrix From Vectors" )]
 	public sealed class MatrixFromVectors : ParentNode
 	{
+		private const string RowFromVector = "Input to Row";
 		[SerializeField]
 		private WirePortDataType m_selectedOutputType = WirePortDataType.FLOAT3x3;
 
@@ -19,6 +20,9 @@ namespace AmplifyShaderEditor
 
 		[SerializeField]
 		private Vector4[] m_defaultValuesV4 = { Vector4.zero, Vector4.zero, Vector4.zero, Vector4.zero };
+
+		[SerializeField]
+		private bool m_rowsFromVector = true;
 
 		private string[] m_defaultValuesStr = { "[0]", "[1]", "[2]", "[3]" };
 
@@ -112,6 +116,7 @@ namespace AmplifyShaderEditor
 				}
 				break;
 			}
+			m_rowsFromVector = EditorGUILayoutToggle( RowFromVector, m_rowsFromVector ); 
 		}
 
 		void UpdatePorts()
@@ -144,15 +149,36 @@ namespace AmplifyShaderEditor
 			switch( m_selectedOutputType )
 			{
 				case WirePortDataType.FLOAT3x3:
-				result = "float3x3(" + m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalvar ) + ", "
-				+ m_inputPorts[ 1 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalvar ) + ", "
-				+ m_inputPorts[ 2 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalvar ) + ")";
+				if( m_rowsFromVector )
+				{
+					result = "float3x3(" + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + ", "
+					+ m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector ) + ", "
+					+ m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector ) + ")";
+				}
+				else
+				{
+					string vec0 = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+					string vec1 = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
+					string vec2 = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
+					result = string.Format( "float3x3({0}.x,{1}.x,{2}.x,{0}.y,{1}.y,{2}.y,{0}.z,{1}.z,{2}.z )", vec0, vec1, vec2 );
+				}
 				break;
 				case WirePortDataType.FLOAT4x4:
-				result = "float4x4(" + m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT4, ignoreLocalvar, true ) + ", "
-				+ m_inputPorts[ 1 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT4, ignoreLocalvar, true ) + ", "
-				+ m_inputPorts[ 2 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT4, ignoreLocalvar, true ) + ", "
-				+ m_inputPorts[ 3 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT4, ignoreLocalvar, true ) + ")";
+				if( m_rowsFromVector )
+				{
+					result = "float4x4(" + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + ", "
+					+ m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector ) + ", "
+					+ m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector ) + ", "
+					+ m_inputPorts[ 3 ].GeneratePortInstructions( ref dataCollector ) + ")";
+				}
+				else
+				{
+					string vec0 = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+					string vec1 = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
+					string vec2 = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
+					string vec3 = m_inputPorts[ 3 ].GeneratePortInstructions( ref dataCollector );
+					result = string.Format( "float4x4( {0}.x,{1}.x,{2}.x,{3}.x,{0}.y,{1}.y,{2}.y,{3}.y,{0}.z,{1}.z,{2}.z,{3}.z,{0}.w,{1}.w,{2}.w,{3}.w )", vec0, vec1, vec2, vec3 );
+				}
 				break;
 			}
 
@@ -163,6 +189,10 @@ namespace AmplifyShaderEditor
 		{
 			base.ReadFromString( ref nodeParams );
 			m_selectedOutputType = (WirePortDataType)Enum.Parse( typeof( WirePortDataType ), GetCurrentParam( ref nodeParams ) );
+			if( UIUtils.CurrentShaderVersion() > 15310 )
+			{
+				m_rowsFromVector = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
+			}
 			switch( m_selectedOutputType )
 			{
 				case WirePortDataType.FLOAT3x3:
@@ -179,6 +209,7 @@ namespace AmplifyShaderEditor
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_selectedOutputType );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_rowsFromVector );
 		}
 	}
 }

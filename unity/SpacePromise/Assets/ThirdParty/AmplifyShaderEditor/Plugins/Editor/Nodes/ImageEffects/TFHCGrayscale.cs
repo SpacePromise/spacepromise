@@ -34,6 +34,7 @@ namespace AmplifyShaderEditor
 			m_hasLeftDropdown = true;
 			m_autoWrapProperties = true;
 			SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_GrayscaleStyleValues[ m_grayscaleStyle ] ) );
+			m_previewShaderGUID = "56781cd022be9124597f0f396a46a35f";
 		}
 
 		public override void AfterCommonInit()
@@ -53,6 +54,12 @@ namespace AmplifyShaderEditor
 			m_upperLeftWidget = null;
 		}
 
+		void UpdateFromSelected()
+		{
+			m_previewMaterialPassId = m_grayscaleStyle;
+			SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_GrayscaleStyleValues[ m_grayscaleStyle ] ) );
+		}
+
 		public override void Draw( DrawInfo drawInfo )
 		{
 			base.Draw( drawInfo );
@@ -60,7 +67,7 @@ namespace AmplifyShaderEditor
 			m_grayscaleStyle = m_upperLeftWidget.DrawWidget( this, m_grayscaleStyle, m_GrayscaleStyleValues );
 			if( EditorGUI.EndChangeCheck() )
 			{
-				SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_GrayscaleStyleValues[ m_grayscaleStyle ] ) );
+				UpdateFromSelected();
 			}
 		}
 
@@ -71,7 +78,7 @@ namespace AmplifyShaderEditor
 			m_grayscaleStyle = EditorGUILayoutPopup( GrayscaleStyleStr, m_grayscaleStyle, m_GrayscaleStyleValues );
 			if( EditorGUI.EndChangeCheck() )
 			{
-				SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_GrayscaleStyleValues[ m_grayscaleStyle ] ) );
+				UpdateFromSelected();
 			}
 			EditorGUILayout.HelpBox( "Grayscale Old:\n\n - In: Image to convert.\n - Grayscale Style: Select the grayscale style.\n\n - Out: Grayscale version of the image.", MessageType.None );
 		}
@@ -80,7 +87,7 @@ namespace AmplifyShaderEditor
 		{
 			base.ReadFromString( ref nodeParams );
 			m_grayscaleStyle = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
-			SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_GrayscaleStyleValues[ m_grayscaleStyle ] ) );
+			UpdateFromSelected();
 		}
 
 		public override void WriteToString( ref string nodeInfo, ref string connectionsInfo )
@@ -91,8 +98,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string i = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 			string grayscale = string.Empty;
@@ -103,7 +110,7 @@ namespace AmplifyShaderEditor
 				default: { grayscale = "Luminance(" + i + ")"; } break;
 			}
 			RegisterLocalVariable( 0, grayscale, ref dataCollector, "grayscale" + OutputId );
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 	}
 }

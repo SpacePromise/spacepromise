@@ -49,8 +49,8 @@ namespace AmplifyShaderEditor
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
+			GlobalTypeWarningText = string.Format( GlobalTypeWarningText, "Color" );
 			m_insideSize.Set( 100, 50 );
-
 			m_dummyContent = new GUIContent();
 			AddOutputColorPorts( "RGBA" );
 			m_drawPreview = false;
@@ -187,7 +187,7 @@ namespace AmplifyShaderEditor
 			if( !m_isVisible )
 				return;
 
-			if( m_isEditingFields )
+			if( m_isEditingFields && m_currentParameterType != PropertyType.Global )
 			{
 				if( m_materialMode && m_currentParameterType != PropertyType.Constant )
 				{
@@ -244,11 +244,11 @@ namespace AmplifyShaderEditor
 
 			dataCollector.AddLocalVariable( UniqueId, CreateLocalVarDec( color.r + "," + color.g + "," + color.b + "," + color.a ) );
 
-			m_outputPorts[ 0 ].SetLocalValue( m_propertyName );
-			m_outputPorts[ 1 ].SetLocalValue( m_propertyName + ".r" );
-			m_outputPorts[ 2 ].SetLocalValue( m_propertyName + ".g" );
-			m_outputPorts[ 3 ].SetLocalValue( m_propertyName + ".b" );
-			m_outputPorts[ 4 ].SetLocalValue( m_propertyName + ".a" );
+			m_outputPorts[ 0 ].SetLocalValue( m_propertyName , dataCollector.PortCategory);
+			m_outputPorts[ 1 ].SetLocalValue( m_propertyName + ".r", dataCollector.PortCategory );
+			m_outputPorts[ 2 ].SetLocalValue( m_propertyName + ".g", dataCollector.PortCategory );
+			m_outputPorts[ 3 ].SetLocalValue( m_propertyName + ".b", dataCollector.PortCategory );
+			m_outputPorts[ 4 ].SetLocalValue( m_propertyName + ".a", dataCollector.PortCategory );
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
@@ -257,16 +257,16 @@ namespace AmplifyShaderEditor
 			m_precisionString = UIUtils.FinalPrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType );
 
 			if( m_currentParameterType != PropertyType.Constant )
-				return GetOutputVectorItem( 0, outputId, PropertyData );
+				return GetOutputVectorItem( 0, outputId, PropertyData( dataCollector.PortCategory ) );
 
-			if( m_outputPorts[ outputId ].IsLocalValue )
+			if( m_outputPorts[ outputId ].IsLocalValue(dataCollector.PortCategory) )
 			{
-				return m_outputPorts[ outputId ].LocalValue;
+				return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 			}
 
 			if( CheckLocalVariable( ref dataCollector ) )
 			{
-				return m_outputPorts[ outputId ].LocalValue;
+				return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 			}
 
 			Color color = m_defaultValue;
@@ -418,6 +418,9 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.ColorToString( m_materialValue ) );
 			//IOUtils.AddFieldValueToString( ref nodeInfo, m_colorSpace );
 		}
+
+		public override void SetGlobalValue() { Shader.SetGlobalColor( m_propertyName, m_defaultValue ); }
+		public override void FetchGlobalValue() { m_materialValue = Shader.GetGlobalColor( m_propertyName ); }
 
 		public override string GetPropertyValStr()
 		{

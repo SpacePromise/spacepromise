@@ -2,7 +2,7 @@
 
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "ASESampleShaders/FilmGrain"
+Shader "ASESampleShaders/Post Process/FilmGrain"
 {
 	Properties
 	{
@@ -144,7 +144,7 @@ Node;AmplifyShaderEditor.OneMinusNode;42;-211.5128,-212.9008;Float;False;1;0;FLO
 Node;AmplifyShaderEditor.SimpleAddOpNode;41;-178.1139,-50.5013;Float;False;2;2;0;FLOAT;0.0;False;1;COLOR;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;39;5.985176,-344.101;Float;False;2;2;0;COLOR;0,0,0,0;False;1;FLOAT;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.ToggleSwitchNode;43;149.1871,-110.7008;Float;False;Property;_ToggleSwitch0;Toggle Switch0;1;1;[Toggle];Create;True;1;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMasterNode;0;650.6996,-265.2;Float;False;True;2;Float;ASEMaterialInspector;0;1;ASESampleShaders/FilmGrain;c71b220b631b6344493ea3cf87110c93;ASETemplateShaders/PostProcess;Off;2;7;0;1;0;FLOAT4;0,0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMasterNode;0;650.6996,-265.2;Float;False;True;2;Float;ASEMaterialInspector;0;1;ASESampleShaders/Post Process/FilmGrain;c71b220b631b6344493ea3cf87110c93;ASETemplateShaders/PostProcess;Off;2;7;0;1;0;FLOAT4;0,0,0,0;False;0
 WireConnection;7;0;4;2
 WireConnection;7;1;8;0
 WireConnection;5;0;6;0

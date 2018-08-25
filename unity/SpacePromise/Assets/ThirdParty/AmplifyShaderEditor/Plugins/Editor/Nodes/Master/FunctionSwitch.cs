@@ -63,6 +63,8 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		private bool m_validReference = false;
 
+		private bool m_asDrawn = false;
+
 		private GUIContent m_checkContent;
 		private GUIContent m_popContent;
 
@@ -143,6 +145,7 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
+				UIUtils.RegisterFunctionSwitchNode( this );
 				UIUtils.RegisterFunctionSwitchCopyNode( this );
 			}
 		}
@@ -160,6 +163,7 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
+				UIUtils.UnregisterFunctionSwitchNode( this );
 				UIUtils.UnregisterFunctionSwitchCopyNode( this );
 			}
 		}
@@ -249,13 +253,25 @@ namespace AmplifyShaderEditor
 					m_inputPorts[ m_currentSelectedInput ].GetOutputNode().ActivateNode( UniqueId, m_inputPorts[ m_currentSelectedInput ].PortId, m_activeType );
 			}
 		}
-
-		public bool DrawOption( ParentNode owner )
+		
+		public bool DrawOption( ParentNode owner, bool forceDraw = false )
 		{
-			if( !IsConnected )
+			if( !IsConnected && !forceDraw )
+			{
+				//EditorGUILayout.LabelField( "Not Connected" );
+				return false;
+			}
+
+			if( m_asDrawn ) //used to prevent the same property to be drawn more than once
 				return false;
 
+			if( m_validReference )
+			{
+				return m_functionSwitchReference.DrawOption( owner, true );
+			}
+
 			int prev = m_currentSelectedInput;
+			m_asDrawn = true;
 			if( m_toggleMode )
 			{
 				m_currentSelectedInput = owner.EditorGUILayoutToggle( m_optionLabel, ( m_currentSelectedInput != 0 ? true : false ) ) ? 1 : 0;
@@ -373,12 +389,12 @@ namespace AmplifyShaderEditor
 				if( m_referenceType == TexReferenceType.Object )
 				{
 					UIUtils.UnregisterFunctionSwitchCopyNode( this );
-					UIUtils.RegisterFunctionSwitchNode( this );
+					//UIUtils.RegisterFunctionSwitchNode( this );
 					ResetToSelf();
 				}
 				else
 				{
-					UIUtils.UnregisterFunctionSwitchNode( this );
+					//UIUtils.UnregisterFunctionSwitchNode( this );
 					UIUtils.RegisterFunctionSwitchCopyNode( this );
 				}
 			}
@@ -784,12 +800,13 @@ namespace AmplifyShaderEditor
 
 				if( m_referenceType == TexReferenceType.Instance )
 				{
-					UIUtils.UnregisterFunctionSwitchNode( this );
+					//UIUtils.UnregisterFunctionSwitchNode( this );
+					UIUtils.RegisterFunctionSwitchNode( this );
 					UIUtils.RegisterFunctionSwitchCopyNode( this );
 				}
 				else
 				{
-					UIUtils.UnregisterFunctionSwitchCopyNode( this );
+					//UIUtils.UnregisterFunctionSwitchCopyNode( this );
 					UIUtils.RegisterFunctionSwitchNode( this );
 				}
 			}
@@ -824,6 +841,8 @@ namespace AmplifyShaderEditor
 			get { return m_optionLabel; }
 			set { m_optionLabel = value; }
 		}
+
+		public bool AsDrawn { get { return m_asDrawn; } set { m_asDrawn = value; } }
 
 		public override string DataToArray { get { return m_optionLabel; } }
 		public int MaxAmountInputs

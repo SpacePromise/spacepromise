@@ -8,7 +8,7 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	public class CustomTagData
 	{
-		private string TagFormat = "\"{0}\"=\"{1}\"";
+		private const string TagFormat = "\"{0}\"=\"{1}\"";
 		public string TagName;
 		public string TagValue;
 		public int TagId = -1;
@@ -20,6 +20,14 @@ namespace AmplifyShaderEditor
 			TagValue = string.Empty;
 		}
 
+		public CustomTagData( CustomTagData other )
+		{
+			TagName = other.TagName;
+			TagValue = other.TagValue;
+			TagId = other.TagId;
+			TagFoldout = other.TagFoldout;
+		}
+		
 		public CustomTagData( string name, string value , int id )
 		{
 			TagName = name;
@@ -66,9 +74,9 @@ namespace AmplifyShaderEditor
 		public void Draw( ParentNode owner )
 		{
 			m_currentOwner = owner;
-			bool value = EditorVariablesManager.ExpandedCustomTags.Value;
+			bool value = owner.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedCustomTags;
 			NodeUtils.DrawPropertyGroup( ref value, CustomTagsStr, DrawMainBody, DrawButtons );
-			EditorVariablesManager.ExpandedCustomTags.Value = value;
+			owner.ContainerGraph.ParentWindow.InnerWindowVariables.ExpandedCustomTags = value;
 		}
 
 		void DrawButtons()

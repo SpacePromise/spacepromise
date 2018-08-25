@@ -1,6 +1,8 @@
 using System;
+using Assets.ThirdParty.PostProcessing.Runtime.Attributes;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class DepthOfFieldModel : PostProcessingModel
@@ -51,13 +53,13 @@ namespace UnityEngine.PostProcessing
         Settings m_Settings = Settings.defaultSettings;
         public Settings settings
         {
-            get { return m_Settings; }
-            set { m_Settings = value; }
+            get { return this.m_Settings; }
+            set { this.m_Settings = value; }
         }
 
         public override void Reset()
         {
-            m_Settings = Settings.defaultSettings;
+            this.m_Settings = Settings.defaultSettings;
         }
     }
 }

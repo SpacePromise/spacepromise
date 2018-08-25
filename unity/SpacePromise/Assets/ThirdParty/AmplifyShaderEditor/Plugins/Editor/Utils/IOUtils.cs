@@ -76,16 +76,22 @@ namespace AmplifyShaderEditor
 		public static readonly string InstancedPropertiesHeader = "multi_compile_instancing";
 		public static readonly string VirtualTexturePragmaHeader = "multi_compile _ _VT_SINGLE_MODE";
 
-		public static readonly string InstancedPropertiesBeginTabs		= "\t\tUNITY_INSTANCING_CBUFFER_START({0})\n";
-		public static readonly string InstancedPropertiesEndTabs		= "\t\tUNITY_INSTANCING_CBUFFER_END\n";
-		public static readonly string InstancedPropertiesElementTabs	= "\t\t\tUNITY_DEFINE_INSTANCED_PROP({0}, {1})\n";
-
-
-		public static readonly string InstancedPropertiesBegin		= "UNITY_INSTANCING_CBUFFER_START({0})";
-		public static readonly string InstancedPropertiesEnd		= "UNITY_INSTANCING_CBUFFER_END";
-		public static readonly string InstancedPropertiesElement	= "UNITY_DEFINE_INSTANCED_PROP({0}, {1})";
+		public static readonly string InstancedPropertiesBegin = "UNITY_INSTANCING_CBUFFER_START({0})";
+		public static readonly string InstancedPropertiesEnd = "UNITY_INSTANCING_CBUFFER_END";
+		public static readonly string InstancedPropertiesElement = "UNITY_DEFINE_INSTANCED_PROP({0}, {1})";
 		public static readonly string InstancedPropertiesData = "UNITY_ACCESS_INSTANCED_PROP({0})";
 
+
+		public static readonly string LWSRPInstancedPropertiesBegin = "UNITY_INSTANCING_BUFFER_START({0})";
+		public static readonly string LWSRPInstancedPropertiesEnd = "UNITY_INSTANCING_BUFFER_END({0})";
+		public static readonly string LWSRPInstancedPropertiesElement = "UNITY_DEFINE_INSTANCED_PROP({0}, {1})";
+		public static readonly string LWSRPInstancedPropertiesData = "UNITY_ACCESS_INSTANCED_PROP({0},{1})";
+
+
+		public static readonly string InstancedPropertiesBeginTabs		= "\t\t"+ InstancedPropertiesBegin + "\n";
+		public static readonly string InstancedPropertiesEndTabs		= "\t\t"+ InstancedPropertiesEnd + "\n";
+		public static readonly string InstancedPropertiesElementTabs	= "\t\t\t"+ InstancedPropertiesElement + "\n";
+		
 		public static readonly string MetaBegin = "defaultTextures:";
 		public static readonly string MetaEnd = "userData:";
 		public static readonly string ShaderBodyBegin = "/*ASEBEGIN";
@@ -172,12 +178,13 @@ namespace AmplifyShaderEditor
 
 		public static Dictionary<string, string> NodeTypeReplacer = new Dictionary<string, string>()
 		{
+			{"AmplifyShaderEditor.RotateAboutAxis", "AmplifyShaderEditor.RotateAboutAxisNode"},
+			{"GlobalArrayNode", "AmplifyShaderEditor.GlobalArrayNode"},
 			{"AmplifyShaderEditor.SimpleMaxOp", "AmplifyShaderEditor.SimpleMaxOpNode"},
 			{"AmplifyShaderEditor.SimpleMinNode", "AmplifyShaderEditor.SimpleMinOpNode"},
 			{"AmplifyShaderEditor.TFHCRemap", "AmplifyShaderEditor.TFHCRemapNode"},
 			{"AmplifyShaderEditor.TFHCPixelateUV", "AmplifyShaderEditor.TFHCPixelate"},
-			{"AmplifyShaderEditor.VirtualTexturePropertyNode", "AmplifyShaderEditor.VirtualTextureObject"},
-
+			{"AmplifyShaderEditor.VirtualTexturePropertyNode", "AmplifyShaderEditor.VirtualTextureObject"}
 		};
 
 		private static readonly string AmplifyShaderEditorDefineSymbol = "AMPLIFY_SHADER_EDITOR";
@@ -278,6 +285,33 @@ namespace AmplifyShaderEditor
 
 				//ASEFolderPath = AssetDatabase.GUIDToAssetPath( ASEFolderGUID );
 				//ASEResourcesPath = ASEFolderPath + ASEResourcesPath;
+			}
+		}
+
+
+		public static void DumpTemplateManagers()
+		{
+			for( int i = 0; i < AllOpenedWindows.Count; i++ )
+			{
+				if( AllOpenedWindows[ i ].TemplatesManagerInstance != null )
+				{
+					Debug.Log( AllOpenedWindows[ i ].titleContent.text + ": " + AllOpenedWindows[ i ].TemplatesManagerInstance.GetInstanceID() );
+				}
+			}
+		}
+
+		public static TemplatesManager FirstValidTemplatesManager
+		{
+			get
+			{
+				for( int i = 0; i < AllOpenedWindows.Count; i++ )
+				{
+					if( AllOpenedWindows[ i ].TemplatesManagerInstance != null )
+					{
+						return AllOpenedWindows[ i ].TemplatesManagerInstance;
+					}
+				}
+				return null;
 			}
 		}
 

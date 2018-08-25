@@ -1,0 +1,779 @@
+-debug
+-target:library
+-nowarn:0169
+-langversion:7
+-out:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Temp/Assembly-CSharp-Editor.dll
+-nostdlib
+-unsafe
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Assembly-CSharp.dll
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.AIModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.AccessibilityModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.AnimationModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.AssetBundleModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.AudioModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.BaselibModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ClothModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.CloudWebServicesModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ClusterInputModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.CoreModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.CrashReportingModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.DirectorModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.FacebookModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.FileSystemHttpModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.GameCenterModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.GridModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.HotReloadModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.IMGUIModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ImageConversionModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.InputModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.LocalizationModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ParticlesLegacyModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.PhysicsModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.Physics2DModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ProfilerModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.SpatialTrackingModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.StreamingModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.StyleSheetsModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.SubstanceModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.TLSModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.TextRenderingModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.TilemapModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.TimelineModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UIModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UIElementsModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UNETModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UmbraModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityConnectModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.VRModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.VehiclesModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.VideoModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.WindModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEngine/UnityEngine.XRModule.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/UnityEditor.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\Managed/Unity.Locator.dll"
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.TextMeshPro.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Transforms.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Entities.Properties.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Jobs.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Jobs.Editor.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Entities.Editor.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Properties.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Collections.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Burst.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Rendering.Hybrid.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Properties.Editor.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Entities.Hybrid.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Mathematics.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Entities.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Burst.Editor.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Transforms2D.dll
+-r:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Library/ScriptAssemblies/Unity.Transforms.Hybrid.dll
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/TestRunner/net35/unity-custom/nunit.framework.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/Timeline/Editor/UnityEditor.Timeline.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/Networking/Editor/UnityEditor.Networking.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/Editor/UnityEditor.GoogleAudioSpatializer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnityHoloLens/Editor/UnityEditor.HoloLens.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/Editor/UnityEditor.SpatialTracking.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/Managed/UnityEditor.Graphs.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/2018.2.5f1/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll"
+-r:"C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/Mini Profiler/Mini Profiler.dll"
+-r:"C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/Mini Profiler/Editor/Mini Profiler Editor.dll"
+-r:C:/Users/Aleks/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll
+-r:C:/Users/Aleks/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/Editor/UnityEditor.Analytics.dll
+-r:C:/Users/Aleks/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.collections@0.0.9-preview.2/System.Runtime.CompilerServices.Unsafe.dll
+-r:C:/Users/Aleks/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll
+-r:"C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Core.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Runtime.Serialization.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Xml.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Xml.Linq.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Numerics.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.Numerics.Vectors.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\Microsoft.Win32.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\netstandard.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.AppContext.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Collections.Concurrent.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Collections.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Collections.NonGeneric.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Collections.Specialized.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ComponentModel.Annotations.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ComponentModel.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ComponentModel.EventBasedAsync.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ComponentModel.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ComponentModel.TypeConverter.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Console.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Data.Common.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.Contracts.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.Debug.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.FileVersionInfo.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.Process.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.StackTrace.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.TextWriterTraceListener.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.Tools.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Diagnostics.TraceSource.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Drawing.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Dynamic.Runtime.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Globalization.Calendars.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Globalization.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Globalization.Extensions.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.Compression.ZipFile.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.FileSystem.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.FileSystem.DriveInfo.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.FileSystem.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.FileSystem.Watcher.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.IsolatedStorage.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.MemoryMappedFiles.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.Pipes.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.IO.UnmanagedMemoryStream.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Linq.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Linq.Expressions.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Linq.Parallel.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Linq.Queryable.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.Http.Rtc.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.NameResolution.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.NetworkInformation.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.Ping.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.Requests.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.Security.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.Sockets.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.WebHeaderCollection.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.WebSockets.Client.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Net.WebSockets.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ObjectModel.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Reflection.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Reflection.Emit.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Reflection.Emit.ILGeneration.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Reflection.Emit.Lightweight.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Reflection.Extensions.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Reflection.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Resources.Reader.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Resources.ResourceManager.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Resources.Writer.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.CompilerServices.VisualC.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Extensions.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Handles.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.InteropServices.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.InteropServices.RuntimeInformation.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.InteropServices.WindowsRuntime.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Numerics.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Serialization.Formatters.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Serialization.Json.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Serialization.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Runtime.Serialization.Xml.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Claims.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Cryptography.Algorithms.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Cryptography.Csp.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Cryptography.Encoding.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Cryptography.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Cryptography.X509Certificates.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.Principal.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Security.SecureString.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ServiceModel.Duplex.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ServiceModel.Http.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ServiceModel.NetTcp.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ServiceModel.Primitives.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ServiceModel.Security.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Text.Encoding.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Text.Encoding.Extensions.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Text.RegularExpressions.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.Overlapped.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.Tasks.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.Tasks.Parallel.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.Thread.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.ThreadPool.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Threading.Timer.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.ValueTuple.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.ReaderWriter.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XDocument.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XmlDocument.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XmlSerializer.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XPath.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\Facades\System.Xml.XPath.XDocument.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\unityscript\UnityScript.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\unityscript\UnityScript.Lang.dll"
+-r:"C:\Program Files\Unity\Hub\Editor\2018.2.5f1\Editor\Data\MonoBleedingEdge\lib\mono\unityscript\Boo.Lang.dll"
+-d:UNITY_5_3_OR_NEWER
+-d:UNITY_5_4_OR_NEWER
+-d:UNITY_5_5_OR_NEWER
+-d:UNITY_5_6_OR_NEWER
+-d:UNITY_2017_1_OR_NEWER
+-d:UNITY_2017_2_OR_NEWER
+-d:UNITY_2017_3_OR_NEWER
+-d:UNITY_2017_4_OR_NEWER
+-d:UNITY_2018_1_OR_NEWER
+-d:UNITY_2018_2_OR_NEWER
+-d:UNITY_2018_2_5
+-d:UNITY_2018_2
+-d:UNITY_2018
+-d:PLATFORM_ARCH_64
+-d:UNITY_64
+-d:ENABLE_AUDIO
+-d:ENABLE_CACHING
+-d:ENABLE_CLOTH
+-d:ENABLE_DUCK_TYPING
+-d:ENABLE_MICROPHONE
+-d:ENABLE_MULTIPLE_DISPLAYS
+-d:ENABLE_PHYSICS
+-d:ENABLE_SPRITES
+-d:ENABLE_GRID
+-d:ENABLE_TILEMAP
+-d:ENABLE_TERRAIN
+-d:ENABLE_TEXTURE_STREAMING
+-d:ENABLE_DIRECTOR
+-d:ENABLE_UNET
+-d:ENABLE_LZMA
+-d:ENABLE_UNITYEVENTS
+-d:ENABLE_WEBCAM
+-d:ENABLE_WWW
+-d:ENABLE_CLOUD_SERVICES_COLLAB
+-d:ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS
+-d:ENABLE_CLOUD_SERVICES_ADS
+-d:ENABLE_CLOUD_HUB
+-d:ENABLE_CLOUD_PROJECT_ID
+-d:ENABLE_CLOUD_SERVICES_USE_WEBREQUEST
+-d:ENABLE_CLOUD_SERVICES_UNET
+-d:ENABLE_CLOUD_SERVICES_BUILD
+-d:ENABLE_CLOUD_LICENSE
+-d:ENABLE_EDITOR_HUB
+-d:ENABLE_EDITOR_HUB_LICENSE
+-d:ENABLE_WEBSOCKET_CLIENT
+-d:ENABLE_DIRECTOR_AUDIO
+-d:ENABLE_DIRECTOR_TEXTURE
+-d:ENABLE_TIMELINE
+-d:ENABLE_EDITOR_METRICS
+-d:ENABLE_EDITOR_METRICS_CACHING
+-d:ENABLE_MANAGED_JOBS
+-d:ENABLE_MANAGED_TRANSFORM_JOBS
+-d:ENABLE_MANAGED_ANIMATION_JOBS
+-d:INCLUDE_DYNAMIC_GI
+-d:INCLUDE_GI
+-d:ENABLE_MONO_BDWGC
+-d:PLATFORM_SUPPORTS_MONO
+-d:RENDER_SOFTWARE_CURSOR
+-d:INCLUDE_PUBNUB
+-d:ENABLE_VIDEO
+-d:ENABLE_PACKMAN
+-d:ENABLE_CUSTOM_RENDER_TEXTURE
+-d:ENABLE_LOCALIZATION
+-d:PLATFORM_STANDALONE_WIN
+-d:PLATFORM_STANDALONE
+-d:UNITY_STANDALONE_WIN
+-d:UNITY_STANDALONE
+-d:ENABLE_SUBSTANCE
+-d:ENABLE_RUNTIME_GI
+-d:ENABLE_MOVIES
+-d:ENABLE_NETWORK
+-d:ENABLE_CRUNCH_TEXTURE_COMPRESSION
+-d:ENABLE_UNITYWEBREQUEST
+-d:ENABLE_CLOUD_SERVICES
+-d:ENABLE_CLOUD_SERVICES_ANALYTICS
+-d:ENABLE_CLOUD_SERVICES_PURCHASING
+-d:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
+-d:ENABLE_OUT_OF_PROCESS_CRASH_HANDLER
+-d:ENABLE_EVENT_QUEUE
+-d:ENABLE_CLUSTER_SYNC
+-d:ENABLE_CLUSTERINPUT
+-d:ENABLE_VR
+-d:ENABLE_AR
+-d:ENABLE_WEBSOCKET_HOST
+-d:ENABLE_MONO
+-d:NET_4_6
+-d:ENABLE_PROFILER
+-d:DEBUG
+-d:TRACE
+-d:UNITY_ASSERTIONS
+-d:UNITY_EDITOR
+-d:UNITY_EDITOR_64
+-d:UNITY_EDITOR_WIN
+-d:ENABLE_UNITY_COLLECTIONS_CHECKS
+-d:ENABLE_BURST_AOT
+-d:UNITY_TEAM_LICENSE
+-d:ENABLE_VSTU
+-d:UNITY_PRO_LICENSE
+-d:AMPLIFY_SHADER_EDITOR
+-d:CROSS_PLATFORM_INPUT
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Actions/ActionData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Actions/ActionLog.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Actions/ActionSequence.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Constants.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/CustomDrawers/EditableIf.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/DoCreateFunction.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/EditorOptions.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Graphs/NodeGrid.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Graphs/ParentGraph.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/AmplifyShaderEditorWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/AmplifyShaderFunction.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/AmplifyShaderFunctionEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/AutoPanData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Clipboard.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/ConfirmationWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/ConsoleLogWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/ContextMenuItem.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/CustomStylesContainer.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/DebugConsoleWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/DragAndDropTool.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/DuplicatePreventionBuffer.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/GraphContextMenu.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/MenuParent.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/NodeParametersWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/NodeWireReferencesUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Palette/ContextPalette.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Palette/PaletteParent.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Palette/PalettePopUp.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Palette/PaletteWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/PortLegendInfo.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/SceneSaveCallback.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/ShaderEditorModeWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/ShaderLibrary.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Tools/ToolsMenuButton.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Tools/ToolsMenuButtonParent.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Tools/ToolsMenuButtonSep.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Menu/Tools/ToolsWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackColor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackFloat.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackInt.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackMatrix4x4.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackString.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackTexture.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackVariable.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackVector2.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackVector3.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/FallbackVector4.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Native/IFallbackVars.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/CommentaryNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ColorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/GlobalArrayNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/IntNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/Matrix3X3Node.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/Matrix4X4Node.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/MatrixParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/PiNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/PropertyNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/RangedFloatNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/CameraProjectionNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/CameraWorldClipPlanes.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/OrthoParams.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/ProjectionParams.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/ScreenParams.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/WorldSpaceCameraPos.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/CameraAndScreen/ZBufferParams.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/ConstantShaderVariable.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/ConstVecShaderVariable.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/FogAndAmbient/FogAndAmbientColorsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/FogAndAmbient/FogParamsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Lighting/CustomStandardSurface.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Lighting/IndirectDiffuseLighting.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Lighting/IndirectSpecularLight.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Lighting/LightAttenuation.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Lighting/LightColorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Lighting/WorldSpaceLightPos.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/ShaderVariablesNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Time/CosTime.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Time/DeltaTime.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Time/SimpleTimeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Time/SinTimeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Time/TimeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/CameraToWorldMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/InverseTranspMVMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/InverseViewMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/MMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/MVMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/MVPMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/ObjectToWorldMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/ProjectionMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/Texture0MatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/Texture1MatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/Texture2MatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/Texture3MatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/TransformDirectionNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/TransformPositionNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/TransformVariables.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/TransposeMVMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/UnityProjectorClipMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/UnityProjectorMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/UnityScaleMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/ViewMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/ViewProjectionMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/WorldToCameraMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/WorldToObjectMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Transform/WorldToTangentMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Various/ColorSpaceDouble.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Various/FaceVariableNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Various/LODFadeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Various/SwitchByFaceNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/ShaderVariables/Various/WorldTransformParams.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/StaticSwitch.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/TauNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/TextureArrayNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/Vector2Node.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/Vector3Node.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Constants/Vector4Node.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/CustomAddNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/CustomNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/DrawInfo.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/DynamicTypeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/CameraDepthFade.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ComputeGrabScreenPosHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ComputeScreenPosHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DecodeDepthNormalNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DecodeFloatRGBAHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DecodeFloatRGHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DecodeLightmapHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DecodeViewNormalStereoHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DepthFade.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DiffuseAndSpecularFromMetallicNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/DitheringNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/EncodeDepthNormalNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/EncodeFloatRGBAHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/EncodeFloatRGHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/EncodeViewNormalStereoHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/GammaToLinearNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/HelperParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/LinearToGammaNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/LuminanceHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ObjSpaceLightDirHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ObjSpaceViewDirHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ParallaxMappingNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ParallaxOcclusionMappingNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ParallaxOffsetHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/ShadeVertexLightsHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/SurfaceDepthNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/TriplanarNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/UnityObjToClipPosHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/UnityObjToViewPosHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/WorldSpaceLightDirHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/HelperFuncs/WorldSpaceViewDirHlpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/BlendOpsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/DesaturateOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/HSVToRGBNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/NoiseGeneratorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/PosterizeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/RGBToHSVNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/SimpleContrastOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/SimplexNoiseNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ImageEffects/TFHCGrayscale.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ISignalGenerator.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/ConditionalIfNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/KeywordSwitchNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareEqual.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareGreater.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareGreaterEqual.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareLower.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareLowerEqual.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareNotEqual.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCCompareWithRange.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCIf.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/LogicalOperators/TFHCStub.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/AdditionalDefinesHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/AdditionalIncludesHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/AdditionalPragmasHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/AdditionalSurfaceOptionsHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/BillboardOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/BlendOpsHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/CodeGenerationData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/ColorMaskHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/CustomTagsHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/DependenciesHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/FallbackPickerHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/FunctionInput.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/FunctionNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/FunctionOutput.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/FunctionSubtitle.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/FunctionSwitch.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/LogNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/MasterNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/MasterNodeDataCollector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/OutlineOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/OutputNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/RenderingOptionsOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/RenderingPlatformsOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/StandardSurface.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/StencilBufferOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/TessellationOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/UsePassHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Master/ZBufferOpHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/AppendNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/BreakToComponentsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/CustomExpressionNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/DynamicAppendNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/FresnelNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/GetLocalVarNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/LayeredBlendNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/MatrixFromVectors.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/PosFromTransformMatrix.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/RegisterLocalVarNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/RelayNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/RotateAboutAxisNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/SummedBlendNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/SwitchNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/SwizzleNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/ToggleSwitchNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/Transformation/ObjectToWorldTransfNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/Transformation/ParentTransfNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/Transformation/WorldToObjectTransfNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/VectorFromMatrixNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/WeightedAvgNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/WeightedBlendNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Misc/WireNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/NodeAttributes.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/NodeRestrictions.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/NodeUsageRegister.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/NodeUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/AbsOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ACosOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ASinOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ATan2OpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ATanOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/CeilOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ClampOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ClipNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ComponentMaskNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/CoshOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/CosOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/CrossProductOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/DdxOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/DdyOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/DegreesOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/DeterminantOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/DistanceOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/DotProductOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/Exp2OpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ExpOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/FloorOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/FmodOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/FractNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/FWidthOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/InverseOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/LengthOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/LerpOp.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/Log10OpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/Log2OpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/LogOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/MultipleInputOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/NegateNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/NormalizeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/OneMinusNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/PowerNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/RadiansOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ReflectOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/RefractOpVec.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/RoundOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/RSqrtOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SaturateNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ScaleAndOffsetNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/ScaleNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SignOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SimplifiedFModOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SingleInputOp.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SinhOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SinOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SmoothstepOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/SqrtOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/StepOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/TanhOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/TanOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/TFHCRemapNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/TransformVectorOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/TransposeOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/TruncOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Operators/VariablePortTypeOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/ReordenatorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SignalGeneratorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleAddOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleDivideOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleMaxOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleMinOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleMultiplyOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleRemainderNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SimpleNodes/SimpleSubtractOpNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/ColorInputsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/GrabScreenPosition.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/LocalVertexPosNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/ScreenColorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/ScreenDepthNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/ScreenPosInputsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/SurfaceShaderINParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/TexelSizeNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/UVCoordsParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/ViewDirInputsCoordNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/WorldNormalInputsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/WorldNormalVector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/WorldPosInputsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/WorldReflectionVector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/SurfaceShaderInputs/WorldReflInputsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/BlendNormalsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/HeightMapBlendNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/PannerNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/RotatorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/SamplerNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/SubstanceSamplerNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/TextureCoordinatesNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/TexturePropertyNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/TextureTransformNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/TFHCFlipBookUVAnimation.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/TFHCPixelate.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/UnpackScaleNormalNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Textures/VirtualTextureObject.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/UndoParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/BillboardNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/BitangentVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/ColorVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/NormalVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/ObjectScaleNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/OutlineNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/PosVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/TangentSignVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/TangentVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/Tessellation/DistanceBasedTessNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/Tessellation/EdgeLengthCullTessNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/Tessellation/EdgeLengthTessNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/Tessellation/TessellationParentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/TexCoord1VertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/TexCoordVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/VertexBinormalNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/VertexColorNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/VertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/VertexTangentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Nodes/Vertex/VertexToFragmentNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/PreMadeShaders.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateAdditionalDefinesHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateAdditionalDirectivesHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateAdditionalIncludesHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateAdditionalParentHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateAdditionalPragmasHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateCodeSnippetBase.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateColorMaskModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateCullModeModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateDataCollector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateDataParent.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateDepthModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateFragmentDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateHelperFunctions.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateIdManager.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateInterpData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateLocalVarData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateLocalVarsNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateMasterNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateMenuItems.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateModuleHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateModuleParent.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateModulesData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateMultiPass.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateMultiPassMasterNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateMultiPassSwitchNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateNodeParent.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateOptionsData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplatePass.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplatePostProcessor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplatesBlendModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateShaderData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateShaderModelModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateShaderPropertyData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateShaderPropertyNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplatesManager.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplatesStencilBufferModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateSubShader.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateTagsModule.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateVertexData.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Templates/TemplateVertexDataNode.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/ASETextureArrayCreator.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/CustomMaterialInspector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/CustomShaderInspector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/CustomTexture2DArrayInspector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/EditorVariablesManager.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/GeneratorUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/GenericMessage.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/InlineProperty.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/InvalidDataChecker.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/IOUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/NodeExporterUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/RectExtension.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/ShortcutsManager.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/TipsWindow.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/UIUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/UndoUtils.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/UpperLeftWidgetHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Utils/WindowHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Version/About.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Version/VersionInfo.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Wires/GLDraw.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Wires/InputPort.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Wires/OutputPort.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Wires/WireBezierReference.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Wires/WirePort.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/AmplifyShaderEditor/Plugins/Editor/Wires/WireReference.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Attributes/PostProcessingModelEditorAttribute.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/AmbientOcclusionModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/AntialiasingModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/BloomModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/BuiltinDebugViewsEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/ChromaticAberrationEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/ColorGradingModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/DefaultPostFxModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/DepthOfFieldModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/DitheringModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/EyeAdaptationModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/FogModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/GrainModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/MotionBlurModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/ScreenSpaceReflectionModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/UserLutModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Models/VignetteModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Monitors/HistogramMonitor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Monitors/ParadeMonitor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Monitors/VectorscopeMonitor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Monitors/WaveformMonitor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PostProcessingBehaviourEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PostProcessingFactory.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PostProcessingInspector.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PostProcessingModelEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PostProcessingMonitor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PropertyDrawers/GetSetDrawer.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PropertyDrawers/MinDrawer.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/PropertyDrawers/TrackballGroupDrawer.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Utils/CurveEditor.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Utils/EditorGUIHelper.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Utils/EditorResources.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Utils/FxStyles.cs
+-i:C:/Users/Aleks/Documents/GitHub/spacepromise/unity/SpacePromise/Assets/ThirdParty/PostProcessing/Editor/Utils/ReflectionUtils.cs
+-v:0

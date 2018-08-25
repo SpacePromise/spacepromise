@@ -28,13 +28,14 @@ namespace AmplifyShaderEditor
 		{
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
 			string finalValue = string.Empty;
+			string piString = dataCollector.IsSRP ? "PI" : "UNITY_PI";
 			if( !InputPorts[ 0 ].IsConnected && InputPorts[ 0 ].FloatInternalData == 1 )
 			{
-				finalValue = "UNITY_PI";
+				finalValue = piString;
 			} else
 			{
 				string multiplier = InputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
-				finalValue = "( " + multiplier + " * UNITY_PI )";
+				finalValue = "( " + multiplier + " * " + piString + " )";
 			}
 
 

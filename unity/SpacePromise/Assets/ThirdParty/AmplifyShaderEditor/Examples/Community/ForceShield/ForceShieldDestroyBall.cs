@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TFHC_ForceShield_Shader_Sample
+namespace Assets.ThirdParty.AmplifyShaderEditor.Examples.Community.ForceShield
 {
     public class ForceShieldDestroyBall : MonoBehaviour
     {
@@ -9,7 +9,7 @@ namespace TFHC_ForceShield_Shader_Sample
 
         void Start()
         {
-            Destroy(gameObject, lifetime);
+            Destroy(this.gameObject, this.lifetime);
         }
     }
 }

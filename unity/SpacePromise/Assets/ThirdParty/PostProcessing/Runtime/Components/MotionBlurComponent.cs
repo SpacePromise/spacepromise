@@ -1,6 +1,9 @@
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     using Settings = MotionBlurModel.Settings;
 
@@ -62,14 +65,14 @@ namespace UnityEngine.PostProcessing
 
             public ReconstructionFilter()
             {
-                CheckTextureFormatSupport();
+                this.CheckTextureFormatSupport();
             }
 
             void CheckTextureFormatSupport()
             {
                 // If 2:10:10:10 isn't supported, use ARGB32 instead.
-                if (!SystemInfo.SupportsRenderTextureFormat(m_PackedRTFormat))
-                    m_PackedRTFormat = RenderTextureFormat.ARGB32;
+                if (!SystemInfo.SupportsRenderTextureFormat(this.m_PackedRTFormat))
+                    this.m_PackedRTFormat = RenderTextureFormat.ARGB32;
             }
 
             public bool IsSupported()
@@ -95,25 +98,25 @@ namespace UnityEngine.PostProcessing
                 cb.SetGlobalFloat(Uniforms._RcpMaxBlurRadius, 1f / maxBlurPixels);
 
                 int vbuffer = Uniforms._VelocityTex;
-                cb.GetTemporaryRT(vbuffer, context.width, context.height, 0, FilterMode.Point, m_PackedRTFormat, RenderTextureReadWrite.Linear);
+                cb.GetTemporaryRT(vbuffer, context.width, context.height, 0, FilterMode.Point, this.m_PackedRTFormat, RenderTextureReadWrite.Linear);
                 cb.Blit((Texture)null, vbuffer, material, (int)Pass.VelocitySetup);
 
                 // Pass 2 - First TileMax filter (1/2 downsize)
                 int tile2 = Uniforms._Tile2RT;
-                cb.GetTemporaryRT(tile2, context.width / 2, context.height / 2, 0, FilterMode.Point, m_VectorRTFormat, RenderTextureReadWrite.Linear);
+                cb.GetTemporaryRT(tile2, context.width / 2, context.height / 2, 0, FilterMode.Point, this.m_VectorRTFormat, RenderTextureReadWrite.Linear);
                 cb.SetGlobalTexture(Uniforms._MainTex, vbuffer);
                 cb.Blit(vbuffer, tile2, material, (int)Pass.TileMax1);
 
                 // Pass 3 - Second TileMax filter (1/2 downsize)
                 int tile4 = Uniforms._Tile4RT;
-                cb.GetTemporaryRT(tile4, context.width / 4, context.height / 4, 0, FilterMode.Point, m_VectorRTFormat, RenderTextureReadWrite.Linear);
+                cb.GetTemporaryRT(tile4, context.width / 4, context.height / 4, 0, FilterMode.Point, this.m_VectorRTFormat, RenderTextureReadWrite.Linear);
                 cb.SetGlobalTexture(Uniforms._MainTex, tile2);
                 cb.Blit(tile2, tile4, material, (int)Pass.TileMax2);
                 cb.ReleaseTemporaryRT(tile2);
 
                 // Pass 4 - Third TileMax filter (1/2 downsize)
                 int tile8 = Uniforms._Tile8RT;
-                cb.GetTemporaryRT(tile8, context.width / 8, context.height / 8, 0, FilterMode.Point, m_VectorRTFormat, RenderTextureReadWrite.Linear);
+                cb.GetTemporaryRT(tile8, context.width / 8, context.height / 8, 0, FilterMode.Point, this.m_VectorRTFormat, RenderTextureReadWrite.Linear);
                 cb.SetGlobalTexture(Uniforms._MainTex, tile4);
                 cb.Blit(tile4, tile8, material, (int)Pass.TileMax2);
                 cb.ReleaseTemporaryRT(tile4);
@@ -124,7 +127,7 @@ namespace UnityEngine.PostProcessing
                 cb.SetGlobalFloat(Uniforms._TileMaxLoop, (int)(tileSize / 8f));
 
                 int tile = Uniforms._TileVRT;
-                cb.GetTemporaryRT(tile, context.width / tileSize, context.height / tileSize, 0, FilterMode.Point, m_VectorRTFormat, RenderTextureReadWrite.Linear);
+                cb.GetTemporaryRT(tile, context.width / tileSize, context.height / tileSize, 0, FilterMode.Point, this.m_VectorRTFormat, RenderTextureReadWrite.Linear);
                 cb.SetGlobalTexture(Uniforms._MainTex, tile8);
                 cb.Blit(tile8, tile, material, (int)Pass.TileMaxV);
                 cb.ReleaseTemporaryRT(tile8);
@@ -133,7 +136,7 @@ namespace UnityEngine.PostProcessing
                 int neighborMax = Uniforms._NeighborMaxTex;
                 int neighborMaxWidth = context.width / tileSize;
                 int neighborMaxHeight = context.height / tileSize;
-                cb.GetTemporaryRT(neighborMax, neighborMaxWidth, neighborMaxHeight, 0, FilterMode.Point, m_VectorRTFormat, RenderTextureReadWrite.Linear);
+                cb.GetTemporaryRT(neighborMax, neighborMaxWidth, neighborMaxHeight, 0, FilterMode.Point, this.m_VectorRTFormat, RenderTextureReadWrite.Linear);
                 cb.SetGlobalTexture(Uniforms._MainTex, tile);
                 cb.Blit(tile, neighborMax, material, (int)Pass.NeighborMax);
                 cb.ReleaseTemporaryRT(tile);
@@ -161,59 +164,59 @@ namespace UnityEngine.PostProcessing
 
                 public float CalculateWeight(float strength, float currentTime)
                 {
-                    if (Mathf.Approximately(m_Time, 0f))
+                    if (Mathf.Approximately(this.m_Time, 0f))
                         return 0f;
 
                     var coeff = Mathf.Lerp(80f, 16f, strength);
-                    return Mathf.Exp((m_Time - currentTime) * coeff);
+                    return Mathf.Exp((this.m_Time - currentTime) * coeff);
                 }
 
                 public void Release()
                 {
-                    if (lumaTexture != null)
-                        RenderTexture.ReleaseTemporary(lumaTexture);
+                    if (this.lumaTexture != null)
+                        RenderTexture.ReleaseTemporary(this.lumaTexture);
 
-                    if (chromaTexture != null)
-                        RenderTexture.ReleaseTemporary(chromaTexture);
+                    if (this.chromaTexture != null)
+                        RenderTexture.ReleaseTemporary(this.chromaTexture);
 
-                    lumaTexture = null;
-                    chromaTexture = null;
+                    this.lumaTexture = null;
+                    this.chromaTexture = null;
                 }
 
                 public void MakeRecord(CommandBuffer cb, RenderTargetIdentifier source, int width, int height, Material material)
                 {
-                    Release();
+                    this.Release();
 
-                    lumaTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
-                    chromaTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
+                    this.lumaTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
+                    this.chromaTexture = RenderTexture.GetTemporary(width, height, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
 
-                    lumaTexture.filterMode = FilterMode.Point;
-                    chromaTexture.filterMode = FilterMode.Point;
+                    this.lumaTexture.filterMode = FilterMode.Point;
+                    this.chromaTexture.filterMode = FilterMode.Point;
 
-                    if (m_MRT == null)
-                        m_MRT = new RenderTargetIdentifier[2];
+                    if (this.m_MRT == null)
+                        this.m_MRT = new RenderTargetIdentifier[2];
 
-                    m_MRT[0] = lumaTexture;
-                    m_MRT[1] = chromaTexture;
+                    this.m_MRT[0] = this.lumaTexture;
+                    this.m_MRT[1] = this.chromaTexture;
 
                     cb.SetGlobalTexture(Uniforms._MainTex, source);
-                    cb.SetRenderTarget(m_MRT, lumaTexture);
+                    cb.SetRenderTarget(this.m_MRT, this.lumaTexture);
                     cb.DrawMesh(GraphicsUtils.quad, Matrix4x4.identity, material, 0, (int)Pass.FrameCompression);
 
-                    m_Time = Time.time;
+                    this.m_Time = Time.time;
                 }
 
                 public void MakeRecordRaw(CommandBuffer cb, RenderTargetIdentifier source, int width, int height, RenderTextureFormat format)
                 {
-                    Release();
+                    this.Release();
 
-                    lumaTexture = RenderTexture.GetTemporary(width, height, 0, format);
-                    lumaTexture.filterMode = FilterMode.Point;
+                    this.lumaTexture = RenderTexture.GetTemporary(width, height, 0, format);
+                    this.lumaTexture.filterMode = FilterMode.Point;
 
                     cb.SetGlobalTexture(Uniforms._MainTex, source);
-                    cb.Blit(source, lumaTexture);
+                    cb.Blit(source, this.lumaTexture);
 
-                    m_Time = Time.time;
+                    this.m_Time = Time.time;
                 }
             }
 
@@ -225,14 +228,14 @@ namespace UnityEngine.PostProcessing
 
             public FrameBlendingFilter()
             {
-                m_UseCompression = CheckSupportCompression();
-                m_RawTextureFormat = GetPreferredRenderTextureFormat();
-                m_FrameList = new Frame[4];
+                this.m_UseCompression = CheckSupportCompression();
+                this.m_RawTextureFormat = GetPreferredRenderTextureFormat();
+                this.m_FrameList = new Frame[4];
             }
 
             public void Dispose()
             {
-                foreach (var frame in m_FrameList)
+                foreach (var frame in this.m_FrameList)
                     frame.Release();
             }
 
@@ -240,27 +243,27 @@ namespace UnityEngine.PostProcessing
             {
                 // Push only when actual update (do nothing while pausing)
                 var frameCount = Time.frameCount;
-                if (frameCount == m_LastFrameCount) return;
+                if (frameCount == this.m_LastFrameCount) return;
 
                 // Update the frame record.
-                var index = frameCount % m_FrameList.Length;
+                var index = frameCount % this.m_FrameList.Length;
 
-                if (m_UseCompression)
-                    m_FrameList[index].MakeRecord(cb, source, width, height, material);
+                if (this.m_UseCompression)
+                    this.m_FrameList[index].MakeRecord(cb, source, width, height, material);
                 else
-                    m_FrameList[index].MakeRecordRaw(cb, source, width, height, m_RawTextureFormat);
+                    this.m_FrameList[index].MakeRecordRaw(cb, source, width, height, this.m_RawTextureFormat);
 
-                m_LastFrameCount = frameCount;
+                this.m_LastFrameCount = frameCount;
             }
 
             public void BlendFrames(CommandBuffer cb, float strength, RenderTargetIdentifier source, RenderTargetIdentifier destination, Material material)
             {
                 var t = Time.time;
 
-                var f1 = GetFrameRelative(-1);
-                var f2 = GetFrameRelative(-2);
-                var f3 = GetFrameRelative(-3);
-                var f4 = GetFrameRelative(-4);
+                var f1 = this.GetFrameRelative(-1);
+                var f2 = this.GetFrameRelative(-2);
+                var f3 = this.GetFrameRelative(-3);
+                var f4 = this.GetFrameRelative(-4);
 
                 cb.SetGlobalTexture(Uniforms._History1LumaTex, f1.lumaTexture);
                 cb.SetGlobalTexture(Uniforms._History2LumaTex, f2.lumaTexture);
@@ -278,7 +281,7 @@ namespace UnityEngine.PostProcessing
                 cb.SetGlobalFloat(Uniforms._History4Weight, f4.CalculateWeight(strength, t));
 
                 cb.SetGlobalTexture(Uniforms._MainTex, source);
-                cb.Blit(source, destination, material, m_UseCompression ? (int)Pass.FrameBlendingChroma : (int)Pass.FrameBlendingRaw);
+                cb.Blit(source, destination, material, this.m_UseCompression ? (int)Pass.FrameBlendingChroma : (int)Pass.FrameBlendingRaw);
             }
 
             // Check if the platform has the capability of compression.
@@ -309,8 +312,8 @@ namespace UnityEngine.PostProcessing
             // Use a negative index to refer to previous frames.
             Frame GetFrameRelative(int offset)
             {
-                var index = (Time.frameCount + m_FrameList.Length + offset) % m_FrameList.Length;
-                return m_FrameList[index];
+                var index = (Time.frameCount + this.m_FrameList.Length + offset) % this.m_FrameList.Length;
+                return this.m_FrameList[index];
             }
         }
 
@@ -319,10 +322,10 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                if (m_ReconstructionFilter == null)
-                    m_ReconstructionFilter = new ReconstructionFilter();
+                if (this.m_ReconstructionFilter == null)
+                    this.m_ReconstructionFilter = new ReconstructionFilter();
 
-                return m_ReconstructionFilter;
+                return this.m_ReconstructionFilter;
             }
         }
 
@@ -331,10 +334,10 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                if (m_FrameBlendingFilter == null)
-                    m_FrameBlendingFilter = new FrameBlendingFilter();
+                if (this.m_FrameBlendingFilter == null)
+                    this.m_FrameBlendingFilter = new FrameBlendingFilter();
 
-                return m_FrameBlendingFilter;
+                return this.m_FrameBlendingFilter;
             }
         }
 
@@ -344,11 +347,11 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                var settings = model.settings;
-                return model.enabled
-                       && ((settings.shutterAngle > 0f && reconstructionFilter.IsSupported()) || settings.frameBlending > 0f)
+                var settings = this.model.settings;
+                return this.model.enabled
+                       && ((settings.shutterAngle > 0f && this.reconstructionFilter.IsSupported()) || settings.frameBlending > 0f)
                        && SystemInfo.graphicsDeviceType != GraphicsDeviceType.OpenGLES2 // No movecs on GLES2 platforms
-                       && !context.interrupted;
+                       && !this.context.interrupted;
             }
         }
 
@@ -359,10 +362,10 @@ namespace UnityEngine.PostProcessing
 
         public void ResetHistory()
         {
-            if (m_FrameBlendingFilter != null)
-                m_FrameBlendingFilter.Dispose();
+            if (this.m_FrameBlendingFilter != null)
+                this.m_FrameBlendingFilter.Dispose();
 
-            m_FrameBlendingFilter = null;
+            this.m_FrameBlendingFilter = null;
         }
 
         public override DepthTextureMode GetCameraFlags()
@@ -377,7 +380,7 @@ namespace UnityEngine.PostProcessing
 
         public override void OnEnable()
         {
-            m_FirstFrame = true;
+            this.m_FirstFrame = true;
         }
 
         public override void PopulateCommandBuffer(CommandBuffer cb)
@@ -391,44 +394,44 @@ namespace UnityEngine.PostProcessing
 
             // Skip rendering in the first frame as motion vectors won't be abvailable until the
             // next one
-            if (m_FirstFrame)
+            if (this.m_FirstFrame)
             {
-                m_FirstFrame = false;
+                this.m_FirstFrame = false;
                 return;
             }
 
-            var material = context.materialFactory.Get("Hidden/Post FX/Motion Blur");
-            var blitMaterial = context.materialFactory.Get("Hidden/Post FX/Blit");
-            var settings = model.settings;
+            var material = this.context.materialFactory.Get("Hidden/Post FX/Motion Blur");
+            var blitMaterial = this.context.materialFactory.Get("Hidden/Post FX/Blit");
+            var settings = this.model.settings;
 
-            var fbFormat = context.isHdr
+            var fbFormat = this.context.isHdr
                 ? RenderTextureFormat.DefaultHDR
                 : RenderTextureFormat.Default;
 
             int tempRT = Uniforms._TempRT;
-            cb.GetTemporaryRT(tempRT, context.width, context.height, 0, FilterMode.Point, fbFormat);
+            cb.GetTemporaryRT(tempRT, this.context.width, this.context.height, 0, FilterMode.Point, fbFormat);
 
             if (settings.shutterAngle > 0f && settings.frameBlending > 0f)
             {
                 // Motion blur + frame blending
-                reconstructionFilter.ProcessImage(context, cb, ref settings, BuiltinRenderTextureType.CameraTarget, tempRT, material);
-                frameBlendingFilter.BlendFrames(cb, settings.frameBlending, tempRT, BuiltinRenderTextureType.CameraTarget, material);
-                frameBlendingFilter.PushFrame(cb, tempRT, context.width, context.height, material);
+                this.reconstructionFilter.ProcessImage(this.context, cb, ref settings, BuiltinRenderTextureType.CameraTarget, tempRT, material);
+                this.frameBlendingFilter.BlendFrames(cb, settings.frameBlending, tempRT, BuiltinRenderTextureType.CameraTarget, material);
+                this.frameBlendingFilter.PushFrame(cb, tempRT, this.context.width, this.context.height, material);
             }
             else if (settings.shutterAngle > 0f)
             {
                 // No frame blending
                 cb.SetGlobalTexture(Uniforms._MainTex, BuiltinRenderTextureType.CameraTarget);
                 cb.Blit(BuiltinRenderTextureType.CameraTarget, tempRT, blitMaterial, 0);
-                reconstructionFilter.ProcessImage(context, cb, ref settings, tempRT, BuiltinRenderTextureType.CameraTarget, material);
+                this.reconstructionFilter.ProcessImage(this.context, cb, ref settings, tempRT, BuiltinRenderTextureType.CameraTarget, material);
             }
             else if (settings.frameBlending > 0f)
             {
                 // Frame blending only
                 cb.SetGlobalTexture(Uniforms._MainTex, BuiltinRenderTextureType.CameraTarget);
                 cb.Blit(BuiltinRenderTextureType.CameraTarget, tempRT, blitMaterial, 0);
-                frameBlendingFilter.BlendFrames(cb, settings.frameBlending, tempRT, BuiltinRenderTextureType.CameraTarget, material);
-                frameBlendingFilter.PushFrame(cb, tempRT, context.width, context.height, material);
+                this.frameBlendingFilter.BlendFrames(cb, settings.frameBlending, tempRT, BuiltinRenderTextureType.CameraTarget, material);
+                this.frameBlendingFilter.PushFrame(cb, tempRT, this.context.width, this.context.height, material);
             }
 
             // Cleaning up
@@ -437,8 +440,8 @@ namespace UnityEngine.PostProcessing
 
         public override void OnDisable()
         {
-            if (m_FrameBlendingFilter != null)
-                m_FrameBlendingFilter.Dispose();
+            if (this.m_FrameBlendingFilter != null)
+                this.m_FrameBlendingFilter.Dispose();
         }
     }
 }

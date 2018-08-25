@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "UISpriteFX 3"
+Shader "ASESampleShaders/Sprites/UISpriteFX 3"
 {
 	Properties
 	{
@@ -206,7 +206,7 @@ Node;AmplifyShaderEditor.Vector4Node;59;-192,-672;Float;False;Property;_Rotation
 Node;AmplifyShaderEditor.FunctionNode;770;-1392,-928;Float;False;UI-Sprite Effect Layer;0;;585;789bf62641c5cfe4ab7126850acc22b8;17,74,1,191,1,225,0,242,0,237,0,249,1,186,0,177,0,182,0,229,0,92,1,98,1,234,0,126,0,129,0,130,0,31,2;18;192;COLOR;1,1,1,1;False;39;COLOR;1,1,1,1;False;37;SAMPLER2D;;False;218;FLOAT2;0,0;False;239;FLOAT2;0,0;False;181;FLOAT2;0,0;False;75;SAMPLER2D;;False;80;FLOAT;1.0;False;183;FLOAT2;0,0;False;188;SAMPLER2D;;False;33;SAMPLER2D;;False;248;FLOAT2;0,0;False;233;SAMPLER2D;;False;101;SAMPLER2D;;False;57;FLOAT4;0,0,0,0;False;40;FLOAT;0.0;False;231;FLOAT;1.0;False;30;FLOAT;1.0;False;2;COLOR;0;FLOAT2;172
 Node;AmplifyShaderEditor.TexturePropertyNode;60;-432,-672;Float;True;Property;_RotationMask;Rotation Mask;15;1;[NoScaleOffset];Create;True;None;596678c53fd54a640bf95ba7dfafd092;False;black;Auto;0;1;SAMPLER2D;0
 Node;AmplifyShaderEditor.FunctionNode;769;96,-928;Float;False;UI-Sprite Effect Layer;0;;584;789bf62641c5cfe4ab7126850acc22b8;17,74,2,191,1,225,0,242,0,237,0,249,0,186,0,177,0,182,0,229,0,92,1,98,1,234,0,126,0,129,1,130,1,31,2;18;192;COLOR;1,1,1,1;False;39;COLOR;1,1,1,1;False;37;SAMPLER2D;;False;218;FLOAT2;0,0;False;239;FLOAT2;0,0;False;181;FLOAT2;0,0;False;75;SAMPLER2D;;False;80;FLOAT;1.0;False;183;FLOAT2;0,0;False;188;SAMPLER2D;;False;33;SAMPLER2D;;False;248;FLOAT2;0,0;False;233;SAMPLER2D;;False;101;SAMPLER2D;;False;57;FLOAT4;0,0,0,0;False;40;FLOAT;0.0;False;231;FLOAT;1.0;False;30;FLOAT;1.0;False;2;COLOR;0;FLOAT2;172
-Node;AmplifyShaderEditor.TemplateMasterNode;728;720,-928;Float;False;True;2;Float;ASEMaterialInspector;0;4;UISpriteFX 3;0f8ba0101102bb14ebf021ddadce9b49;Sprites Default;3;One;OneMinusSrcAlpha;0;One;Zero;Off;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMasterNode;728;720,-928;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/Sprites/UISpriteFX 3;0f8ba0101102bb14ebf021ddadce9b49;Sprites Default;3;One;OneMinusSrcAlpha;0;One;Zero;Off;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
 WireConnection;528;0;477;0
 WireConnection;529;0;528;0
 WireConnection;529;1;476;0

@@ -33,6 +33,7 @@ namespace AmplifyShaderEditor
 		{
 			base.CommonInit( uniqueId );
 			AddOutputPort( WirePortDataType.OBJECT, Constants.EmptyPortValue );
+			m_outputPorts[ 0 ].Locked = true;
 			m_textLabelWidth = 80;
 			m_autoWrapProperties = true;
 			m_hasLeftDropdown = true;
@@ -124,6 +125,7 @@ namespace AmplifyShaderEditor
 			if( m_currentSelected != null )
 			{
 				m_nodeId = m_currentSelected.UniqueId;
+				m_outputPorts[ 0 ].Locked = false;
 				m_outputPorts[ 0 ].ChangeType( m_currentSelected.OutputPorts[ 0 ].DataType, false );
 				m_drawPreviewAsSphere = m_currentSelected.SpherePreview;
 				CheckSpherePreview();
@@ -166,6 +168,7 @@ namespace AmplifyShaderEditor
 				{
 					if( m_currentSelected.OutputPorts[ 0 ].DataType != m_outputPorts[ 0 ].DataType )
 					{
+						m_outputPorts[ 0 ].Locked = false;
 						m_outputPorts[ 0 ].ChangeType( m_currentSelected.OutputPorts[ 0 ].DataType, false );
 					}
 
@@ -193,6 +196,7 @@ namespace AmplifyShaderEditor
 
 		public void ResetReference()
 		{
+			m_outputPorts[ 0 ].Locked = true;
 			m_currentSelected = null;
 			m_nodeId = -1;
 			m_referenceId = -1;
@@ -228,10 +232,12 @@ namespace AmplifyShaderEditor
 			if( UIUtils.CurrentShaderVersion() > 15 )
 			{
 				m_nodeId = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
+				m_outputPorts[ 0 ].Locked = ( m_nodeId < 0 );
 			}
 			else
 			{
 				m_referenceId = Convert.ToInt32( GetCurrentParam( ref nodeParams ) );
+				m_outputPorts[ 0 ].Locked = ( m_referenceId < 0 );
 			}
 		}
 
@@ -268,7 +274,12 @@ namespace AmplifyShaderEditor
 
 			if( m_currentSelected != null )
 			{
+				m_outputPorts[ 0 ].Locked = false;
 				m_outputPorts[ 0 ].ChangeType( m_currentSelected.OutputPorts[ 0 ].DataType, false );
+			}
+			else
+			{
+				m_outputPorts[ 0 ].Locked = true;
 			}
 		}
 

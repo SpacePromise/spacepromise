@@ -36,18 +36,32 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if ( dataCollector.IsTemplate )
+			if( dataCollector.IsTemplate && !dataCollector.IsSRP )
 				dataCollector.AddToIncludes( -1, Constants.UnityLightingLib );
 
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
 
+			string finalVar = m_lightColorValue;
+			if( dataCollector.IsTemplate && dataCollector.IsSRP )
+				finalVar = "_MainLightColor";
+			else
+			{
+				dataCollector.AddLocalVariable( UniqueId, "#if defined(LIGHTMAP_ON) && UNITY_VERSION < 560 //aselc" );
+				dataCollector.AddLocalVariable( UniqueId, CurrentPrecisionType, WirePortDataType.FLOAT4, "ase_lightColor", "0" );
+				dataCollector.AddLocalVariable( UniqueId, "#else //aselc" );
+				dataCollector.AddLocalVariable( UniqueId, CurrentPrecisionType, WirePortDataType.FLOAT4, "ase_lightColor", finalVar );
+				dataCollector.AddLocalVariable( UniqueId, "#endif //aselc" );
+				finalVar = "ase_lightColor";
+			}
+			//else if( ContainerGraph.CurrentStandardSurface.CurrentLightingModel == StandardShaderLightModel.CustomLighting )
+			//	finalVar = "gi.light.color";
+
 			switch( outputId )
 			{
 				default:
-				case 0:	return m_lightColorValue;
-				case 1: return m_lightColorValue+".rgb";
-				case 2: return m_lightColorValue+".a";
-
+				case 0: return finalVar;
+				case 1: return finalVar + ".rgb";
+				case 2: return finalVar + ".a";
 			}
 		}
 	}

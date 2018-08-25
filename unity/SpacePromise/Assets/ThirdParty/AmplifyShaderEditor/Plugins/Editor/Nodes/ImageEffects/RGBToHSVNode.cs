@@ -77,8 +77,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if ( m_outputPorts[ 0 ].IsLocalValue )
-				return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			if ( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 			string precisionString = UIUtils.PrecisionWirePortToCgType( m_currentPrecisionType, WirePortDataType.FLOAT );
 			AddRGBToHSVFunction( ref dataCollector, precisionString );
@@ -86,7 +86,7 @@ namespace AmplifyShaderEditor
 			string rgbValue = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 
 			RegisterLocalVariable( 0, string.Format( RGBToHSVHeader, rgbValue ), ref dataCollector, "hsvTorgb" + OutputId );
-			return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 		}
 	}
 }

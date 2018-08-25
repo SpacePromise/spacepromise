@@ -30,6 +30,7 @@ namespace AmplifyShaderEditor
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
+			GlobalTypeWarningText = string.Format( GlobalTypeWarningText, "Int" );
 			AddOutputPort( WirePortDataType.INT, Constants.EmptyPortValue );
 			m_insideSize.Set( 50, 10 );
 			m_selectedLocation = PreviewLocation.BottomCenter;
@@ -37,6 +38,30 @@ namespace AmplifyShaderEditor
 			m_drawPrecisionUI = false;
 			m_availableAttribs.Add( new PropertyAttributes( "Enum", "[Enum]" ) );
 			m_previewShaderGUID = "0f64d695b6ffacc469f2dd31432a232a";
+		}
+
+		protected override void OnUniqueIDAssigned()
+		{
+			base.OnUniqueIDAssigned();
+			UIUtils.RegisterFloatIntNode( this );
+		}
+
+		public override void Destroy()
+		{
+			base.Destroy();
+			UIUtils.UnregisterFloatIntNode( this );
+		}
+
+		public override void OnDirtyProperty()
+		{
+			UIUtils.UpdateFloatIntDataNode( UniqueId, PropertyInspectorName );
+		}
+
+		public override void RefreshExternalReferences()
+		{
+			base.RefreshExternalReferences();
+			OnPropertyNameChanged();
+			OnDirtyProperty();
 		}
 
 		public override void SetPreviewInputs()
@@ -116,10 +141,11 @@ namespace AmplifyShaderEditor
 			if( !m_isVisible )
 				return;
 
-			if( m_isEditingFields )
+			if( m_isEditingFields && m_currentParameterType != PropertyType.Global )
 			{
 				float labelWidth = EditorGUIUtility.labelWidth;
 				EditorGUIUtility.labelWidth = LabelWidth * drawInfo.InvertedZoom;
+
 				if( m_materialMode && m_currentParameterType != PropertyType.Constant )
 				{
 					EditorGUI.BeginChangeCheck();
@@ -144,13 +170,17 @@ namespace AmplifyShaderEditor
 			}
 			else if( drawInfo.CurrentEventType == EventType.Repaint )
 			{
+				bool guiEnabled = GUI.enabled;
+				GUI.enabled = m_currentParameterType != PropertyType.Global;
 				Rect fakeField = m_propertyDrawPos;
 				fakeField.xMin += LabelWidth * drawInfo.InvertedZoom;
-				Rect fakeLabel = m_propertyDrawPos;
-				fakeLabel.xMax = fakeField.xMin;
-				EditorGUIUtility.AddCursorRect( fakeLabel, MouseCursor.SlideArrow );
-				EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
-
+				if( GUI.enabled )
+				{
+					Rect fakeLabel = m_propertyDrawPos;
+					fakeLabel.xMax = fakeField.xMin;
+					EditorGUIUtility.AddCursorRect( fakeLabel, MouseCursor.SlideArrow );
+					EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
+				}
 				bool currMode = m_materialMode && m_currentParameterType != PropertyType.Constant;
 				int value = currMode ? m_materialValue : m_defaultValue;
 
@@ -161,6 +191,7 @@ namespace AmplifyShaderEditor
 				}
 
 				GUI.Label( fakeField, m_fieldText, UIUtils.MainSkin.textField );
+				GUI.enabled = guiEnabled;
 			}
 		}
 
@@ -169,7 +200,7 @@ namespace AmplifyShaderEditor
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
 
 			if( m_currentParameterType != PropertyType.Constant )
-				return PropertyData;
+				return PropertyData( dataCollector.PortCategory );
 
 			return m_defaultValue.ToString();
 		}
@@ -223,6 +254,20 @@ namespace AmplifyShaderEditor
 			return ( m_materialMode && m_currentParameterType != PropertyType.Constant ) ?
 				m_materialValue.ToString( Mathf.Abs( m_materialValue ) > 1000 ? Constants.PropertyBigIntFormatLabel : Constants.PropertyIntFormatLabel ) :
 				m_defaultValue.ToString( Mathf.Abs( m_defaultValue ) > 1000 ? Constants.PropertyBigIntFormatLabel : Constants.PropertyIntFormatLabel );
+		}
+
+		public override void SetGlobalValue() { Shader.SetGlobalInt( m_propertyName, m_defaultValue ); }
+		public override void FetchGlobalValue() { m_materialValue = Shader.GetGlobalInt( m_propertyName ); }
+		public int Value
+		{
+			get { return m_defaultValue; }
+			set { m_defaultValue = value; }
+		}
+
+		public void SetMaterialValueFromInline( int val )
+		{
+			m_materialValue = val;
+			m_requireMaterialUpdate = true;
 		}
 	}
 }

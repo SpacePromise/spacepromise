@@ -1,6 +1,8 @@
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     using SSRResolution = ScreenSpaceReflectionModel.SSRResolution;
     using SSRReflectionBlendType = ScreenSpaceReflectionModel.SSRReflectionBlendType;
@@ -77,19 +79,19 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && context.isGBufferAvailable
-                       && !context.interrupted;
+                return this.model.enabled
+                       && this.context.isGBufferAvailable
+                       && !this.context.interrupted;
             }
         }
 
         public override void OnEnable()
         {
-            m_ReflectionTextures[0] = Shader.PropertyToID("_ReflectionTexture0");
-            m_ReflectionTextures[1] = Shader.PropertyToID("_ReflectionTexture1");
-            m_ReflectionTextures[2] = Shader.PropertyToID("_ReflectionTexture2");
-            m_ReflectionTextures[3] = Shader.PropertyToID("_ReflectionTexture3");
-            m_ReflectionTextures[4] = Shader.PropertyToID("_ReflectionTexture4");
+            this.m_ReflectionTextures[0] = Shader.PropertyToID("_ReflectionTexture0");
+            this.m_ReflectionTextures[1] = Shader.PropertyToID("_ReflectionTexture1");
+            this.m_ReflectionTextures[2] = Shader.PropertyToID("_ReflectionTexture2");
+            this.m_ReflectionTextures[3] = Shader.PropertyToID("_ReflectionTexture3");
+            this.m_ReflectionTextures[4] = Shader.PropertyToID("_ReflectionTexture4");
         }
 
         public override string GetName()
@@ -104,33 +106,33 @@ namespace UnityEngine.PostProcessing
 
         public override void PopulateCommandBuffer(CommandBuffer cb)
         {
-            var settings = model.settings;
-            var camera = context.camera;
+            var settings = this.model.settings;
+            var camera = this.context.camera;
 
             // Material setup
             int downsampleAmount = (settings.reflection.reflectionQuality == SSRResolution.High) ? 1 : 2;
 
-            var rtW = context.width / downsampleAmount;
-            var rtH = context.height / downsampleAmount;
+            var rtW = this.context.width / downsampleAmount;
+            var rtH = this.context.height / downsampleAmount;
 
-            float sWidth = context.width;
-            float sHeight = context.height;
+            float sWidth = this.context.width;
+            float sHeight = this.context.height;
 
             float sx = sWidth / 2f;
             float sy = sHeight / 2f;
 
-            var material = context.materialFactory.Get("Hidden/Post FX/Screen Space Reflection");
+            var material = this.context.materialFactory.Get("Hidden/Post FX/Screen Space Reflection");
 
             material.SetInt(Uniforms._RayStepSize, settings.reflection.stepSize);
             material.SetInt(Uniforms._AdditiveReflection, settings.reflection.blendType == SSRReflectionBlendType.Additive ? 1 : 0);
-            material.SetInt(Uniforms._BilateralUpsampling, k_BilateralUpsample ? 1 : 0);
-            material.SetInt(Uniforms._TreatBackfaceHitAsMiss, k_TreatBackfaceHitAsMiss ? 1 : 0);
+            material.SetInt(Uniforms._BilateralUpsampling, this.k_BilateralUpsample ? 1 : 0);
+            material.SetInt(Uniforms._TreatBackfaceHitAsMiss, this.k_TreatBackfaceHitAsMiss ? 1 : 0);
             material.SetInt(Uniforms._AllowBackwardsRays, settings.reflection.reflectBackfaces ? 1 : 0);
-            material.SetInt(Uniforms._TraceBehindObjects, k_TraceBehindObjects ? 1 : 0);
+            material.SetInt(Uniforms._TraceBehindObjects, this.k_TraceBehindObjects ? 1 : 0);
             material.SetInt(Uniforms._MaxSteps, settings.reflection.iterationCount);
             material.SetInt(Uniforms._FullResolutionFiltering, 0);
             material.SetInt(Uniforms._HalfResolution, (settings.reflection.reflectionQuality != SSRResolution.High) ? 1 : 0);
-            material.SetInt(Uniforms._HighlightSuppression, k_HighlightSuppression ? 1 : 0);
+            material.SetInt(Uniforms._HighlightSuppression, this.k_HighlightSuppression ? 1 : 0);
 
             // The height in pixels of a 1m object if viewed from 1m away.
             float pixelsPerMeterAtOneMeter = sWidth / (-2f * Mathf.Tan(camera.fieldOfView / 180f * Mathf.PI * 0.5f));
@@ -177,7 +179,7 @@ namespace UnityEngine.PostProcessing
             material.SetMatrix(Uniforms._CameraToWorldMatrix, camera.worldToCameraMatrix.inverse);
 
             // Command buffer setup
-            var intermediateFormat = context.isHdr ? RenderTextureFormat.ARGBHalf : RenderTextureFormat.ARGB32;
+            var intermediateFormat = this.context.isHdr ? RenderTextureFormat.ARGBHalf : RenderTextureFormat.ARGB32;
             const int maxMip = 5;
 
             var kNormalAndRoughnessTexture = Uniforms._NormalAndRoughnessTexture;
@@ -196,20 +198,20 @@ namespace UnityEngine.PostProcessing
             for (int i = 0; i < maxMip; ++i)
             {
                 // We explicitly interpolate during bilateral upsampling.
-                cb.GetTemporaryRT(m_ReflectionTextures[i], rtW >> i, rtH >> i, 0, FilterMode.Bilinear, intermediateFormat);
+                cb.GetTemporaryRT(this.m_ReflectionTextures[i], rtW >> i, rtH >> i, 0, FilterMode.Bilinear, intermediateFormat);
             }
 
-            cb.GetTemporaryRT(kFilteredReflections, rtW, rtH, 0, k_BilateralUpsample ? FilterMode.Point : FilterMode.Bilinear, intermediateFormat);
+            cb.GetTemporaryRT(kFilteredReflections, rtW, rtH, 0, this.k_BilateralUpsample ? FilterMode.Point : FilterMode.Bilinear, intermediateFormat);
             cb.GetTemporaryRT(kFinalReflectionTexture, rtW, rtH, 0, FilterMode.Point, intermediateFormat);
 
             cb.Blit(BuiltinRenderTextureType.CameraTarget, kNormalAndRoughnessTexture, material, (int)PassIndex.BilateralKeyPack);
             cb.Blit(BuiltinRenderTextureType.CameraTarget, kHitPointTexture, material, (int)PassIndex.RayTraceStep);
             cb.Blit(BuiltinRenderTextureType.CameraTarget, kFilteredReflections, material, (int)PassIndex.HitPointToReflections);
-            cb.Blit(kFilteredReflections, m_ReflectionTextures[0], material, (int)PassIndex.PoissonBlur);
+            cb.Blit(kFilteredReflections, this.m_ReflectionTextures[0], material, (int)PassIndex.PoissonBlur);
 
             for (int i = 1; i < maxMip; ++i)
             {
-                int inputTex = m_ReflectionTextures[i - 1];
+                int inputTex = this.m_ReflectionTextures[i - 1];
 
                 int lowMip = i;
 
@@ -221,12 +223,12 @@ namespace UnityEngine.PostProcessing
 
                 cb.SetGlobalVector(Uniforms._Axis, new Vector4(0.0f, 1.0f, 0.0f, 0.0f));
 
-                inputTex = m_ReflectionTextures[i];
+                inputTex = this.m_ReflectionTextures[i];
                 cb.Blit(kBlurTexture, inputTex, material, (int)PassIndex.Blur);
                 cb.ReleaseTemporaryRT(kBlurTexture);
             }
 
-            cb.Blit(m_ReflectionTextures[0], kFinalReflectionTexture, material, (int)PassIndex.CompositeSSR);
+            cb.Blit(this.m_ReflectionTextures[0], kFinalReflectionTexture, material, (int)PassIndex.CompositeSSR);
 
             cb.GetTemporaryRT(kTempTexture, camera.pixelWidth, camera.pixelHeight, 0, FilterMode.Bilinear, intermediateFormat);
 

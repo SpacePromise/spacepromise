@@ -11,7 +11,7 @@ namespace AmplifyShaderEditor
 																"{\n",
 																"\t{0}4 K = {0}4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );\n",
 																"\t{0}3 p = abs( frac( c.xxx + K.xyz ) * 6.0 - K.www );\n",
-																"\treturn c.z * lerp( K.xxx, clamp( p - K.xxx, 0.0, 1.0 ), c.y );\n",
+																"\treturn c.z * lerp( K.xxx, saturate( p - K.xxx ), c.y );\n",
 																"}\n"};
 		public static readonly bool[] HSVToRGBFlags = {	true,
 														false,
@@ -68,8 +68,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if ( m_outputPorts[ 0 ].IsLocalValue )
-				return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			if ( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 
 			string precisionString = UIUtils.FinalPrecisionWirePortToCgType( m_currentPrecisionType, WirePortDataType.FLOAT );
 
@@ -80,7 +80,7 @@ namespace AmplifyShaderEditor
 			string value = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
 			
 			RegisterLocalVariable( 0, string.Format( HSVToRGBHeader, precisionString, hue, saturation, value ), ref dataCollector, "hsvTorgb" + OutputId );
-			return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue );
+			return GetOutputVectorItem( 0, outputId, m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory ) );
 		}
 	}
 }

@@ -28,6 +28,7 @@ namespace AmplifyShaderEditor
 			AddOutputPort( WirePortDataType.FLOAT, Constants.EmptyPortValue );
 			m_textLabelWidth = 110;
 			m_useInternalPortData = true;
+			m_previewShaderGUID = "5c7bc7e3cab81da499e4864ace0d86c5";
 		}
 
 		public override void OnConnectedOutputNodeChanges( int inputPortId, int otherNodeId, int otherPortId, string name, WirePortDataType type )
@@ -50,17 +51,17 @@ namespace AmplifyShaderEditor
 		void TestMainInputDataType()
 		{
 			WirePortDataType newType = WirePortDataType.FLOAT;
-			if ( m_inputPorts[ 0 ].IsConnected && UIUtils.GetPriority( m_inputPorts[ 0 ].DataType ) > UIUtils.GetPriority( newType ) )
+			if( m_inputPorts[ 0 ].IsConnected && UIUtils.GetPriority( m_inputPorts[ 0 ].DataType ) > UIUtils.GetPriority( newType ) )
 			{
 				newType = m_inputPorts[ 0 ].DataType;
 			}
 
-			if ( m_inputPorts[ 1 ].IsConnected && ( UIUtils.GetPriority( m_inputPorts[ 1 ].DataType ) > UIUtils.GetPriority( newType ) ) )
+			if( m_inputPorts[ 1 ].IsConnected && ( UIUtils.GetPriority( m_inputPorts[ 1 ].DataType ) > UIUtils.GetPriority( newType ) ) )
 			{
 				newType = m_inputPorts[ 1 ].DataType;
 			}
 
-			if ( m_inputPorts[ 5 ].IsConnected && ( UIUtils.GetPriority( m_inputPorts[ 5 ].DataType ) > UIUtils.GetPriority( newType ) ) )
+			if( m_inputPorts[ 5 ].IsConnected && ( UIUtils.GetPriority( m_inputPorts[ 5 ].DataType ) > UIUtils.GetPriority( newType ) ) )
 			{
 				newType = m_inputPorts[ 5 ].DataType;
 			}
@@ -71,15 +72,15 @@ namespace AmplifyShaderEditor
 		void TestMainOutputDataType()
 		{
 			WirePortDataType newType = WirePortDataType.FLOAT;
-			for ( int i = 2; i < 5; i++ )
+			for( int i = 2; i < 5; i++ )
 			{
-				if ( m_inputPorts[ i ].IsConnected && ( UIUtils.GetPriority( m_inputPorts[ i ].DataType ) > UIUtils.GetPriority( newType ) ) )
+				if( m_inputPorts[ i ].IsConnected && ( UIUtils.GetPriority( m_inputPorts[ i ].DataType ) > UIUtils.GetPriority( newType ) ) )
 				{
 					newType = m_inputPorts[ i ].DataType;
 				}
 			}
 
-			if ( newType != m_outputMainDataType )
+			if( newType != m_outputMainDataType )
 			{
 				m_outputMainDataType = newType;
 				m_outputPorts[ 0 ].ChangeType( m_outputMainDataType, false );
@@ -89,7 +90,7 @@ namespace AmplifyShaderEditor
 		public void UpdateConnection( int portId )
 		{
 			m_inputPorts[ portId ].MatchPortToConnection();
-			switch ( portId )
+			switch( portId )
 			{
 				case 0:
 				case 1:

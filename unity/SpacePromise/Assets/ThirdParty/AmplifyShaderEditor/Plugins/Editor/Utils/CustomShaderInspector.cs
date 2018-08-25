@@ -166,32 +166,45 @@ namespace UnityEditor
 				GUI.DrawTexture( r, resultRender, ScaleMode.StretchToFill, false );
 			}
 		}
-
+		
 		void OnDestroy()
 		{
-			if ( m_previewRenderUtility != null )
+			CleanUp();
+		}
+
+		public void OnDisable()
+		{
+			CleanUp();
+		}
+		
+		void CleanUp()
+		{
+			if( m_previewRenderUtility != null )
 			{
 				m_previewRenderUtility.Cleanup();
 				m_previewRenderUtility = null;
 			}
 
-			if ( m_previewMesh != null )
+			if( m_previewMesh != null )
 			{
 				Resources.UnloadAsset( m_previewMesh );
 				m_previewMesh = null;
 			}
 
+			if( m_previewRenderUtility != null )
+			{
+				m_previewRenderUtility.Cleanup();
+				m_previewRenderUtility = null;
+			}
 			m_material = null;
 		}
-
 
 		public virtual void OnEnable()
 		{
 			Shader s = this.target as Shader;
 			ShaderUtilEx.FetchCachedErrors( s );
 		}
-
-
+		
 		private static string GetPropertyType( Shader s, int index )
 		{
 			UnityEditor.ShaderUtil.ShaderPropertyType propertyType = UnityEditor.ShaderUtil.GetPropertyType( s, index );
@@ -222,7 +235,14 @@ namespace UnityEditor
 
 				if ( GUILayout.Button( "Open in Text Editor" ) )
 				{
-					AssetDatabase.OpenAsset( shader, 1 );
+					if( UIUtils.IsUnityNativeShader( shader ) )
+					{
+						Debug.LogWarningFormat( "Action not allowed. Attempting to load the native {0} shader into Text Editor", shader.name );
+					}
+					else
+					{
+						AssetDatabase.OpenAsset( shader, 1 );
+					}
 				}
 			}
 			GUILayout.EndHorizontal();
@@ -693,6 +713,23 @@ namespace UnityEditor
 			return ( bool ) EditorGUIEx.Type.InvokeMember( "ButtonMouseDown", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, new object[] { position, content, focusType, style } );
 #endif
 		}
+
+		public static float kObjectFieldMiniThumbnailHeight
+		{
+			get
+			{
+				return (float)EditorGUIEx.Type.InvokeMember( "kObjectFieldMiniThumbnailHeight", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.GetField, null, null, new object[] {} );
+			}
+		}
+
+		public static float kSingleLineHeight
+		{
+			get
+			{
+				return (float)EditorGUIEx.Type.InvokeMember( "kSingleLineHeight", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.GetField, null, null, new object[] { } );
+			}
+		}
+
 	}
 
 	public static class ShaderInspectorPlatformsPopupEx

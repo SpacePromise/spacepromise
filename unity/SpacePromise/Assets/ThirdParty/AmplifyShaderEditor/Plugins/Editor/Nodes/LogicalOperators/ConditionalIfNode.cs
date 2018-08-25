@@ -22,7 +22,7 @@ namespace AmplifyShaderEditor
 											"if( {0} <= {1} )",
 											"if( {0} != {1} )" };
 
-		private WirePortDataType m_inputMainDataType = WirePortDataType.FLOAT;
+		//private WirePortDataType m_inputMainDataType = WirePortDataType.FLOAT;
 		private WirePortDataType m_outputMainDataType = WirePortDataType.FLOAT;
 		private string[] m_results = { string.Empty, string.Empty, string.Empty };
 
@@ -32,12 +32,17 @@ namespace AmplifyShaderEditor
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
-			AddInputPort( WirePortDataType.FLOAT, true, "A" );
-			AddInputPort( WirePortDataType.FLOAT, true, "B" );
+			AddInputPort( WirePortDataType.FLOAT, false, "A" );
+			AddInputPort( WirePortDataType.FLOAT, false, "B" );
+			m_inputPorts[ 0 ].AddPortRestrictions( WirePortDataType.FLOAT, WirePortDataType.INT );
+			m_inputPorts[ 1 ].AddPortRestrictions( WirePortDataType.FLOAT, WirePortDataType.INT );
+
 			AddInputPort( WirePortDataType.FLOAT, false, "A > B" );
 			AddInputPort( WirePortDataType.FLOAT, false, "A == B" );
 			AddInputPort( WirePortDataType.FLOAT, false, "A < B" );
 			AddOutputPort( WirePortDataType.FLOAT, Constants.EmptyPortValue );
+			m_inputPorts[ 0 ].AutoDrawInternalData = true;
+			m_inputPorts[ 1 ].AutoDrawInternalData = true;
 			m_textLabelWidth = 131;
 			//m_useInternalPortData = true;
 			m_autoWrapProperties = true;
@@ -129,11 +134,11 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
-			string AValue = m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, m_inputMainDataType, ignoreLocalvar, true );
-			string BValue = m_inputPorts[ 1 ].GenerateShaderForOutput( ref dataCollector, m_inputMainDataType, ignoreLocalvar, true );
+			string AValue = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector);
+			string BValue = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
 
 			m_results[ 0 ] = m_inputPorts[ 2 ].GenerateShaderForOutput( ref dataCollector, m_outputMainDataType, ignoreLocalvar, true );
 			m_results[ 1 ] = m_inputPorts[ 3 ].GenerateShaderForOutput( ref dataCollector, m_outputMainDataType, ignoreLocalvar, true );
@@ -271,7 +276,7 @@ namespace AmplifyShaderEditor
 				}
 			}
 
-			m_outputPorts[ 0 ].SetLocalValue( localVarName );
+			m_outputPorts[ 0 ].SetLocalValue( localVarName, dataCollector.PortCategory );
 			return localVarName;
 		}
 		public override void ReadFromString( ref string[] nodeParams )

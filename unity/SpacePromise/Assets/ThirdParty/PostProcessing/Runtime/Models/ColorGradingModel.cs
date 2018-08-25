@@ -1,6 +1,9 @@
 using System;
+using Assets.ThirdParty.PostProcessing.Runtime.Attributes;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Models
 {
     [Serializable]
     public class ColorGradingModel : PostProcessingModel
@@ -286,11 +289,11 @@ namespace UnityEngine.PostProcessing
         Settings m_Settings = Settings.defaultSettings;
         public Settings settings
         {
-            get { return m_Settings; }
+            get { return this.m_Settings; }
             set
             {
-                m_Settings = value;
-                OnValidate();
+                this.m_Settings = value;
+                this.OnValidate();
             }
         }
 
@@ -299,13 +302,13 @@ namespace UnityEngine.PostProcessing
 
         public override void Reset()
         {
-            m_Settings = Settings.defaultSettings;
-            OnValidate();
+            this.m_Settings = Settings.defaultSettings;
+            this.OnValidate();
         }
 
         public override void OnValidate()
         {
-            isDirty = true;
+            this.isDirty = true;
         }
     }
 }

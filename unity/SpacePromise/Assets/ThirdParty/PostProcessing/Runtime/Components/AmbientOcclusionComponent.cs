@@ -1,6 +1,9 @@
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     using DebugMode = BuiltinDebugViewsModel.Mode;
 
@@ -40,10 +43,10 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                if (context.isGBufferAvailable && !model.settings.forceForwardCompatibility)
+                if (this.context.isGBufferAvailable && !this.model.settings.forceForwardCompatibility)
                     return OcclusionSource.GBuffer;
 
-                if (model.settings.highPrecision && (!context.isGBufferAvailable || model.settings.forceForwardCompatibility))
+                if (this.model.settings.highPrecision && (!this.context.isGBufferAvailable || this.model.settings.forceForwardCompatibility))
                     return OcclusionSource.DepthTexture;
 
                 return OcclusionSource.DepthNormalsTexture;
@@ -52,16 +55,16 @@ namespace UnityEngine.PostProcessing
 
         bool ambientOnlySupported
         {
-            get { return context.isHdr && model.settings.ambientOnly && context.isGBufferAvailable && !model.settings.forceForwardCompatibility; }
+            get { return this.context.isHdr && this.model.settings.ambientOnly && this.context.isGBufferAvailable && !this.model.settings.forceForwardCompatibility; }
         }
 
         public override bool active
         {
             get
             {
-                return model.enabled
-                       && model.settings.intensity > 0f
-                       && !context.interrupted;
+                return this.model.enabled
+                       && this.model.settings.intensity > 0f
+                       && !this.context.interrupted;
             }
         }
 
@@ -69,10 +72,10 @@ namespace UnityEngine.PostProcessing
         {
             var flags = DepthTextureMode.None;
 
-            if (occlusionSource == OcclusionSource.DepthTexture)
+            if (this.occlusionSource == OcclusionSource.DepthTexture)
                 flags |= DepthTextureMode.Depth;
 
-            if (occlusionSource != OcclusionSource.GBuffer)
+            if (this.occlusionSource != OcclusionSource.GBuffer)
                 flags |= DepthTextureMode.DepthNormals;
 
             return flags;
@@ -85,26 +88,26 @@ namespace UnityEngine.PostProcessing
 
         public override CameraEvent GetCameraEvent()
         {
-            return ambientOnlySupported && !context.profile.debugViews.IsModeActive(DebugMode.AmbientOcclusion)
+            return this.ambientOnlySupported && !this.context.profile.debugViews.IsModeActive(DebugMode.AmbientOcclusion)
                    ? CameraEvent.BeforeReflections
                    : CameraEvent.BeforeImageEffectsOpaque;
         }
 
         public override void PopulateCommandBuffer(CommandBuffer cb)
         {
-            var settings = model.settings;
+            var settings = this.model.settings;
 
             // Material setup
-            var blitMaterial = context.materialFactory.Get(k_BlitShaderString);
+            var blitMaterial = this.context.materialFactory.Get(k_BlitShaderString);
 
-            var material = context.materialFactory.Get(k_ShaderString);
+            var material = this.context.materialFactory.Get(k_ShaderString);
             material.shaderKeywords = null;
             material.SetFloat(Uniforms._Intensity, settings.intensity);
             material.SetFloat(Uniforms._Radius, settings.radius);
             material.SetFloat(Uniforms._Downsample, settings.downsampling ? 0.5f : 1f);
             material.SetInt(Uniforms._SampleCount, (int)settings.sampleCount);
 
-            if (!context.isGBufferAvailable && RenderSettings.fog)
+            if (!this.context.isGBufferAvailable && RenderSettings.fog)
             {
                 material.SetVector(Uniforms._FogParams, new Vector3(RenderSettings.fogDensity, RenderSettings.fogStartDistance, RenderSettings.fogEndDistance));
 
@@ -126,8 +129,8 @@ namespace UnityEngine.PostProcessing
                 material.EnableKeyword("FOG_OFF");
             }
 
-            int tw = context.width;
-            int th = context.height;
+            int tw = this.context.width;
+            int th = this.context.height;
             int ts = settings.downsampling ? 2 : 1;
             const RenderTextureFormat kFormat = RenderTextureFormat.ARGB32;
             const RenderTextureReadWrite kRWMode = RenderTextureReadWrite.Linear;
@@ -138,7 +141,7 @@ namespace UnityEngine.PostProcessing
             cb.GetTemporaryRT(rtMask, tw / ts, th / ts, 0, kFilter, kFormat, kRWMode);
 
             // AO estimation
-            cb.Blit((Texture)null, rtMask, material, (int)occlusionSource);
+            cb.Blit((Texture)null, rtMask, material, (int)this.occlusionSource);
 
             // Blur buffer
             var rtBlur = Uniforms._OcclusionTexture2;
@@ -146,7 +149,7 @@ namespace UnityEngine.PostProcessing
             // Separable blur (horizontal pass)
             cb.GetTemporaryRT(rtBlur, tw, th, 0, kFilter, kFormat, kRWMode);
             cb.SetGlobalTexture(Uniforms._MainTex, rtMask);
-            cb.Blit(rtMask, rtBlur, material, occlusionSource == OcclusionSource.GBuffer ? 4 : 3);
+            cb.Blit(rtMask, rtBlur, material, this.occlusionSource == OcclusionSource.GBuffer ? 4 : 3);
             cb.ReleaseTemporaryRT(rtMask);
 
             // Separable blur (vertical pass)
@@ -156,23 +159,23 @@ namespace UnityEngine.PostProcessing
             cb.Blit(rtBlur, rtMask, material, 5);
             cb.ReleaseTemporaryRT(rtBlur);
 
-            if (context.profile.debugViews.IsModeActive(DebugMode.AmbientOcclusion))
+            if (this.context.profile.debugViews.IsModeActive(DebugMode.AmbientOcclusion))
             {
                 cb.SetGlobalTexture(Uniforms._MainTex, rtMask);
                 cb.Blit(rtMask, BuiltinRenderTextureType.CameraTarget, material, 8);
-                context.Interrupt();
+                this.context.Interrupt();
             }
-            else if (ambientOnlySupported)
+            else if (this.ambientOnlySupported)
             {
-                cb.SetRenderTarget(m_MRT, BuiltinRenderTextureType.CameraTarget);
+                cb.SetRenderTarget(this.m_MRT, BuiltinRenderTextureType.CameraTarget);
                 cb.DrawMesh(GraphicsUtils.quad, Matrix4x4.identity, material, 0, 7);
             }
             else
             {
-                var fbFormat = context.isHdr ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
+                var fbFormat = this.context.isHdr ? RenderTextureFormat.DefaultHDR : RenderTextureFormat.Default;
 
                 int tempRT = Uniforms._TempRT;
-                cb.GetTemporaryRT(tempRT, context.width, context.height, 0, FilterMode.Bilinear, fbFormat);
+                cb.GetTemporaryRT(tempRT, this.context.width, this.context.height, 0, FilterMode.Bilinear, fbFormat);
                 cb.Blit(BuiltinRenderTextureType.CameraTarget, tempRT, blitMaterial, 0);
                 cb.SetGlobalTexture(Uniforms._MainTex, tempRT);
                 cb.Blit(tempRT, BuiltinRenderTextureType.CameraTarget, material, 6);

@@ -92,8 +92,8 @@ namespace AmplifyShaderEditor
 			if( dataCollector.GenType == PortGenType.NonCustomLighting || dataCollector.CurrentCanvasMode != NodeAvailability.CustomLighting )
 				return "float3(0,0,0)";
 
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string specularMode = string.Empty;
 			if( m_workflow == ASEStandardSurfaceWorkflow.Specular )
@@ -111,17 +111,22 @@ namespace AmplifyShaderEditor
 			dataCollector.AddLocalVariable( UniqueId, "s" + OutputId + ".Albedo = " + m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ) + ";" );
 
 			string normal = string.Empty;
-			if( dataCollector.DirtyNormal )
-			{
-				normal = "WorldNormalVector( " + Constants.InputVarStr + " , " + m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector ) + " )";
-			} else
-			{
-				if( m_inputPorts[ 1 ].IsConnected )
-					normal = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
-				else
-					normal = "i.worldNormal";
 
+			if( m_inputPorts[ 1 ].IsConnected )
+			{
+				normal = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
+				if( m_normalSpace == ViewSpace.Tangent )
+				{
+					normal = "WorldNormalVector( " + Constants.InputVarStr + " , " + normal + " )";
+				}
 			}
+			else
+			{
+				normal = GeneratorUtils.GenerateWorldNormal( ref dataCollector, UniqueId );
+			}
+
+
+
 			dataCollector.AddLocalVariable( UniqueId, "s" + OutputId + ".Normal = "+ normal + ";" );
 			dataCollector.AddLocalVariable( UniqueId, "s" + OutputId + ".Emission = " + m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector ) + ";" );
 			if( m_workflow == ASEStandardSurfaceWorkflow.Specular )
@@ -142,8 +147,8 @@ namespace AmplifyShaderEditor
 			dataCollector.AddLocalVariable( UniqueId, "float3 surfResult" + OutputId + " = LightingStandard" + specularMode + " ( s" + OutputId + ", viewDir, gi" + OutputId + " ).rgb;" );
 			dataCollector.AddLocalVariable( UniqueId, "surfResult" + OutputId + " += s" + OutputId + ".Emission;\n" );
 
-			m_outputPorts[ 0 ].SetLocalValue( "surfResult" + OutputId );
-			return m_outputPorts[ 0 ].LocalValue;
+			m_outputPorts[ 0 ].SetLocalValue( "surfResult" + OutputId, dataCollector.PortCategory );
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void Draw( DrawInfo drawInfo )

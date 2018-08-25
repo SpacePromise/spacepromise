@@ -34,9 +34,9 @@ namespace AmplifyShaderEditor
 		private List<PropertyNode> m_propertyReordableNodes = new List<PropertyNode>();
 
 		// width and height are between [0,1] and represent a percentage of the total screen area
-		public NodeParametersWindow( AmplifyShaderEditorWindow parentWindow ) : base( parentWindow, 0, 0, 250, 0, string.Empty, MenuAnchor.TOP_LEFT, MenuAutoSize.MATCH_VERTICAL )
+		public NodeParametersWindow( AmplifyShaderEditorWindow parentWindow ) : base( parentWindow, 0, 0, 265, 0, string.Empty, MenuAnchor.TOP_LEFT, MenuAutoSize.MATCH_VERTICAL )
 		{
-			SetMinimizedArea( -225, 0, 260, 0 );
+			SetMinimizedArea( -225, 0, 275, 0 );
 		}
 
 		public void OnShaderFunctionLoad()
@@ -168,31 +168,32 @@ namespace AmplifyShaderEditor
 							float labelWidth = EditorGUIUtility.labelWidth;
 							EditorGUIUtility.labelWidth = 90;
 
-							bool generalIsVisible = EditorVariablesManager.ExpandedGeneralShaderOptions.Value;
+							bool generalIsVisible = m_parentWindow.InnerWindowVariables.ExpandedGeneralShaderOptions;
 							NodeUtils.DrawPropertyGroup( ref generalIsVisible, " General", DrawGeneralFunction );
-							EditorVariablesManager.ExpandedGeneralShaderOptions.Value = generalIsVisible;
+							m_parentWindow.InnerWindowVariables.ExpandedGeneralShaderOptions = generalIsVisible;
 							AmplifyShaderFunction function = ParentWindow.CurrentGraph.CurrentShaderFunction;
 							if( function != null )
 							{
-								function.AdditionalIncludes.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
-								function.AdditionalPragmas.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
+								//function.AdditionalIncludes.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
+								//function.AdditionalPragmas.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
+								function.AdditionalDirectives.Draw( ParentWindow.CurrentGraph.CurrentOutputNode );
 							}
 
-							bool inputIsVisible = EditorVariablesManager.ExpandedFunctionInputs.Value;
+							bool inputIsVisible = m_parentWindow.InnerWindowVariables.ExpandedFunctionInputs;
 							NodeUtils.DrawPropertyGroup( ref inputIsVisible, " Function Inputs", DrawFunctionInputs );
-							EditorVariablesManager.ExpandedFunctionInputs.Value = inputIsVisible;
+							m_parentWindow.InnerWindowVariables.ExpandedFunctionInputs = inputIsVisible;
 
-							bool swicthIsVisible = EditorVariablesManager.ExpandedFunctionSwitches.Value;
+							bool swicthIsVisible = m_parentWindow.InnerWindowVariables.ExpandedFunctionSwitches;
 							NodeUtils.DrawPropertyGroup( ref swicthIsVisible, " Function Switches", DrawFunctionSwitches );
-							EditorVariablesManager.ExpandedFunctionSwitches.Value = swicthIsVisible;
+							m_parentWindow.InnerWindowVariables.ExpandedFunctionSwitches = swicthIsVisible;
 
-							bool outputIsVisible = EditorVariablesManager.ExpandedFunctionOutputs.Value;
+							bool outputIsVisible = m_parentWindow.InnerWindowVariables.ExpandedFunctionOutputs;
 							NodeUtils.DrawPropertyGroup( ref outputIsVisible, " Function Outputs", DrawFunctionOutputs );
-							EditorVariablesManager.ExpandedFunctionOutputs.Value = outputIsVisible;
+							m_parentWindow.InnerWindowVariables.ExpandedFunctionOutputs = outputIsVisible;
 
-							bool properties = ParentWindow.ExpandedProperties;
+							bool properties = ParentWindow.InnerWindowVariables.ExpandedProperties;
 							NodeUtils.DrawPropertyGroup( ref properties, " Material Properties", DrawFunctionProperties );
-							ParentWindow.ExpandedProperties = properties;
+							ParentWindow.InnerWindowVariables.ExpandedProperties = properties;
 
 							EditorGUIUtility.labelWidth = labelWidth;
 							EditorGUILayout.EndScrollView();

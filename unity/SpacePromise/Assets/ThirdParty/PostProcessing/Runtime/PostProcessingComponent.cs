@@ -1,6 +1,7 @@
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime
 {
     public abstract class PostProcessingComponentBase
     {
@@ -29,13 +30,13 @@ namespace UnityEngine.PostProcessing
 
         public virtual void Init(PostProcessingContext pcontext, T pmodel)
         {
-            context = pcontext;
-            model = pmodel;
+            this.context = pcontext;
+            this.model = pmodel;
         }
 
         public override PostProcessingModel GetModel()
         {
-            return model;
+            return this.model;
         }
     }
 

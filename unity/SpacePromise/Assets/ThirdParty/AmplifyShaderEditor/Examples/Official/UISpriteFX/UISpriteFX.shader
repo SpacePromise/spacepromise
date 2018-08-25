@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "ASESampleShaders/UISpriteFX"
+Shader "ASESampleShaders/Sprites/UISpriteFX"
 {
 	Properties
 	{
@@ -156,7 +156,7 @@ Node;AmplifyShaderEditor.FunctionNode;71;-400,144;Float;False;UI-Sprite Effect L
 Node;AmplifyShaderEditor.ColorNode;58;-368,-48;Float;False;Property;_RingColor;Ring Color;7;0;Create;True;0,0.3793104,1,1;0,1,0.3793103,1;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ComponentMaskNode;60;-128,128;Float;False;False;False;False;True;1;0;COLOR;0,0,0,0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;59;176,-208;Float;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0.0,0,0,0;False;2;FLOAT;0.0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMasterNode;27;336,-208;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/UISpriteFX;0f8ba0101102bb14ebf021ddadce9b49;Sprites Default;3;One;OneMinusSrcAlpha;0;One;Zero;Off;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMasterNode;27;336,-208;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/Sprites/UISpriteFX;0f8ba0101102bb14ebf021ddadce9b49;Sprites Default;3;One;OneMinusSrcAlpha;0;One;Zero;Off;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
 WireConnection;57;2;29;0
 WireConnection;53;0;57;2
 WireConnection;53;1;55;2

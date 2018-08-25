@@ -16,6 +16,7 @@ namespace AmplifyShaderEditor
 			ChangeOutputName( 3, "Unused" );
 			ChangeOutputName( 4, "Unused" );
 			m_value = "unity_LODFade";
+			m_previewShaderGUID = "fcd4d93f57ffc51458d4ade10df2fdb4";
 		}
 
 		public override void RefreshExternalReferences()

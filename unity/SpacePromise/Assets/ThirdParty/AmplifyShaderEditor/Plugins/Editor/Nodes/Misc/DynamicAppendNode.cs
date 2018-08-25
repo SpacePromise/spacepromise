@@ -208,10 +208,10 @@ namespace AmplifyShaderEditor
 		{
 			base.OnInputPortConnected( portId, otherNodeId, otherPortId, activateNode );
 
-			if( m_containerGraph.ParentWindow.IsLoading && UIUtils.CurrentShaderVersion() < 13206 )
+			if( ( m_containerGraph.IsLoading || m_isNodeBeingCopied ) && UIUtils.CurrentShaderVersion() < 13206 )
 				return;
 
-			NewUpdateBehaviorConn( portId, m_containerGraph.ParentWindow.IsLoading );
+			NewUpdateBehaviorConn( portId, ( m_containerGraph.IsLoading || m_isNodeBeingCopied ) );
 			RenamePorts();
 
 		}
@@ -220,7 +220,7 @@ namespace AmplifyShaderEditor
 		{
 			base.OnInputPortDisconnected( portId );
 
-			if( m_containerGraph.ParentWindow.IsLoading && UIUtils.CurrentShaderVersion() < 13206 )
+			if( ( m_containerGraph.IsLoading || m_isNodeBeingCopied ) && UIUtils.CurrentShaderVersion() < 13206 )
 				return;
 
 			NewUpdateBehaviorDisconn( portId );
@@ -231,10 +231,10 @@ namespace AmplifyShaderEditor
 		{
 			base.OnConnectedOutputNodeChanges( portId, otherNodeId, otherPortId, name, type );
 
-			if( m_containerGraph.ParentWindow.IsLoading && UIUtils.CurrentShaderVersion() < 13206 )
+			if( ( m_containerGraph.IsLoading || m_isNodeBeingCopied ) && UIUtils.CurrentShaderVersion() < 13206 )
 				return;
 
-			NewUpdateBehaviorConn( portId, m_containerGraph.ParentWindow.IsLoading );
+			NewUpdateBehaviorConn( portId, ( m_containerGraph.IsLoading || m_isNodeBeingCopied ) );
 			RenamePorts();
 		}
 
@@ -284,8 +284,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 			string result = string.Empty;
 			for( int i = 0; i < 4; i++ )
 			{
@@ -304,7 +304,7 @@ namespace AmplifyShaderEditor
 									result );
 
 			RegisterLocalVariable( 0, result, ref dataCollector, "appendResult" + OutputId );
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )

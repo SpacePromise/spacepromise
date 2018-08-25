@@ -82,10 +82,10 @@ namespace AmplifyShaderEditor
 				UIUtils.ShowMessage( ErrorMessage );
 				return "0";
 			}
-			if( m_outputPorts[ 0 ].IsLocalValue )
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
 				return "0";
 
-			m_outputPorts[ 0 ].SetLocalValue( "0" );
+			m_outputPorts[ 0 ].SetLocalValue( "0", dataCollector.PortCategory );
 			string vertexPosValue = dataCollector.IsTemplate ? dataCollector.TemplateDataCollectorInstance.GetVertexPosition( WirePortDataType.FLOAT4, m_currentPrecisionType ) : "v.vertex";
 			string vertexNormalValue = dataCollector.IsTemplate ? dataCollector.TemplateDataCollectorInstance.GetVertexNormal( m_currentPrecisionType ) : "v.normal";
 			BillboardOpHelper.FillDataCollector( ref dataCollector, m_billboardType, m_rotationIndependent, vertexPosValue, vertexNormalValue, false );

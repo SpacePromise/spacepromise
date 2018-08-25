@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader /*ase_name*/ "ASETemplateShaders/PostProcess" /*end*/
+Shader /*ase_name*/ "ASETemplateShaders/Legacy/PostProcess" /*end*/
 {
 	Properties
 	{
@@ -15,8 +15,8 @@ Shader /*ase_name*/ "ASETemplateShaders/PostProcess" /*end*/
 		ZTest Always
 		Cull Off
 		ZWrite Off
-		/*ase_pass*/
 
+		/*ase_pass*/
 		Pass
 		{ 
 			CGPROGRAM 
@@ -43,7 +43,7 @@ Shader /*ase_name*/ "ASETemplateShaders/PostProcess" /*end*/
 				half4 uv2 : TEXCOORD1;
 				half4 stereoUV2 : TEXCOORD3;
 		#endif
-				/*ase_interp(4,7):sp=sp.xyzw;uv0=tc0.xy;uv1=tc1;uv2=tc2;uv3=tc3*/
+				/*ase_interp(4,):sp=sp.xyzw;uv0=tc0.xy;uv1=tc1;uv2=tc2;uv3=tc3*/
 			};
 
 			uniform sampler2D _MainTex;

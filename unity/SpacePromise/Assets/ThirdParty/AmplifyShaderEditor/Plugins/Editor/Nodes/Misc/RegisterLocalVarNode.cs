@@ -83,29 +83,46 @@ namespace AmplifyShaderEditor
 			m_variableName = EditorGUILayoutTextField( LocalVarNameStr, m_variableName );
 			if( EditorGUI.EndChangeCheck() )
 			{
-
-				m_variableName = UIUtils.RemoveInvalidCharacters( m_variableName );
-				if( string.IsNullOrEmpty( m_variableName ) )
-				{
-					m_variableName = LocalDefaultNameStr + OutputId;
-				}
-
-				if( UIUtils.IsLocalvariableNameAvailable( m_variableName ) )
-				{
-					UIUtils.ReleaseLocalVariableName( UniqueId, m_oldName );
-					UIUtils.RegisterLocalVariableName( UniqueId, m_variableName );
-					m_oldName = m_variableName;
-					UIUtils.UpdateLocalVarDataNode( UniqueId, m_variableName );
-					UpdateTitle();
-					m_forceUpdate = true;
-				}
-				else
-				{
-					m_variableName = m_oldName;
-				}
+				CheckAndChangeName();
 			}
 
 			DrawPrecisionProperty();
+		}
+
+		public override void AfterDuplication( ParentNode original )
+		{
+			base.AfterDuplication( original );
+
+			CheckAndChangeName();
+		}
+
+		void CheckAndChangeName()
+		{
+			m_variableName = UIUtils.RemoveInvalidCharacters( m_variableName );
+			if( string.IsNullOrEmpty( m_variableName ) )
+			{
+				m_variableName = LocalDefaultNameStr + OutputId;
+			}
+			bool isNumericName = UIUtils.IsNumericName( m_variableName );
+			if( !isNumericName && UIUtils.IsLocalvariableNameAvailable( m_variableName ) )
+			{
+				UIUtils.ReleaseLocalVariableName( UniqueId, m_oldName );
+				UIUtils.RegisterLocalVariableName( UniqueId, m_variableName );
+				m_oldName = m_variableName;
+				UIUtils.UpdateLocalVarDataNode( UniqueId, m_variableName );
+				UpdateTitle();
+				m_forceUpdate = true;
+			}
+			else
+			{
+				//if( isNumericName )
+				//{
+				//	UIUtils.ShowMessage( "Local variable name cannot start or be numerical values" );
+				//}
+
+				m_variableName = m_oldName;
+				UIUtils.UpdateLocalVarDataNode( UniqueId, m_variableName );
+			}
 		}
 
 		void DrawReferences()
@@ -189,13 +206,13 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
 			{
-				return m_outputPorts[ 0 ].LocalValue;
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 			}
 			string result = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 			RegisterLocalVariable( 0, result, ref dataCollector, m_variableName + OutputId );
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void ReadFromString( ref string[] nodeParams )

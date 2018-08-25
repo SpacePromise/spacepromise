@@ -18,6 +18,10 @@ namespace AmplifyShaderEditor
 	{
 		private const string SpaceStr = "Space";
 		private const string WorldDirVarStr = "worldViewDir";
+		private const string NormalizeOptionStr = "Safe Normalize";
+
+		[SerializeField]
+		private bool m_safeNormalize = false;
 
 		[SerializeField]
 		private ViewSpace m_viewDirSpace = ViewSpace.World;
@@ -29,7 +33,7 @@ namespace AmplifyShaderEditor
 			base.CommonInit( uniqueId );
 			m_currentInput = SurfaceInputs.VIEW_DIR;
 			InitialSetup();
-			m_textLabelWidth = 75;
+			m_textLabelWidth = 120;
 			m_autoWrapProperties = true;
 			m_drawPreviewAsSphere = true;
 			m_hasLeftDropdown = true;
@@ -63,6 +67,8 @@ namespace AmplifyShaderEditor
 			{
 				UpdateTitle();
 			}
+			m_safeNormalize = EditorGUILayoutToggle( NormalizeOptionStr, m_safeNormalize );
+			EditorGUILayout.HelpBox( "Having safe normalize ON makes sure your view vector is not zero even if you are using your shader with no cameras.", MessageType.None );
 		}
 
 		public override void SetPreviewInputs()
@@ -80,14 +86,17 @@ namespace AmplifyShaderEditor
 			base.PropagateNodeData( nodeData, ref dataCollector );
 			if( m_viewDirSpace == ViewSpace.Tangent )
 				dataCollector.DirtyNormal = true;
+
+			if( m_safeNormalize )
+				dataCollector.SafeNormalizeViewDir = true;
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
 			if( dataCollector.IsTemplate )
 			{
-				string varName = ( m_viewDirSpace == ViewSpace.World ) ? dataCollector.TemplateDataCollectorInstance.GetNormalizedViewDir() :
-																		dataCollector.TemplateDataCollectorInstance.GetTangentViewDir( m_currentPrecisionType );
+				string varName = ( m_viewDirSpace == ViewSpace.World ) ? dataCollector.TemplateDataCollectorInstance.GetViewDir(true,MasterNodePortCategory.Fragment, m_safeNormalize?NormalizeType.Safe:NormalizeType.Regular) :
+																		dataCollector.TemplateDataCollectorInstance.GetTangentViewDir( m_currentPrecisionType ,true,MasterNodePortCategory.Fragment, m_safeNormalize ? NormalizeType.Safe : NormalizeType.Regular );
 				return GetOutputVectorItem( 0, outputId, varName );
 			}
 
@@ -101,7 +110,7 @@ namespace AmplifyShaderEditor
 			{
 				if( m_viewDirSpace == ViewSpace.World )
 				{
-					if( dataCollector.DirtyNormal )
+					if( dataCollector.DirtyNormal || m_safeNormalize )
 					{
 						dataCollector.AddToInput( UniqueId, SurfaceInputs.WORLD_POS );
 						string result = GeneratorUtils.GenerateViewDirection( ref dataCollector, UniqueId );
@@ -116,8 +125,20 @@ namespace AmplifyShaderEditor
 				}
 				else
 				{
-					dataCollector.ForceNormal = true;
-					return base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalVar );
+					if( m_safeNormalize )
+					{
+						dataCollector.AddToInput( UniqueId, SurfaceInputs.WORLD_NORMAL, m_currentPrecisionType );
+						dataCollector.AddToInput( UniqueId, SurfaceInputs.INTERNALDATA, addSemiColon: false );
+						dataCollector.ForceNormal = true;
+						dataCollector.AddToInput( UniqueId, SurfaceInputs.WORLD_POS );
+						string result = GeneratorUtils.GenerateViewDirection( ref dataCollector, UniqueId, ViewSpace.Tangent );
+						return GetOutputVectorItem( 0, outputId, result );
+					}
+					else
+					{
+						dataCollector.ForceNormal = true;
+						return base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalVar );
+					}
 				}
 			}
 		}
@@ -128,6 +149,11 @@ namespace AmplifyShaderEditor
 			if( UIUtils.CurrentShaderVersion() > 2402 )
 				m_viewDirSpace = (ViewSpace)Enum.Parse( typeof( ViewSpace ), GetCurrentParam( ref nodeParams ) );
 
+			if( UIUtils.CurrentShaderVersion() > 15201 )
+			{
+				m_safeNormalize = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
+			}
+
 			UpdateTitle();
 		}
 
@@ -135,6 +161,7 @@ namespace AmplifyShaderEditor
 		{
 			base.WriteToString( ref nodeInfo, ref connectionsInfo );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_viewDirSpace );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_safeNormalize );
 		}
 	}
 }

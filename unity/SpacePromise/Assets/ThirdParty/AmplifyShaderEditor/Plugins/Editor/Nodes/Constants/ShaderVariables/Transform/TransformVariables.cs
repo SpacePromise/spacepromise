@@ -42,13 +42,8 @@ namespace AmplifyShaderEditor
 			"View Projection",
 			"Transpose Model View",
 			"Inverse Transpose Model View",
-			//"Texture 0",
-			//"Texture 1",
-			//"Texture 2",
-			//"Texture 3",
 			"Object to World",
-			"Word to Object"//,
-			//"Scale"
+			"Word to Object"
 		};
 
 		private UpperLeftWidgetHelper m_upperLeftWidget = new UpperLeftWidgetHelper();

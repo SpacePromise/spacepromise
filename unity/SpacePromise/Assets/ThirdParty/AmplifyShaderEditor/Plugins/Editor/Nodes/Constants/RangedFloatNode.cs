@@ -45,6 +45,7 @@ namespace AmplifyShaderEditor
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
+			GlobalTypeWarningText = string.Format( GlobalTypeWarningText, "Float" );
 			AddOutputPort( WirePortDataType.FLOAT, Constants.EmptyPortValue );
 			m_insideSize.Set( 50, 0 );
 			m_showPreview = false;
@@ -54,6 +55,30 @@ namespace AmplifyShaderEditor
 			m_availableAttribs.Add( new PropertyAttributes( "Int Range", "[IntRange]" ) );
 			m_availableAttribs.Add( new PropertyAttributes( "Enum", "[Enum]" ) );
 			m_previewShaderGUID = "d9ca47581ac157145bff6f72ac5dd73e";
+		}
+
+		protected override void OnUniqueIDAssigned()
+		{
+			base.OnUniqueIDAssigned();
+			UIUtils.RegisterFloatIntNode( this );
+		}
+
+		public override void Destroy()
+		{
+			base.Destroy();
+			UIUtils.UnregisterFloatIntNode( this );
+		}
+
+		public override void OnDirtyProperty()
+		{
+			UIUtils.UpdateFloatIntDataNode( UniqueId, PropertyInspectorName );
+		}
+
+		public override void RefreshExternalReferences()
+		{
+			base.RefreshExternalReferences();
+			OnPropertyNameChanged();
+			OnDirtyProperty();
 		}
 
 		public void SetFloatMode( bool value )
@@ -186,6 +211,33 @@ namespace AmplifyShaderEditor
 				m_isEditingFields = false;
 			}
 		}
+		void DrawFakeFloatMaterial( DrawInfo drawInfo )
+		{
+			if( m_floatMode )
+			{
+				//UIUtils.DrawFloat( this, ref m_propertyDrawPos, ref m_materialValue, LabelWidth * drawInfo.InvertedZoom );
+				Rect fakeField = m_propertyDrawPos;
+				fakeField.xMin += LabelWidth * drawInfo.InvertedZoom;
+				if( GUI.enabled )
+				{
+					Rect fakeLabel = m_propertyDrawPos;
+					fakeLabel.xMax = fakeField.xMin;
+					EditorGUIUtility.AddCursorRect( fakeLabel, MouseCursor.SlideArrow );
+					EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
+				}
+				if( m_previousValue[ 0 ] != m_materialValue )
+				{
+					m_previousValue[ 0 ] = m_materialValue;
+					m_fieldText[ 0 ] = m_materialValue.ToString();
+				}
+
+				GUI.Label( fakeField, m_fieldText[ 0 ], UIUtils.MainSkin.textField );
+			}
+			else
+			{
+				DrawFakeSlider( ref m_materialValue, drawInfo );
+			}
+		}
 
 		public override void Draw( DrawInfo drawInfo )
 		{
@@ -194,7 +246,7 @@ namespace AmplifyShaderEditor
 			if ( !m_isVisible )
 				return;
 
-			if ( m_isEditingFields )
+			if ( m_isEditingFields && m_currentParameterType != PropertyType.Global )
 			{
 				if ( m_materialMode && m_currentParameterType != PropertyType.Constant )
 				{
@@ -237,30 +289,16 @@ namespace AmplifyShaderEditor
 			}
 			else if ( drawInfo.CurrentEventType == EventType.Repaint && ContainerGraph.LodLevel <= ParentGraph.NodeLOD.LOD4 )
 			{
-				if ( m_materialMode && m_currentParameterType != PropertyType.Constant )
+				if( m_currentParameterType == PropertyType.Global )
 				{
-					if ( m_floatMode )
-					{
-						//UIUtils.DrawFloat( this, ref m_propertyDrawPos, ref m_materialValue, LabelWidth * drawInfo.InvertedZoom );
-						Rect fakeField = m_propertyDrawPos;
-						fakeField.xMin += LabelWidth * drawInfo.InvertedZoom;
-						Rect fakeLabel = m_propertyDrawPos;
-						fakeLabel.xMax = fakeField.xMin;
-						EditorGUIUtility.AddCursorRect( fakeLabel, MouseCursor.SlideArrow );
-						EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
-
-						if ( m_previousValue[ 0 ] != m_materialValue )
-						{
-							m_previousValue[ 0 ] = m_materialValue;
-							m_fieldText[ 0 ] = m_materialValue.ToString();
-						}
-
-						GUI.Label( fakeField, m_fieldText[ 0 ], UIUtils.MainSkin.textField );
-					}
-					else
-					{
-						DrawFakeSlider( ref m_materialValue, drawInfo );
-					}
+					bool guiEnabled = GUI.enabled;
+					GUI.enabled = false;
+					DrawFakeFloatMaterial( drawInfo );
+					GUI.enabled = guiEnabled;
+				}
+				else if ( m_materialMode && m_currentParameterType != PropertyType.Constant )
+				{
+					DrawFakeFloatMaterial( drawInfo );
 				}
 				else
 				{
@@ -385,7 +423,7 @@ namespace AmplifyShaderEditor
 			m_precisionString = UIUtils.FinalPrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType );
 
 			if ( m_currentParameterType != PropertyType.Constant )
-				return PropertyData;
+				return PropertyData( dataCollector.PortCategory );
 
 			return IOUtils.Floatify( m_defaultValue );
 		}
@@ -456,10 +494,18 @@ namespace AmplifyShaderEditor
 				m_defaultValue.ToString( Mathf.Abs( m_defaultValue ) > 1000 ? Constants.PropertyBigFloatFormatLabel : Constants.PropertyFloatFormatLabel );
 		}
 
+		public override void SetGlobalValue() { Shader.SetGlobalFloat( m_propertyName, m_defaultValue ); }
+		public override void FetchGlobalValue() { m_materialValue = Shader.GetGlobalFloat( m_propertyName ); }
 		public float Value
 		{
 			get { return m_defaultValue; }
 			set { m_defaultValue = value; }
+		}
+
+		public void SetMaterialValueFromInline( float val )
+		{
+			m_materialValue = val;
+			m_requireMaterialUpdate = true;
 		}
 	}
 }

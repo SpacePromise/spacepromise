@@ -82,22 +82,22 @@ namespace AmplifyShaderEditor
 			m_portStyle.imagePosition = ImagePosition.ImageOnly;
 			m_portStyle.margin = new RectOffset( 5, 0, 5, 0 );
 
-			m_labelStyleBold = new GUIStyle( UIUtils.GetCustomStyle( CustomStyle.InputPortlabel ) );
+			m_labelStyleBold = new GUIStyle( UIUtils.InputPortLabel );
 			m_labelStyleBold.fontStyle = FontStyle.Bold;
 			m_labelStyleBold.fontSize = ( int ) ( Constants.TextFieldFontSize );
 
 
-			m_labelStyle = new GUIStyle( UIUtils.GetCustomStyle( CustomStyle.InputPortlabel ) );
+			m_labelStyle = new GUIStyle( UIUtils.InputPortLabel );
 			m_labelStyle.clipping = TextClipping.Overflow;
 			m_labelStyle.imagePosition = ImagePosition.TextOnly;
 			m_labelStyle.contentOffset = new Vector2( -10, 0 );
 			m_labelStyle.fontSize = ( int ) ( Constants.TextFieldFontSize );
 
-			m_nodeInfoLabelStyleBold = new GUIStyle( UIUtils.GetCustomStyle( CustomStyle.InputPortlabel ) );
+			m_nodeInfoLabelStyleBold = new GUIStyle( UIUtils.InputPortLabel );
 			m_nodeInfoLabelStyleBold.fontStyle = FontStyle.Bold;
 			m_nodeInfoLabelStyleBold.fontSize = ( int ) ( Constants.TextFieldFontSize );
 
-			m_nodeInfoLabelStyle = new GUIStyle( UIUtils.GetCustomStyle( CustomStyle.InputPortlabel ) );
+			m_nodeInfoLabelStyle = new GUIStyle( UIUtils.InputPortLabel );
 			m_nodeInfoLabelStyle.clipping = TextClipping.Clip;
 			m_nodeInfoLabelStyle.imagePosition = ImagePosition.TextOnly;
 			m_nodeInfoLabelStyle.fontSize = ( int ) ( Constants.TextFieldFontSize );

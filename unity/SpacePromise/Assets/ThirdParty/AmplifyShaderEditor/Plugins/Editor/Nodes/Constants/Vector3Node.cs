@@ -26,6 +26,7 @@ namespace AmplifyShaderEditor
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
+			GlobalTypeWarningText = string.Format( GlobalTypeWarningText, "Vector" );
 			m_insideSize.Set( 50, 30 );
 			m_selectedLocation = PreviewLocation.BottomCenter;
 			AddOutputVectorPorts( WirePortDataType.FLOAT3, "XYZ" );
@@ -81,7 +82,7 @@ namespace AmplifyShaderEditor
 			if( !m_isVisible )
 				return;
 
-			if( m_isEditingFields )
+			if( m_isEditingFields && m_currentParameterType != PropertyType.Global)
 			{
 				EditorGUI.BeginChangeCheck();
 				for( int i = 0; i < 3; i++ )
@@ -108,16 +109,22 @@ namespace AmplifyShaderEditor
 			}
 			else if( drawInfo.CurrentEventType == EventType.Repaint && ContainerGraph.LodLevel <= ParentGraph.NodeLOD.LOD4 )
 			{
+				bool guiEnabled = GUI.enabled;
+				GUI.enabled = m_currentParameterType != PropertyType.Global;
+
 				for( int i = 0; i < 3; i++ )
 				{
 					m_propertyDrawPos.y = m_outputPorts[ i + 1 ].Position.y - 2 * drawInfo.InvertedZoom;
 
 					Rect fakeField = m_propertyDrawPos;
 					fakeField.xMin += LabelWidth * drawInfo.InvertedZoom;
-					Rect fakeLabel = m_propertyDrawPos;
-					fakeLabel.xMax = fakeField.xMin;
-					EditorGUIUtility.AddCursorRect( fakeLabel, MouseCursor.SlideArrow );
-					EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
+					if( GUI.enabled )
+					{
+						Rect fakeLabel = m_propertyDrawPos;
+						fakeLabel.xMax = fakeField.xMin;
+						EditorGUIUtility.AddCursorRect( fakeLabel, MouseCursor.SlideArrow );
+						EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
+					}
 
 					if( m_materialMode && m_currentParameterType != PropertyType.Constant )
 					{
@@ -138,6 +145,7 @@ namespace AmplifyShaderEditor
 
 					GUI.Label( fakeField, m_fieldText[ i ], UIUtils.MainSkin.textField );
 				}
+				GUI.enabled = guiEnabled;
 			}
 		}
 
@@ -178,10 +186,10 @@ namespace AmplifyShaderEditor
 		{
 			Vector3 value = m_defaultValue;
 			dataCollector.AddLocalVariable( UniqueId, CreateLocalVarDec( value.x + "," + value.y + "," + value.z ) );
-			m_outputPorts[ 0 ].SetLocalValue( m_propertyName );
-			m_outputPorts[ 1 ].SetLocalValue( m_propertyName + ".x" );
-			m_outputPorts[ 2 ].SetLocalValue( m_propertyName + ".y" );
-			m_outputPorts[ 3 ].SetLocalValue( m_propertyName + ".z" );
+			m_outputPorts[ 0 ].SetLocalValue( m_propertyName , dataCollector.PortCategory );
+			m_outputPorts[ 1 ].SetLocalValue( m_propertyName + ".x" , dataCollector.PortCategory );
+			m_outputPorts[ 2 ].SetLocalValue( m_propertyName + ".y" , dataCollector.PortCategory );
+			m_outputPorts[ 3 ].SetLocalValue( m_propertyName + ".z", dataCollector.PortCategory );
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
@@ -190,16 +198,16 @@ namespace AmplifyShaderEditor
 			m_precisionString = UIUtils.FinalPrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType );
 
 			if( m_currentParameterType != PropertyType.Constant )
-				return GetOutputVectorItem( 0, outputId, PropertyData );
+				return GetOutputVectorItem( 0, outputId, PropertyData( dataCollector.PortCategory ) );
 
-			if( m_outputPorts[ outputId ].IsLocalValue )
+			if( m_outputPorts[ outputId ].IsLocalValue( dataCollector.PortCategory ) )
 			{
-				return m_outputPorts[ outputId ].LocalValue;
+				return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 			}
 
 			if( CheckLocalVariable( ref dataCollector ) )
 			{
-				return m_outputPorts[ outputId ].LocalValue;
+				return m_outputPorts[ outputId ].LocalValue( dataCollector.PortCategory );
 			}
 
 			Vector3 value = m_defaultValue;
@@ -279,6 +287,9 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Vector3ToString( m_defaultValue ) );
 			IOUtils.AddFieldValueToString( ref nodeInfo, IOUtils.Vector3ToString( m_materialValue ) );
 		}
+
+		public override void SetGlobalValue() { Shader.SetGlobalVector( m_propertyName, m_defaultValue ); }
+		public override void FetchGlobalValue() { m_materialValue = Shader.GetGlobalVector( m_propertyName ); }
 
 		public override string GetPropertyValStr()
 		{

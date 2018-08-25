@@ -1,4 +1,4 @@
-Shader /*ase_name*/ "ASETemplateShaders/Particles Alpha Blended" /*end*/
+Shader /*ase_name*/ "ASETemplateShaders/Legacy/Particles Alpha Blended" /*end*/
 {
 	Properties
 	{
@@ -18,6 +18,7 @@ Shader /*ase_name*/ "ASETemplateShaders/Particles Alpha Blended" /*end*/
 			Cull Off 
 			Lighting Off 
 			ZWrite Off
+			ZTest LEqual
 			/*ase_pass*/
 			Pass {
 			
@@ -50,7 +51,7 @@ Shader /*ase_name*/ "ASETemplateShaders/Particles Alpha Blended" /*end*/
 					float4 projPos : TEXCOORD2;
 					#endif
 					UNITY_VERTEX_OUTPUT_STEREO
-					/*ase_interp(3,7):sp=sp.xyzw;uv0=tc0;c=c*/
+					/*ase_interp(3,):sp=sp.xyzw;uv0=tc0;c=c*/
 				};
 				
 				uniform sampler2D _MainTex;
@@ -75,7 +76,6 @@ Shader /*ase_name*/ "ASETemplateShaders/Particles Alpha Blended" /*end*/
 					#endif
 					o.color = v.color;
 					o.texcoord = v.texcoord;
-					o.texcoord.xy = TRANSFORM_TEX(v.texcoord,_MainTex);
 					UNITY_TRANSFER_FOG(o,o.vertex);
 					return o;
 				}
@@ -91,7 +91,7 @@ Shader /*ase_name*/ "ASETemplateShaders/Particles Alpha Blended" /*end*/
 
 					/*ase_frag_code:i=v2f*/
 
-					fixed4 col = /*ase_frag_out:Color;Float4*/2.0f * i.color * _TintColor * tex2D(_MainTex, i.texcoord.xy)/*end*/;
+					fixed4 col = /*ase_frag_out:Color;Float4*/2.0f * i.color * _TintColor * tex2D(_MainTex, i.texcoord.xy*_MainTex_ST.xy + _MainTex_ST.zw )/*end*/;
 					UNITY_APPLY_FOG(i.fogCoord, col);
 					return col;
 				}

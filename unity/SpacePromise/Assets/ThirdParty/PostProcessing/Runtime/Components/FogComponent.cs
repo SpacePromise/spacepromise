@@ -1,6 +1,9 @@
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     public sealed class FogComponent : PostProcessingComponentCommandBuffer<FogModel>
     {
@@ -19,10 +22,10 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && context.isGBufferAvailable // In forward fog is already done at shader level
+                return this.model.enabled
+                       && this.context.isGBufferAvailable // In forward fog is already done at shader level
                        && RenderSettings.fog
-                       && !context.interrupted;
+                       && !this.context.interrupted;
             }
         }
 
@@ -43,9 +46,9 @@ namespace UnityEngine.PostProcessing
 
         public override void PopulateCommandBuffer(CommandBuffer cb)
         {
-            var settings = model.settings;
+            var settings = this.model.settings;
 
-            var material = context.materialFactory.Get(k_ShaderString);
+            var material = this.context.materialFactory.Get(k_ShaderString);
             material.shaderKeywords = null;
             var fogColor = GraphicsUtils.isLinearColorSpace ? RenderSettings.fogColor.linear : RenderSettings.fogColor;
             material.SetColor(Uniforms._FogColor, fogColor);
@@ -66,11 +69,11 @@ namespace UnityEngine.PostProcessing
                     break;
             }
 
-            var fbFormat = context.isHdr
+            var fbFormat = this.context.isHdr
                 ? RenderTextureFormat.DefaultHDR
                 : RenderTextureFormat.Default;
 
-            cb.GetTemporaryRT(Uniforms._TempRT, context.width, context.height, 24, FilterMode.Bilinear, fbFormat);
+            cb.GetTemporaryRT(Uniforms._TempRT, this.context.width, this.context.height, 24, FilterMode.Bilinear, fbFormat);
             cb.Blit(BuiltinRenderTextureType.CameraTarget, Uniforms._TempRT);
             cb.Blit(Uniforms._TempRT, BuiltinRenderTextureType.CameraTarget, material, settings.excludeSkybox ? 1 : 0);
             cb.ReleaseTemporaryRT(Uniforms._TempRT);

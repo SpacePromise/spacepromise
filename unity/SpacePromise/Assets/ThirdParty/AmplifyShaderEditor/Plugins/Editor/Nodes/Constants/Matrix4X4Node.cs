@@ -10,23 +10,14 @@ namespace AmplifyShaderEditor
 	[Serializable]
 	[NodeAttributes( "Matrix4X4", "Constants And Properties", "Matrix4X4 property" )]
 	public sealed class Matrix4X4Node : MatrixParentNode
-	{
-		[SerializeField]
-		private Matrix4x4 m_defaultValue = Matrix4x4.identity;
-
-		[SerializeField]
-		private Matrix4x4 m_materialValue = Matrix4x4.identity;
-		
-		private bool m_isEditingFields;
-		[NonSerialized]
-		private Matrix4x4 m_previousValue;
+	{	
 		private string[,] m_fieldText = new string[ 4, 4 ] { { "0", "0", "0", "0" }, { "0", "0", "0", "0" }, { "0", "0", "0", "0" }, { "0", "0", "0", "0" } };
-		
 		public Matrix4X4Node() : base() { }
 		public Matrix4X4Node( int uniqueId, float x, float y, float width, float height ) : base( uniqueId, x, y, width, height ) { }
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
+			GlobalTypeWarningText = string.Format( GlobalTypeWarningText, "Matrix" );
 			AddOutputPort( WirePortDataType.FLOAT4x4, Constants.EmptyPortValue );
 			m_insideSize.Set( Constants.FLOAT_DRAW_WIDTH_FIELD_SIZE * 4 + Constants.FLOAT_WIDTH_SPACING * 3, Constants.FLOAT_DRAW_HEIGHT_FIELD_SIZE * 4 + Constants.FLOAT_WIDTH_SPACING * 3 + Constants.OUTSIDE_WIRE_MARGIN );
 			//m_defaultValue = new Matrix4x4();
@@ -113,7 +104,7 @@ namespace AmplifyShaderEditor
 			if ( !m_isVisible )
 				return;
 
-			if ( m_isEditingFields )
+			if ( m_isEditingFields && m_currentParameterType != PropertyType.Global )
 			{
 				bool currMode = m_materialMode && m_currentParameterType != PropertyType.Constant;
 				Matrix4x4 value = currMode ? m_materialValue : m_defaultValue;
@@ -145,6 +136,9 @@ namespace AmplifyShaderEditor
 			}
 			else if ( drawInfo.CurrentEventType == EventType.Repaint )
 			{
+				bool guiEnabled = GUI.enabled;
+				GUI.enabled = m_currentParameterType != PropertyType.Global;
+
 				bool currMode = m_materialMode && m_currentParameterType != PropertyType.Constant;
 				Matrix4x4 value = currMode ? m_materialValue : m_defaultValue;
 				for ( int row = 0; row < 4; row++ )
@@ -153,7 +147,8 @@ namespace AmplifyShaderEditor
 					{
 						Rect fakeField = m_propertyDrawPos;
 						fakeField.position = m_remainingBox.position + Vector2.Scale( m_propertyDrawPos.size, new Vector2( column, row ) ) + new Vector2( Constants.FLOAT_WIDTH_SPACING * drawInfo.InvertedZoom * column, Constants.FLOAT_WIDTH_SPACING * drawInfo.InvertedZoom * row );
-						EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
+						if( GUI.enabled )
+							EditorGUIUtility.AddCursorRect( fakeField, MouseCursor.Text );
 
 						if ( m_previousValue[ row, column ] != value[ row, column ] )
 						{
@@ -164,6 +159,7 @@ namespace AmplifyShaderEditor
 						GUI.Label( fakeField, m_fieldText[ row, column ], UIUtils.MainSkin.textField );
 					}
 				}
+				GUI.enabled = guiEnabled;
 			}
 		}
 
@@ -172,7 +168,7 @@ namespace AmplifyShaderEditor
 			base.GenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalvar );
 			m_precisionString = UIUtils.FinalPrecisionWirePortToCgType( m_currentPrecisionType, m_outputPorts[ 0 ].DataType );
 			if ( m_currentParameterType != PropertyType.Constant )
-				return PropertyData;
+				return PropertyData( dataCollector.PortCategory );
 
 			Matrix4x4 value = m_defaultValue;
 

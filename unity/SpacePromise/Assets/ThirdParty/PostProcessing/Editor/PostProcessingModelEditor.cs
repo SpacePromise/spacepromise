@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.PostProcessing;
 using System;
 using System.Linq.Expressions;
+using Assets.ThirdParty.PostProcessing.Runtime;
 
 namespace UnityEditor.PostProcessing
 {

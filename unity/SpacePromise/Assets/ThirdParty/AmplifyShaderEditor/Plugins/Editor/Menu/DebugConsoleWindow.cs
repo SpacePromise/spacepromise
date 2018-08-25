@@ -28,6 +28,12 @@ namespace AmplifyShaderEditor
 		{
 			OpenWindow();
 		}
+		[MenuItem( "Window/Amplify Shader Editor/Create Template Menu Items" )]
+		public static void CreateTemplateMenuItems()
+		{
+			TemplatesManager.CreateTemplateMenuItems();
+		}
+
 #else
 		public readonly static bool DeveloperMode = false;
 		public static bool UseShaderPanelsInfo = false;

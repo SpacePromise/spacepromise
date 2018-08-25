@@ -11,6 +11,7 @@ namespace AmplifyShaderEditor
 		{
 			base.CommonInit( uniqueId );
 			m_matrixName = "unity_ObjectToWorld";
+			m_matrixHDName = "GetObjectToWorldMatrix()";
 			m_previewShaderGUID = "a4044ee165813654486d0cecd0de478c";
 		}
 	}

@@ -43,8 +43,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string result = string.Empty;
 			string uv = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
@@ -53,7 +53,8 @@ namespace AmplifyShaderEditor
 			string time = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
 			if ( !m_inputPorts[ 2 ].IsConnected )
 			{
-				dataCollector.AddToIncludes( UniqueId, Constants.UnityShaderVariables );
+				if( !( dataCollector.IsTemplate && dataCollector.IsSRP ) )
+					dataCollector.AddToIncludes( UniqueId, Constants.UnityShaderVariables );
 				time += " * _Time.y";
 			}
 
@@ -67,7 +68,7 @@ namespace AmplifyShaderEditor
 			string value =  "mul( " + result + " - " + anchor + " , float2x2( "+cosVar+" , -"+sinVar+" , "+sinVar+" , "+cosVar+" )) + "+anchor;
 			RegisterLocalVariable( 0, value, ref dataCollector, "rotator" + OutputId );
 
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 
 		public override void RefreshExternalReferences()

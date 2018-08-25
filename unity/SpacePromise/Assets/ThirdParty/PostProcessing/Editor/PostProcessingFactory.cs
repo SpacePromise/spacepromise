@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.PostProcessing;
 using UnityEditor.ProjectWindowCallback;
 using System.IO;
+using Assets.ThirdParty.PostProcessing.Runtime;
 
 namespace UnityEditor.PostProcessing
 {

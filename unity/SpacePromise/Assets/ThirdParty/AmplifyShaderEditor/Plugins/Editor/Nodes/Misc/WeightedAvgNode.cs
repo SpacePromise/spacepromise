@@ -87,22 +87,26 @@ namespace AmplifyShaderEditor
 					case WirePortDataType.FLOAT:
 					{
 						UpdateInputPorts( 1 );
+						m_previewMaterialPassId = 0;
 					}
 					break;
 					case WirePortDataType.FLOAT2:
 					{
 						UpdateInputPorts( 2 );
+						m_previewMaterialPassId = 1;
 					}
 					break;
 					case WirePortDataType.FLOAT3:
 					{
 						UpdateInputPorts( 3 );
+						m_previewMaterialPassId = 2;
 					}
 					break;
 					case WirePortDataType.COLOR:
 					case WirePortDataType.FLOAT4:
 					{
 						UpdateInputPorts( 4 );
+						m_previewMaterialPassId = 3;
 					}
 					break;
 					case WirePortDataType.OBJECT:

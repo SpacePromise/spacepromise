@@ -1,4 +1,4 @@
-Shader /*ase_name*/ "ASETemplateShaders/DefaultUnlit" /*end*/
+Shader /*ase_name*/ "ASETemplateShaders/Legacy/DefaultUnlit" /*end*/
 {
 	Properties
 	{
@@ -9,11 +9,11 @@ Shader /*ase_name*/ "ASETemplateShaders/DefaultUnlit" /*end*/
 	
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" "LightMode" = "ForwardBase" }
+		Tags { "RenderType"="Opaque" }
 		LOD 100
 		Cull Off
-		/*ase_pass*/
 
+		/*ase_pass*/
 		Pass
 		{
 			CGPROGRAM
@@ -37,7 +37,7 @@ Shader /*ase_name*/ "ASETemplateShaders/DefaultUnlit" /*end*/
 				float4 vertex : SV_POSITION;
 				float4 texcoord : TEXCOORD0;
 				UNITY_VERTEX_OUTPUT_STEREO
-				/*ase_interp(1,7):sp=sp.xyzw;uv0=tc0.xy;uv1=tc0.zw*/
+				/*ase_interp(1,):sp=sp.xyzw;uv0=tc0.xy;uv1=tc0.zw*/
 			};
 
 			uniform sampler2D _MainTex;

@@ -33,19 +33,15 @@ namespace AmplifyShaderEditor
 			"alpha:premul "
 		};
 
-		private readonly string[] OutlineBodyBegin = {
-														"Cull Front",
-														"CGPROGRAM"
-														};
 
 		private readonly string OutlineSurfaceConfig = "#pragma surface outlineSurf Outline {0} keepalpha noshadow noambient novertexlights nolightmap nodynlightmap nodirlightmap nometa noforwardadd vertex:outlineVertexDataFunc ";
 
 		private readonly string OutlineBodyStructBegin = "struct Input {";
-		private readonly string OutlineBodyStructDefault = "\tfixed filler;";
+		private readonly string OutlineBodyStructDefault = "\thalf filler;";
 		private readonly string OutlineBodyStructEnd = "};";
 
-		private readonly string OutlineDefaultUniformColor = "uniform fixed4 _ASEOutlineColor;";
-		private readonly string OutlineDefaultUniformWidth = "uniform fixed _ASEOutlineWidth;";
+		private readonly string OutlineDefaultUniformColor = "uniform half4 _ASEOutlineColor;";
+		private readonly string OutlineDefaultUniformWidth = "uniform half _ASEOutlineWidth;";
 
 		private readonly string OutlineDefaultVertexHeader = "void outlineVertexDataFunc( inout appdata_full v, out Input o )\n\t\t{";
 		private readonly string OutlineTessVertexHeader = "void outlineVertexDataFunc( inout appdata_full v )\n\t\t{";
@@ -59,7 +55,7 @@ namespace AmplifyShaderEditor
 
 		private readonly string[] OutlineBodyDefaultSurfBegin = {
 														"}",
-														"inline fixed4 LightingOutline( SurfaceOutput s, half3 lightDir, half atten ) { return fixed4 ( 0,0,0, s.Alpha); }",
+														"inline half4 LightingOutline( SurfaceOutput s, half3 lightDir, half atten ) { return half4 ( 0,0,0, s.Alpha); }",
 														"void outlineSurf( Input i, inout SurfaceOutput o )",
 														"{"};
 
@@ -72,8 +68,8 @@ namespace AmplifyShaderEditor
 
 		private readonly string[] OutlineBodyInstancedBegin = {
 														"UNITY_INSTANCING_CBUFFER_START({0})",
-														"\tUNITY_DEFINE_INSTANCED_PROP( fixed4, _ASEOutlineColor )",
-														"\tUNITY_DEFINE_INSTANCED_PROP(fixed, _ASEOutlineWidth)",
+														"\tUNITY_DEFINE_INSTANCED_PROP( half4, _ASEOutlineColor )",
+														"\tUNITY_DEFINE_INSTANCED_PROP(half, _ASEOutlineWidth)",
 														"UNITY_INSTANCING_CBUFFER_END",
 														"void outlineVertexDataFunc( inout appdata_full v, out Input o )",
 														"{",
@@ -81,7 +77,7 @@ namespace AmplifyShaderEditor
 
 		private readonly string[] OutlineBodyInstancedEnd = {
 														"}",
-														"inline fixed4 LightingOutline( SurfaceOutput s, half3 lightDir, half atten ) { return fixed4 ( 0,0,0, s.Alpha); }",
+														"inline half4 LightingOutline( SurfaceOutput s, half3 lightDir, half atten ) { return half4 ( 0,0,0, s.Alpha); }",
 														"void outlineSurf( Input i, inout SurfaceOutput o ) { o.Emission = UNITY_ACCESS_INSTANCED_PROP( _ASEOutlineColor ).rgb; o.Alpha = 1; }",
 														"ENDCG",
 														"\n"};
@@ -121,6 +117,7 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		private bool m_noFog = true;
 
+		private CullMode m_cullMode = CullMode.Front;
 		private int m_zTestMode = 0;
 		private int m_zWriteMode = 0;
 		private bool m_dirtyInput = false;
@@ -134,19 +131,20 @@ namespace AmplifyShaderEditor
 		private string m_pragmas = string.Empty;
 		private string m_defines = string.Empty;
 		private string m_vertexData = string.Empty;
+		private string m_grabPasses = string.Empty;
 		private Dictionary<string, string> m_localFunctions;
 
 		//private OutlineMode m_customMode = OutlineMode.VertexOffset;
 		private int m_offsetMode = 0;
 		private bool m_customNoFog = true;
 
-		public void Draw( UndoParentNode owner, GUIStyle toolbarstyle, Material mat )
+		public void Draw( ParentNode owner, GUIStyle toolbarstyle, Material mat )
 		{
 			Color cachedColor = GUI.color;
 			GUI.color = new Color( cachedColor.r, cachedColor.g, cachedColor.b, 0.5f );
 			EditorGUILayout.BeginHorizontal( toolbarstyle );
 			GUI.color = cachedColor;
-			EditorVariablesManager.OutlineActiveMode.Value = owner.GUILayoutToggle( EditorVariablesManager.OutlineActiveMode.Value, EditorVariablesManager.OutlineActiveMode.LabelName, UIUtils.MenuItemToggleStyle, GUILayout.ExpandWidth( true ) );
+			owner.ContainerGraph.ParentWindow.InnerWindowVariables.OutlineActiveMode = owner.GUILayoutToggle( owner.ContainerGraph.ParentWindow.InnerWindowVariables.OutlineActiveMode , EditorVariablesManager.OutlineActiveMode.LabelName, UIUtils.MenuItemToggleStyle, GUILayout.ExpandWidth( true ) );
 			EditorGUI.BeginChangeCheck();
 			m_enabled = owner.EditorGUILayoutToggle( string.Empty, m_enabled, UIUtils.MenuItemEnableStyle, GUILayout.Width( 16 ) );
 			if( EditorGUI.EndChangeCheck() )
@@ -158,7 +156,7 @@ namespace AmplifyShaderEditor
 			}
 			EditorGUILayout.EndHorizontal();
 
-			if( EditorVariablesManager.OutlineActiveMode.Value )
+			if( owner.ContainerGraph.ParentWindow.InnerWindowVariables.OutlineActiveMode )
 			{
 				cachedColor = GUI.color;
 				GUI.color = new Color( cachedColor.r, cachedColor.g, cachedColor.b, ( EditorGUIUtility.isProSkin ? 0.5f : 0.25f ) );
@@ -278,14 +276,16 @@ namespace AmplifyShaderEditor
 		{
 			List<string> body = new List<string>();
 			body.Add( ModeTags[ dataCollector.CustomOutlineSelectedAlpha ] );
+			if( !string.IsNullOrEmpty( m_grabPasses ))
+				body.Add( m_grabPasses.Replace( "\t\t",string.Empty ));	
+
 			if( m_zWriteMode != 0 )
 				body.Add( "ZWrite " + ZBufferOpHelper.ZWriteModeValues[ m_zWriteMode ] );
 			if( m_zTestMode != 0 )
 				body.Add( "ZTest " + ZBufferOpHelper.ZTestModeValues[ m_zTestMode ] );
-			for( int i = 0; i < OutlineBodyBegin.Length; i++ )
-			{
-				body.Add( OutlineBodyBegin[ i ] );
-			}
+
+			body.Add( "Cull " + m_cullMode );
+			body.Add( "CGPROGRAM" );
 			if( tessOpHelper.EnableTesselation )
 			{
 				body.Add( "#include \"" + TessellationOpHelper.TessInclude + "\"" );
@@ -296,7 +296,7 @@ namespace AmplifyShaderEditor
 				body.Add( "#pragma target 3.0" );
 			}
 
-			bool customOutline = dataCollector.UsingCustomOutlineColor || dataCollector.UsingCustomOutlineWidth;
+			bool customOutline = dataCollector.UsingCustomOutlineColor || dataCollector.UsingCustomOutlineWidth || dataCollector.UsingCustomOutlineAlpha;
 			int outlineMode = customOutline ? m_offsetMode : ( m_mode == OutlineMode.VertexOffset ? 0 : 1 );
 			string extraOptions = ( customOutline ? m_customNoFog : m_noFog ) ? "nofog " : string.Empty;
 			if( dataCollector.CustomOutlineSelectedAlpha > 0 )
@@ -484,10 +484,12 @@ namespace AmplifyShaderEditor
 
 		public bool EnableOutline { get { return m_enabled; } }
 
+		public bool UsingCullMode { get { return m_cullMode != CullMode.Front; } }
 		public bool UsingZWrite { get { return m_zWriteMode != 0; } }
 		public bool UsingZTest { get { return m_zTestMode != 0; } }
 		public int ZWriteMode { get { return m_zWriteMode; } set { m_zWriteMode = value; } }
 		public int ZTestMode { get { return m_zTestMode; } set { m_zTestMode = value; } }
+		public CullMode OutlineCullMode { get { return m_cullMode; } set { m_cullMode = value; } }
 		public string Inputs { get { return m_inputs; } set { m_inputs = value; } }
 		public string Uniforms { get { return m_uniforms; } set { m_uniforms = value; } }
 		public string Instructions { get { return m_instructions; } set { m_instructions = value; } }
@@ -496,6 +498,7 @@ namespace AmplifyShaderEditor
 		public string Pragmas { get { return m_pragmas; } set { m_pragmas = value; } }
 		public string Defines { get { return m_defines; } set { m_defines = value; } }
 		public string VertexData { get { return m_vertexData; } set { m_vertexData = value; } }
+		public string GrabPasses { get { return m_grabPasses; } set { m_grabPasses = value; } }
 		public List<PropertyDataCollector> InputList { get { return m_inputList; } set { m_inputList = value; } }
 		public List<PropertyDataCollector> UniformList { get { return m_uniformList; } set { m_uniformList = value; } }
 		public Dictionary<string, string> LocalFunctions { get { return m_localFunctions; } set { m_localFunctions = value; } }

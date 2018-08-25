@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "ASESampleShaders/SimpleSprite"
+Shader "ASESampleShaders/Sprites/SimpleSprite"
 {
 	Properties
 	{
@@ -122,7 +122,7 @@ Node;AmplifyShaderEditor.KeywordSwitchNode;9;-312.6,88.69981;Float;False;ETC1_EX
 Node;AmplifyShaderEditor.VertexColorNode;12;-64.59998,-426.3002;Float;False;0;5;COLOR;FLOAT;FLOAT;FLOAT;FLOAT
 Node;AmplifyShaderEditor.DynamicAppendNode;6;-62.59998,-200.3002;Float;False;FLOAT4;4;0;FLOAT3;0,0,0;False;1;FLOAT;0.0;False;2;FLOAT;0.0;False;3;FLOAT;0.0;False;1;FLOAT4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;13;142.4,-283.3002;Float;False;2;2;0;COLOR;0.0,0,0,0;False;1;FLOAT4;0.0,0,0,0;False;1;COLOR
-Node;AmplifyShaderEditor.TemplateMasterNode;0;307,-148;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/SimpleSprite;0f8ba0101102bb14ebf021ddadce9b49;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMasterNode;0;307,-148;Float;False;True;2;Float;ASEMaterialInspector;0;4;ASESampleShaders/Sprites/SimpleSprite;0f8ba0101102bb14ebf021ddadce9b49;2;0;FLOAT4;0,0,0,0;False;1;FLOAT3;0,0,0;False;0
 WireConnection;2;0;1;0
 WireConnection;4;0;3;0
 WireConnection;16;0;14;0

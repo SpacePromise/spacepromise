@@ -1,4 +1,7 @@
-namespace UnityEngine.PostProcessing
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using UnityEngine;
+
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     public sealed class FxaaComponent : PostProcessingComponentRenderTexture<AntialiasingModel>
     {
@@ -12,16 +15,16 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.enabled
-                       && model.settings.method == AntialiasingModel.Method.Fxaa
-                       && !context.interrupted;
+                return this.model.enabled
+                       && this.model.settings.method == AntialiasingModel.Method.Fxaa
+                       && !this.context.interrupted;
             }
         }
 
         public void Render(RenderTexture source, RenderTexture destination)
         {
-            var settings = model.settings.fxaaSettings;
-            var material = context.materialFactory.Get("Hidden/Post FX/FXAA");
+            var settings = this.model.settings.fxaaSettings;
+            var material = this.context.materialFactory.Get("Hidden/Post FX/FXAA");
             var qualitySettings = AntialiasingModel.FxaaQualitySettings.presets[(int)settings.preset];
             var consoleSettings = AntialiasingModel.FxaaConsoleSettings.presets[(int)settings.preset];
 

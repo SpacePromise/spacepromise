@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using Assets.ThirdParty.PostProcessing.Runtime.Models;
+using Assets.ThirdParty.PostProcessing.Runtime.Utils;
+using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UnityEngine.PostProcessing
+namespace Assets.ThirdParty.PostProcessing.Runtime.Components
 {
     using Mode = BuiltinDebugViewsModel.Mode;
 
@@ -80,21 +83,21 @@ namespace UnityEngine.PostProcessing
                     indices[i] = i;
 
                 // initialize the mesh object
-                mesh = new Mesh { hideFlags = HideFlags.DontSave };
-                mesh.SetVertices(vertices);
-                mesh.SetUVs(0, uvs);
-                mesh.SetIndices(indices, MeshTopology.Lines, 0);
-                mesh.UploadMeshData(true);
+                this.mesh = new Mesh { hideFlags = HideFlags.DontSave };
+                this.mesh.SetVertices(vertices);
+                this.mesh.SetUVs(0, uvs);
+                this.mesh.SetIndices(indices, MeshTopology.Lines, 0);
+                this.mesh.UploadMeshData(true);
 
                 // update the properties
-                columnCount = columns;
-                rowCount = rows;
+                this.columnCount = columns;
+                this.rowCount = rows;
             }
 
             public void Release()
             {
-                GraphicsUtils.Destroy(mesh);
-                mesh = null;
+                GraphicsUtils.Destroy(this.mesh);
+                this.mesh = null;
             }
         }
 
@@ -102,15 +105,15 @@ namespace UnityEngine.PostProcessing
         {
             get
             {
-                return model.IsModeActive(Mode.Depth)
-                       || model.IsModeActive(Mode.Normals)
-                       || model.IsModeActive(Mode.MotionVectors);
+                return this.model.IsModeActive(Mode.Depth)
+                       || this.model.IsModeActive(Mode.Normals)
+                       || this.model.IsModeActive(Mode.MotionVectors);
             }
         }
 
         public override DepthTextureMode GetCameraFlags()
         {
-            var mode = model.settings.mode;
+            var mode = this.model.settings.mode;
             var flags = DepthTextureMode.None;
 
             switch (mode)
@@ -131,7 +134,7 @@ namespace UnityEngine.PostProcessing
 
         public override CameraEvent GetCameraEvent()
         {
-            return model.settings.mode == Mode.MotionVectors
+            return this.model.settings.mode == Mode.MotionVectors
                    ? CameraEvent.BeforeImageEffects
                    : CameraEvent.BeforeImageEffectsOpaque;
         }
@@ -143,33 +146,33 @@ namespace UnityEngine.PostProcessing
 
         public override void PopulateCommandBuffer(CommandBuffer cb)
         {
-            var settings = model.settings;
-            var material = context.materialFactory.Get(k_ShaderString);
+            var settings = this.model.settings;
+            var material = this.context.materialFactory.Get(k_ShaderString);
             material.shaderKeywords = null;
 
-            if (context.isGBufferAvailable)
+            if (this.context.isGBufferAvailable)
                 material.EnableKeyword("SOURCE_GBUFFER");
 
             switch (settings.mode)
             {
                 case Mode.Depth:
-                    DepthPass(cb);
+                    this.DepthPass(cb);
                     break;
                 case Mode.Normals:
-                    DepthNormalsPass(cb);
+                    this.DepthNormalsPass(cb);
                     break;
                 case Mode.MotionVectors:
-                    MotionVectorsPass(cb);
+                    this.MotionVectorsPass(cb);
                     break;
             }
 
-            context.Interrupt();
+            this.context.Interrupt();
         }
 
         void DepthPass(CommandBuffer cb)
         {
-            var material = context.materialFactory.Get(k_ShaderString);
-            var settings = model.settings.depth;
+            var material = this.context.materialFactory.Get(k_ShaderString);
+            var settings = this.model.settings.depth;
 
             cb.SetGlobalFloat(Uniforms._DepthScale, 1f / settings.scale);
             cb.Blit((Texture)null, BuiltinRenderTextureType.CameraTarget, material, (int)Pass.Depth);
@@ -177,7 +180,7 @@ namespace UnityEngine.PostProcessing
 
         void DepthNormalsPass(CommandBuffer cb)
         {
-            var material = context.materialFactory.Get(k_ShaderString);
+            var material = this.context.materialFactory.Get(k_ShaderString);
             cb.Blit((Texture)null, BuiltinRenderTextureType.CameraTarget, material, (int)Pass.Normals);
         }
 
@@ -190,12 +193,12 @@ namespace UnityEngine.PostProcessing
                 return;
 #endif
 
-            var material = context.materialFactory.Get(k_ShaderString);
-            var settings = model.settings.motionVectors;
+            var material = this.context.materialFactory.Get(k_ShaderString);
+            var settings = this.model.settings.motionVectors;
 
             // Blit the original source image
             int tempRT = Uniforms._TempRT;
-            cb.GetTemporaryRT(tempRT, context.width, context.height, 0, FilterMode.Bilinear);
+            cb.GetTemporaryRT(tempRT, this.context.width, this.context.height, 0, FilterMode.Bilinear);
             cb.SetGlobalFloat(Uniforms._Opacity, settings.sourceOpacity);
             cb.SetGlobalTexture(Uniforms._MainTex, BuiltinRenderTextureType.CameraTarget);
             cb.Blit(BuiltinRenderTextureType.CameraTarget, tempRT, material, (int)Pass.MovecOpacity);
@@ -204,7 +207,7 @@ namespace UnityEngine.PostProcessing
             if (settings.motionImageOpacity > 0f && settings.motionImageAmplitude > 0f)
             {
                 int tempRT2 = Uniforms._TempRT2;
-                cb.GetTemporaryRT(tempRT2, context.width, context.height, 0, FilterMode.Bilinear);
+                cb.GetTemporaryRT(tempRT2, this.context.width, this.context.height, 0, FilterMode.Bilinear);
                 cb.SetGlobalFloat(Uniforms._Opacity, settings.motionImageOpacity);
                 cb.SetGlobalFloat(Uniforms._Amplitude, settings.motionImageAmplitude);
                 cb.SetGlobalTexture(Uniforms._MainTex, tempRT);
@@ -216,15 +219,15 @@ namespace UnityEngine.PostProcessing
             // Motion vectors (arrows)
             if (settings.motionVectorsOpacity > 0f && settings.motionVectorsAmplitude > 0f)
             {
-                PrepareArrows();
+                this.PrepareArrows();
 
                 float sy = 1f / settings.motionVectorsResolution;
-                float sx = sy * context.height / context.width;
+                float sx = sy * this.context.height / this.context.width;
 
                 cb.SetGlobalVector(Uniforms._Scale, new Vector2(sx, sy));
                 cb.SetGlobalFloat(Uniforms._Opacity, settings.motionVectorsOpacity);
                 cb.SetGlobalFloat(Uniforms._Amplitude, settings.motionVectorsAmplitude);
-                cb.DrawMesh(m_Arrows.mesh, Matrix4x4.identity, material, 0, (int)Pass.MovecArrows);
+                cb.DrawMesh(this.m_Arrows.mesh, Matrix4x4.identity, material, 0, (int)Pass.MovecArrows);
             }
 
             cb.SetGlobalTexture(Uniforms._MainTex, tempRT);
@@ -234,25 +237,25 @@ namespace UnityEngine.PostProcessing
 
         void PrepareArrows()
         {
-            int row = model.settings.motionVectors.motionVectorsResolution;
+            int row = this.model.settings.motionVectors.motionVectorsResolution;
             int col = row * Screen.width / Screen.height;
 
-            if (m_Arrows == null)
-                m_Arrows = new ArrowArray();
+            if (this.m_Arrows == null)
+                this.m_Arrows = new ArrowArray();
 
-            if (m_Arrows.columnCount != col || m_Arrows.rowCount != row)
+            if (this.m_Arrows.columnCount != col || this.m_Arrows.rowCount != row)
             {
-                m_Arrows.Release();
-                m_Arrows.BuildMesh(col, row);
+                this.m_Arrows.Release();
+                this.m_Arrows.BuildMesh(col, row);
             }
         }
 
         public override void OnDisable()
         {
-            if (m_Arrows != null)
-                m_Arrows.Release();
+            if (this.m_Arrows != null)
+                this.m_Arrows.Release();
 
-            m_Arrows = null;
+            this.m_Arrows = null;
         }
     }
 }

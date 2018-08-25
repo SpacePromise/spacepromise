@@ -11,6 +11,14 @@ namespace AmplifyShaderEditor
 	public sealed class InputPort : WirePort
 	{
 		private const string InputDefaultNameStr = "Input";
+		[SerializeField]
+		private int m_externalNodeLink = -1;
+
+		[SerializeField]
+		private int m_externalPortLink = -1;
+
+		[SerializeField]
+		private string m_externalLinkId = string.Empty;
 
 		[SerializeField]
 		private bool m_typeLocked;
@@ -45,7 +53,7 @@ namespace AmplifyShaderEditor
 		private int m_cachedDefaultTexShaderID = -1;
 
 		[SerializeField]
-		private bool m_drawInternalData = true;
+		private bool m_drawInternalData = false;
 
 		//[SerializeField]
 		//private RenderTexture m_inputPreview = null;
@@ -54,13 +62,23 @@ namespace AmplifyShaderEditor
 		private Material m_inputPreviewMaterial = null;
 		private Shader m_inputPreviewShader = null;
 
+		[SerializeField]
 		private int m_previewInternalInt = 0;
+		[SerializeField]
 		private float m_previewInternalFloat = 0;
+		[SerializeField]
 		private Vector2 m_previewInternalVec2 = Vector2.zero;
+		[SerializeField]
 		private Vector3 m_previewInternalVec3 = Vector3.zero;
+		[SerializeField]
 		private Vector4 m_previewInternalVec4 = Vector4.zero;
+		[SerializeField]
 		private Color m_previewInternalColor = Color.clear;
+		[SerializeField]
 		private Matrix4x4 m_previewInternalMatrix4x4 = Matrix4x4.identity;
+
+		private int m_propertyNameInt = 0;
+		private ParentNode m_node = null;
 
 		public InputPort() : base( -1, -1, WirePortDataType.FLOAT, string.Empty ) { m_typeLocked = true; }
 		public InputPort( int nodeId, int portId, WirePortDataType dataType, string name, bool typeLocked, int orderId = -1, MasterNodePortCategory category = MasterNodePortCategory.Fragment, PortGenType genType = PortGenType.NonCustomLighting ) : base( nodeId, portId, dataType, name, orderId )
@@ -79,6 +97,12 @@ namespace AmplifyShaderEditor
 			m_typeLocked = typeLocked;
 			m_category = category;
 			m_genType = genType;
+		}
+
+		public void SetExternalLink( int nodeId, int portId )
+		{
+			m_externalNodeLink = nodeId;
+			m_externalPortLink = portId;
 		}
 
 		public override bool CheckValidType( WirePortDataType dataType )
@@ -125,7 +149,7 @@ namespace AmplifyShaderEditor
 		{
 			string[] data = String.IsNullOrEmpty( m_internalData ) ? null : m_internalData.Split( IOUtils.VECTOR_SEPARATOR );
 			bool reset = ( data == null || data.Length == 0 );
-
+			m_internalDataUpdated = false;
 			try
 			{
 				switch( m_dataType )
@@ -263,7 +287,7 @@ namespace AmplifyShaderEditor
 									}
 									else
 									{
-										m_previewInternalMatrix4x4[ i, j ] = (( i == j ) ? 1 : 0);
+										m_previewInternalMatrix4x4[ i, j ] = ( ( i == j ) ? 1 : 0 );
 									}
 									overallIdx++;
 								}
@@ -280,14 +304,17 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		void UpdateInternalDataFromVariables()
+		void UpdateInternalDataFromVariables( bool forceDecimal = false )
 		{
 			switch( m_dataType )
 			{
 				case WirePortDataType.OBJECT:
 				case WirePortDataType.FLOAT:
 				{
-					m_internalData = m_previewInternalFloat.ToString();
+					if( forceDecimal && m_previewInternalFloat == (int)m_previewInternalFloat )
+						m_internalData = m_previewInternalFloat.ToString("0.0##############"); // to make sure integer values like 0 or 1 are generated as 0.0 and 1.0
+					else
+						m_internalData = m_previewInternalFloat.ToString();
 					m_internalDataWrapper = string.Empty;
 				}
 				break;
@@ -387,6 +414,12 @@ namespace AmplifyShaderEditor
 		// This is a new similar method to GenerateShaderForOutput(...) which always autocasts
 		public string GeneratePortInstructions( ref MasterNodeDataCollector dataCollector )
 		{
+			InputPort linkPort = ExternalLink;
+			if( linkPort != null )
+			{
+				return linkPort.GeneratePortInstructions( ref dataCollector );
+			}
+
 			string result = string.Empty;
 			if( m_externalReferences.Count > 0 && !m_locked )
 			{
@@ -398,7 +431,7 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				UpdateInternalDataFromVariables();
+				UpdateInternalDataFromVariables( true );
 				if( DataType == WirePortDataType.FLOAT3x3 )
 					result = Matrix3x3WrappedData();
 				else if( DataType == WirePortDataType.SAMPLER2D )
@@ -411,6 +444,12 @@ namespace AmplifyShaderEditor
 
 		public string GenerateShaderForOutput( ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
+			InputPort linkPort = ExternalLink;
+			if( linkPort != null )
+			{
+				return linkPort.GenerateShaderForOutput( ref dataCollector, ignoreLocalVar );
+			}
+
 			string result = string.Empty;
 			if( m_externalReferences.Count > 0 && !m_locked )
 			{
@@ -418,7 +457,7 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				UpdateInternalDataFromVariables();
+				UpdateInternalDataFromVariables( true );
 				if( !String.IsNullOrEmpty( m_internalDataWrapper ) )
 				{
 					if( DataType == WirePortDataType.FLOAT3x3 )
@@ -436,6 +475,12 @@ namespace AmplifyShaderEditor
 
 		public string GenerateShaderForOutput( ref MasterNodeDataCollector dataCollector, WirePortDataType inputPortType, bool ignoreLocalVar, bool autoCast = false )
 		{
+			InputPort linkPort = ExternalLink;
+			if( linkPort != null )
+			{
+				return linkPort.GenerateShaderForOutput( ref dataCollector, inputPortType, ignoreLocalVar, autoCast );
+			}
+
 			string result = string.Empty;
 			if( m_externalReferences.Count > 0 && !m_locked )
 			{
@@ -447,7 +492,7 @@ namespace AmplifyShaderEditor
 			}
 			else
 			{
-				UpdateInternalDataFromVariables();
+				UpdateInternalDataFromVariables( true );
 				if( !String.IsNullOrEmpty( m_internalDataWrapper ) )
 				{
 					if( DataType == WirePortDataType.FLOAT3x3 )
@@ -500,6 +545,82 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref myString, m_externalReferences[ 0 ].NodeId );
 			IOUtils.AddFieldValueToString( ref myString, m_externalReferences[ 0 ].PortId );
 			IOUtils.AddLineTerminator( ref myString );
+		}
+
+		public void ShowInternalData( Rect rect, UndoParentNode owner, bool useCustomLabel = false, string customLabel = null )
+		{
+			string label = ( useCustomLabel == true && customLabel != null ) ? customLabel : m_internalDataPropertyLabel;
+			switch( m_dataType )
+			{
+				case WirePortDataType.OBJECT:
+				case WirePortDataType.FLOAT:
+				{
+					FloatInternalData = owner.EditorGUIFloatField( rect, label, FloatInternalData );
+				}
+				break;
+				case WirePortDataType.FLOAT2:
+				{
+					Vector2InternalData = owner.EditorGUIVector2Field( rect, label, Vector2InternalData );
+				}
+				break;
+				case WirePortDataType.FLOAT3:
+				{
+					Vector3InternalData = owner.EditorGUIVector3Field( rect, label, Vector3InternalData );
+				}
+				break;
+				case WirePortDataType.FLOAT4:
+				{
+					Vector4InternalData = owner.EditorGUIVector4Field( rect, label, Vector4InternalData );
+				}
+				break;
+				case WirePortDataType.FLOAT3x3:
+				{
+					Matrix4x4 matrix = Matrix4x4InternalData;
+					Vector3 currVec3 = Vector3.zero;
+					for( int i = 0; i < 3; i++ )
+					{
+						Vector4 currVec = matrix.GetRow( i );
+						currVec3.Set( currVec.x, currVec.y, currVec.z );
+						EditorGUI.BeginChangeCheck();
+						currVec3 = owner.EditorGUIVector3Field( rect, label + "[ " + i + " ]", currVec3 );
+						rect.y += 2*EditorGUIUtility.singleLineHeight;
+						if( EditorGUI.EndChangeCheck() )
+						{
+							currVec.Set( currVec3.x, currVec3.y, currVec3.z, currVec.w );
+							matrix.SetRow( i, currVec );
+						}
+					}
+					Matrix4x4InternalData = matrix;
+				}
+				break;
+				case WirePortDataType.FLOAT4x4:
+				{
+					Matrix4x4 matrix = Matrix4x4InternalData;
+					for( int i = 0; i < 4; i++ )
+					{
+						Vector4 currVec = matrix.GetRow( i );
+						EditorGUI.BeginChangeCheck();
+						currVec = owner.EditorGUIVector4Field( rect, label + "[ " + i + " ]", currVec );
+						rect.y += 2*EditorGUIUtility.singleLineHeight;
+						if( EditorGUI.EndChangeCheck() )
+						{
+							matrix.SetRow( i, currVec );
+						}
+					}
+					Matrix4x4InternalData = matrix;
+				}
+				break;
+				case WirePortDataType.COLOR:
+				{
+					ColorInternalData = owner.EditorGUIColorField( rect, label, ColorInternalData );
+				}
+				break;
+				case WirePortDataType.INT:
+				{
+					IntInternalData = owner.EditorGUIIntField( rect, label, IntInternalData );
+				}
+				break;
+			}
 		}
 
 		public void ShowInternalData( UndoParentNode owner, bool useCustomLabel = false, string customLabel = null )
@@ -578,55 +699,71 @@ namespace AmplifyShaderEditor
 
 		public float FloatInternalData
 		{
-			set { m_previewInternalFloat = value; }
+			set { m_previewInternalFloat = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalFloat; }
 		}
 
 		public int IntInternalData
 		{
-			set { m_previewInternalInt = value; }
+			set { m_previewInternalInt = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalInt; }
 		}
 
 		public Vector2 Vector2InternalData
 		{
-			set { m_previewInternalVec2 = value; }
+			set { m_previewInternalVec2 = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalVec2; }
 		}
 
 		public Vector3 Vector3InternalData
 		{
-			set { m_previewInternalVec3 = value; }
+			set { m_previewInternalVec3 = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalVec3; }
 		}
 
 		public Vector4 Vector4InternalData
 		{
-			set { m_previewInternalVec4 = value; }
+			set { m_previewInternalVec4 = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalVec4; }
 		}
 
 		public Color ColorInternalData
 		{
-			set { m_previewInternalColor = value; }
+			set { m_previewInternalColor = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalColor; }
 		}
 
 		public Matrix4x4 Matrix4x4InternalData
 		{
-			set { m_previewInternalMatrix4x4 = value; }
+			set { m_previewInternalMatrix4x4 = value; m_internalDataUpdated = false; }
 			get { return m_previewInternalMatrix4x4; }
 		}
 
 		public string SamplerInternalData
 		{
-			set { InternalData = UIUtils.RemoveInvalidCharacters( value ); }
+			set { InternalData = UIUtils.RemoveInvalidCharacters( value ); m_internalDataUpdated = false; }
 			get { return m_internalData; }
 		}
 
 		public override void ForceClearConnection()
 		{
 			UIUtils.DeleteConnection( true, m_nodeId, m_portId, false, true );
+		}
+
+		private bool m_internalDataUpdated = false;
+		private string m_displayInternalData = string.Empty;
+		public string DisplayInternalData
+		{
+			get
+			{
+				if( !m_internalDataUpdated )
+				{
+					UpdateInternalDataFromVariables();
+					m_internalDataUpdated = true;
+					m_displayInternalData = "( "+ m_internalData + " )";
+				}
+				return m_displayInternalData;
+			}
 		}
 
 		public string InternalData
@@ -658,6 +795,7 @@ namespace AmplifyShaderEditor
 			// must be set to update internal data. do not delete
 			set
 			{
+				m_internalDataUpdated = false;
 				switch( DataType )
 				{
 					case WirePortDataType.FLOAT:
@@ -1116,10 +1254,7 @@ namespace AmplifyShaderEditor
 
 			PortId = newPortId;
 		}
-
-		private int m_propertyNameInt = 0;
-		private ParentNode m_node = null;
-
+		
 		public override void Destroy()
 		{
 			base.Destroy();
@@ -1234,6 +1369,60 @@ namespace AmplifyShaderEditor
 					return GetOutputConnection( 0 ).OutputPreviewTexture;
 				else
 					return m_inputPreviewTexture;
+			}
+		}
+
+		public string ExternalLinkId
+		{
+			get { return m_externalLinkId; }
+			set
+			{
+				m_externalLinkId = value;
+				if( string.IsNullOrEmpty( value ) )
+				{
+					m_externalNodeLink = -1;
+					m_externalPortLink = -1;
+				}
+			}
+		}
+
+		public bool HasOwnOrLinkConnection { get { return IsConnected || HasConnectedExternalLink; } }
+		public bool HasExternalLink { get { return m_externalNodeLink > -1 && m_externalPortLink > -1; } }
+
+		public bool HasConnectedExternalLink
+		{
+			get
+			{
+				InputPort link = ExternalLink;
+				return ( link != null && link.IsConnected );
+			}
+		}
+
+		public InputPort ExternalLink
+		{
+			get
+			{
+				if( HasExternalLink )
+				{
+					ParentNode linkNode = UIUtils.GetNode( m_externalNodeLink );
+					if( linkNode != null )
+					{
+						return linkNode.GetInputPortByUniqueId( m_externalPortLink );
+					}
+				}
+				return null;
+			}
+		}
+
+		public ParentNode ExternalLinkNode
+		{
+			get
+			{
+				if( HasExternalLink )
+				{
+					return UIUtils.GetNode( m_externalNodeLink );
+				}
+				return null;
 			}
 		}
 	}

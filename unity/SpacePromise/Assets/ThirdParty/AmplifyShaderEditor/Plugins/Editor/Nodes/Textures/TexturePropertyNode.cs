@@ -68,11 +68,11 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		protected System.Type m_textureType = typeof( Texture2D );
 
-		[SerializeField]
-		protected bool m_isTextureFetched;
+		//[SerializeField]
+		//protected bool m_isTextureFetched;
 
-		[SerializeField]
-		protected string m_textureFetchedValue;
+		//[SerializeField]
+		//protected string m_textureFetchedValue;
 
 		[SerializeField]
 		protected TextureType m_currentType = TextureType.Texture2D;
@@ -108,6 +108,7 @@ namespace AmplifyShaderEditor
 		protected override void CommonInit( int uniqueId )
 		{
 			base.CommonInit( uniqueId );
+			GlobalTypeWarningText = string.Format( GlobalTypeWarningText, "Texture" );
 			m_defaultTextureValue = TexturePropertyValues.white;
 			m_insideSize.Set( PreviewSizeX, PreviewSizeY + 5 );
 			AddOutputPort( WirePortDataType.SAMPLER2D, "Tex" );
@@ -117,15 +118,21 @@ namespace AmplifyShaderEditor
 			m_drawPrecisionUI = false;
 			m_freeType = false;
 			m_drawPicker = true;
+			m_hasLeftDropdown = true;
 			m_textLabelWidth = 115;
 			m_availableAttribs.Add( new PropertyAttributes( "No Scale Offset", "[NoScaleOffset]" ) );
 			m_availableAttribs.Add( new PropertyAttributes( "Normal", "[Normal]" ) );
-			m_availableAttribs.Add( new PropertyAttributes( "Per Renderer Data", "[PerRendererData]" ) );
 			m_showPreview = true;
 			m_drawPreviewExpander = false;
 			m_drawPreview = false;
 			m_drawPreviewMaskButtons = false;
 			m_previewShaderGUID = "e53988745ec6e034694ee2640cd3d372";
+		}
+
+		public override void AfterCommonInit()
+		{
+			base.AfterCommonInit();
+			m_hasLeftDropdown = true;
 		}
 
 		protected void SetPreviewTexture( Texture newValue )
@@ -306,7 +313,7 @@ namespace AmplifyShaderEditor
 				}
 				break;
 #if !UNITY_2018_1_OR_NEWER
-// Disabling Substance Deprecated warning
+				// Disabling Substance Deprecated warning
 #pragma warning disable 0618
 				case TextureType.ProceduralTexture:
 				{
@@ -380,7 +387,7 @@ namespace AmplifyShaderEditor
 
 		public string GetTexture2DArrayUniformValue()
 		{
-			return "uniform UNITY_DECLARE_TEX2DARRAY( " + PropertyName + " );";
+			return "uniform TEXTURE2D_ARRAY( " + PropertyName + " );" + "\nuniform SAMPLER( sampler" + PropertyName + " );";
 		}
 
 		public override void DrawMainPropertyBlock()
@@ -393,7 +400,8 @@ namespace AmplifyShaderEditor
 		{
 			ShowDefaults();
 			EditorGUI.BeginChangeCheck();
-			m_defaultValue = EditorGUILayoutObjectField( Constants.DefaultValueLabel, m_defaultValue, m_textureType, false ) as Texture;
+			Type currType = ( m_autocastMode == AutoCastType.Auto ) ? typeof( Texture ) : m_textureType;
+			m_defaultValue = EditorGUILayoutObjectField( Constants.DefaultValueLabel, m_defaultValue, currType, false ) as Texture;
 			if( EditorGUI.EndChangeCheck() )
 			{
 				CheckTextureImporter( true );
@@ -406,7 +414,8 @@ namespace AmplifyShaderEditor
 			ShowDefaults();
 
 			EditorGUI.BeginChangeCheck();
-			m_materialValue = EditorGUILayoutObjectField( Constants.MaterialValueLabel, m_materialValue, m_textureType, false ) as Texture;
+			Type currType = ( m_autocastMode == AutoCastType.Auto ) ? typeof( Texture ) : m_textureType;
+			m_materialValue = EditorGUILayoutObjectField( Constants.MaterialValueLabel, m_materialValue, currType, false ) as Texture;
 			if( EditorGUI.EndChangeCheck() )
 			{
 				CheckTextureImporter( true );
@@ -485,7 +494,7 @@ namespace AmplifyShaderEditor
 #else
 				m_isNormalMap = importer.normalmap;
 #endif
-				if( writeDefault && !m_containerGraph.ParentWindow.IsLoading )
+				if( writeDefault && !m_containerGraph.IsLoading )
 				{
 					if( m_defaultTextureValue == TexturePropertyValues.bump && !m_isNormalMap )
 						m_defaultTextureValue = TexturePropertyValues.white;
@@ -515,7 +524,7 @@ namespace AmplifyShaderEditor
 				ConfigTextureData( TextureType.Cube );
 			}
 #if !UNITY_2018_1_OR_NEWER
-// Disabling Substance Deprecated warning
+			// Disabling Substance Deprecated warning
 #pragma warning disable 0618
 			else if( ( texture as ProceduralTexture ) != null )
 			{
@@ -595,8 +604,17 @@ namespace AmplifyShaderEditor
 		public override void Draw( DrawInfo drawInfo )
 		{
 			base.Draw( drawInfo );
+			if( m_dropdownEditing )
+			{
+				PropertyType parameterType = (PropertyType)EditorGUIIntPopup( m_dropdownRect,(int)m_currentParameterType, AvailablePropertyTypeLabels, AvailablePropertyTypeValues , UIUtils.PropertyPopUp );
+				if( parameterType != m_currentParameterType )
+				{
+					ChangeParameterType( parameterType );
+					m_dropdownEditing = false;
+				}
+			}
 
-			if( m_isEditingPicker && m_drawPicker )
+			if( m_isEditingPicker && m_drawPicker && m_currentParameterType != PropertyType.Global)
 			{
 				Rect hitRect = m_previewRect;
 				hitRect.height = 14 * drawInfo.InvertedZoom;
@@ -613,12 +631,15 @@ namespace AmplifyShaderEditor
 				EditorGUI.BeginChangeCheck();
 				m_colorBuffer = GUI.color;
 				GUI.color = Color.clear;
+				Type currType = ( m_autocastMode == AutoCastType.Auto ) ? typeof( Texture ) : m_textureType;
 				if( m_materialMode )
 				{
-					m_materialValue = EditorGUIObjectField( m_previewRect, m_materialValue, m_textureType, false ) as Texture;
+					m_materialValue = EditorGUIObjectField( m_previewRect, m_materialValue, currType, false ) as Texture;
 				}
 				else
-					m_defaultValue = EditorGUIObjectField( m_previewRect, m_defaultValue, m_textureType, false ) as Texture;
+				{
+					m_defaultValue = EditorGUIObjectField( m_previewRect, m_defaultValue, currType, false ) as Texture;
+				}
 				GUI.color = m_colorBuffer;
 
 				if( EditorGUI.EndChangeCheck() )
@@ -649,7 +670,9 @@ namespace AmplifyShaderEditor
 				return;
 
 			if( drawInfo.CurrentEventType == EventType.Repaint )
+			{
 				DrawTexturePicker( drawInfo );
+			}
 		}
 
 
@@ -661,6 +684,7 @@ namespace AmplifyShaderEditor
 
 			//???
 			//m_showPreview = true;
+			bool showButtons = m_currentParameterType != PropertyType.Global;
 
 			if( currentValue == null )
 				GUI.Label( newRect, string.Empty, UIUtils.ObjectFieldThumb );
@@ -688,11 +712,13 @@ namespace AmplifyShaderEditor
 
 					GUI.Label( newRect, m_labelText, UIUtils.ObjectFieldThumbOverlay );
 				}
-				else
+				else if( showButtons )
 				{
 					DrawPreviewMaskButtonsRepaint( drawInfo, butRect );
 				}
-				GUI.Label( smallButton, "Select", UIUtils.GetCustomStyle( CustomStyle.SamplerButton ) );
+
+				if( showButtons )
+					GUI.Label( smallButton, "Select", UIUtils.GetCustomStyle( CustomStyle.SamplerButton ) );
 			}
 
 			GUI.Label( newRect, string.Empty, UIUtils.GetCustomStyle( CustomStyle.SamplerFrame ) );
@@ -707,20 +733,6 @@ namespace AmplifyShaderEditor
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
 			return BaseGenerateShaderForOutput( outputId, ref dataCollector, ignoreLocalVar );
-		}
-
-		public override void ResetOutputLocals()
-		{
-			base.ResetOutputLocals();
-			m_isTextureFetched = false;
-			m_textureFetchedValue = string.Empty;
-		}
-
-		public override void ResetOutputLocalsIfNot( MasterNodePortCategory category )
-		{
-			base.ResetOutputLocalsIfNot( category );
-			m_isTextureFetched = false;
-			m_textureFetchedValue = string.Empty;
 		}
 
 		public override void UpdateMaterial( Material mat )
@@ -792,8 +804,16 @@ namespace AmplifyShaderEditor
 			m_isNormalMap = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
 			m_defaultTextureValue = (TexturePropertyValues)Enum.Parse( typeof( TexturePropertyValues ), GetCurrentParam( ref nodeParams ) );
 			m_autocastMode = (AutoCastType)Enum.Parse( typeof( AutoCastType ), GetCurrentParam( ref nodeParams ) );
-
-			ConfigTextureData( TextureType.Texture2D );
+			if( UIUtils.CurrentShaderVersion() > 15306 )
+			{
+				m_currentType = (TextureType)Enum.Parse( typeof( TextureType ), GetCurrentParam( ref nodeParams ) );
+			}
+			else
+			{
+				m_currentType = TextureType.Texture2D;
+			}
+			
+			ConfigTextureData( m_currentType );
 
 			//ConfigFromObject( m_defaultValue );
 			if( m_materialValue == null )
@@ -829,6 +849,7 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_isNormalMap.ToString() );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_defaultTextureValue );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_autocastMode );
+			IOUtils.AddFieldValueToString( ref nodeInfo, m_currentType );
 		}
 
 		public override void WriteAdditionalClipboardData( ref string nodeInfo )
@@ -915,6 +936,12 @@ namespace AmplifyShaderEditor
 		{
 			if( m_currentType == TextureType.Texture2DArray )
 			{
+				if( m_containerGraph.CurrentMasterNode.CurrentDataCollector.IsTemplate && m_containerGraph.CurrentMasterNode.CurrentDataCollector.IsSRP )
+				{
+					dataType = "TEXTURE2D_ARRAY( " + PropertyName + "";
+					dataName = ");\nuniform SAMPLER( sampler" + PropertyName + " )";
+					return true;
+				}
 				dataType = "UNITY_DECLARE_TEX2DARRAY(";
 				dataName = m_propertyName + " )";
 				return true;
@@ -980,8 +1007,9 @@ namespace AmplifyShaderEditor
 			UIUtils.UpdateTexturePropertyDataNode( UniqueId, PropertyInspectorName );
 		}
 
+		public override void SetGlobalValue() { Shader.SetGlobalTexture( m_propertyName, m_defaultValue ); }
+		public override void FetchGlobalValue() { m_materialValue = Shader.GetGlobalTexture( m_propertyName ); }
 		public override string DataToArray { get { return PropertyInspectorName; } }
-
 		public TextureType CurrentType { get { return m_currentType; } }
 
 		public bool DrawAutocast

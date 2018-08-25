@@ -8,7 +8,7 @@ using UnityEditor;
 namespace AmplifyShaderEditor
 {
 	[Serializable]
-	[NodeAttributes( "Indirect Specular Light", "Light", "Indirect Specular Light", NodeAvailabilityFlags = (int)NodeAvailability.CustomLighting )]
+	[NodeAttributes( "Indirect Specular Light", "Light", "Indirect Specular Light", NodeAvailabilityFlags = (int)( NodeAvailability.CustomLighting | NodeAvailability.TemplateShader ) )]
 	public sealed class IndirectSpecularLight : ParentNode
 	{
 		[SerializeField]
@@ -23,8 +23,11 @@ namespace AmplifyShaderEditor
 			AddInputPort( WirePortDataType.FLOAT3, false, "Normal" );
 			AddInputPort( WirePortDataType.FLOAT, false, "Smoothness" );
 			AddInputPort( WirePortDataType.FLOAT, false, "Occlusion" );
+			m_inputPorts[ 0 ].Vector3InternalData = Vector3.forward;
 			m_inputPorts[ 1 ].FloatInternalData = 0.5f;
 			m_inputPorts[ 2 ].FloatInternalData = 1;
+			m_inputPorts[ 1 ].AutoDrawInternalData = true;
+			m_inputPorts[ 2 ].AutoDrawInternalData = true;
 			m_autoWrapProperties = true;
 			AddOutputPort( WirePortDataType.FLOAT3, "RGB" );
 			m_errorMessageTypeIsError = NodeMessageType.Warning;
@@ -79,7 +82,7 @@ namespace AmplifyShaderEditor
 		public override void Draw( DrawInfo drawInfo )
 		{
 			base.Draw( drawInfo );
-			if( m_upgradeMessage || ContainerGraph.CurrentCanvasMode == NodeAvailability.TemplateShader || ( ContainerGraph.CurrentStandardSurface != null && ContainerGraph.CurrentStandardSurface.CurrentLightingModel != StandardShaderLightModel.CustomLighting ) )
+			if( m_upgradeMessage || ( ContainerGraph.CurrentStandardSurface != null && ContainerGraph.CurrentStandardSurface.CurrentLightingModel != StandardShaderLightModel.CustomLighting ) )
 				m_showErrorMessage = true;
 			else
 				m_showErrorMessage = false;
@@ -87,6 +90,51 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalvar )
 		{
+			if( dataCollector.IsTemplate )
+			{
+				dataCollector.AddToIncludes( UniqueId, Constants.UnityLightingLib );
+				//string worldPos = dataCollector.TemplateDataCollectorInstance.GetWorldPos();
+				string worldViewDir = dataCollector.TemplateDataCollectorInstance.GetViewDir( false, MasterNodePortCategory.Fragment );
+				//string worldNormal = dataCollector.TemplateDataCollectorInstance.GetWorldNormal( PrecisionType.Float );
+
+				string worldNormal = string.Empty;
+				if( m_inputPorts[ 0 ].IsConnected )
+				{
+					if( m_normalSpace == ViewSpace.Tangent )
+						worldNormal = dataCollector.TemplateDataCollectorInstance.GetWorldNormal( UniqueId, m_currentPrecisionType, m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector ), OutputId );
+					else
+						worldNormal = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
+				}
+				else
+				{
+					worldNormal = dataCollector.TemplateDataCollectorInstance.GetWorldNormal( PrecisionType.Float, false, MasterNodePortCategory.Fragment );
+				}
+
+				string tempsmoothness = m_inputPorts[ 1 ].GeneratePortInstructions( ref dataCollector );
+				string tempocclusion = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
+
+				dataCollector.AddLocalVariable( UniqueId, "UnityGIInput data;" );
+				dataCollector.AddLocalVariable( UniqueId, "UNITY_INITIALIZE_OUTPUT( UnityGIInput, data );" );
+				//dataCollector.AddLocalVariable( UniqueId, "data.worldPos = " + worldPos + ";" );
+				//dataCollector.AddLocalVariable( UniqueId, "data.worldViewDir = " + worldViewDir + ";" );
+				dataCollector.AddLocalVariable( UniqueId, "data.probeHDR[0] = unity_SpecCube0_HDR;" );
+				dataCollector.AddLocalVariable( UniqueId, "data.probeHDR[1] = unity_SpecCube1_HDR;" );
+				dataCollector.AddLocalVariable( UniqueId, "#if UNITY_SPECCUBE_BLENDING || UNITY_SPECCUBE_BOX_PROJECTION //specdataif0" );
+				dataCollector.AddLocalVariable( UniqueId, "\tdata.boxMin[0] = unity_SpecCube0_BoxMin;" );
+				dataCollector.AddLocalVariable( UniqueId, "#endif //specdataif0" );
+				dataCollector.AddLocalVariable( UniqueId, "#if UNITY_SPECCUBE_BOX_PROJECTION //specdataif1" );
+				dataCollector.AddLocalVariable( UniqueId, "\tdata.boxMax[0] = unity_SpecCube0_BoxMax;" );
+				dataCollector.AddLocalVariable( UniqueId, "\tdata.probePosition[0] = unity_SpecCube0_ProbePosition;" );
+				dataCollector.AddLocalVariable( UniqueId, "\tdata.boxMax[1] = unity_SpecCube1_BoxMax;" );
+				dataCollector.AddLocalVariable( UniqueId, "\tdata.boxMin[1] = unity_SpecCube1_BoxMin;" );
+				dataCollector.AddLocalVariable( UniqueId, "\tdata.probePosition[1] = unity_SpecCube1_ProbePosition;" );
+				dataCollector.AddLocalVariable( UniqueId, "#endif //specdataif1" );
+
+				dataCollector.AddLocalVariable( UniqueId, "Unity_GlossyEnvironmentData g" + OutputId + " = UnityGlossyEnvironmentSetup( " + tempsmoothness + ", " + worldViewDir + ", " + worldNormal + ", float3(0,0,0));" );
+				dataCollector.AddLocalVariable( UniqueId, m_currentPrecisionType, WirePortDataType.FLOAT3, "indirectSpecular" + OutputId, "UnityGI_IndirectSpecular( data, " + tempocclusion + ", " + worldNormal + ", g" + OutputId + " )" );
+				return "indirectSpecular" + OutputId;
+			}
+
 			if( dataCollector.GenType == PortGenType.NonCustomLighting || dataCollector.CurrentCanvasMode != NodeAvailability.CustomLighting )
 				return "float3(0,0,0)";
 
@@ -97,7 +145,7 @@ namespace AmplifyShaderEditor
 				dataCollector.AddToInput( UniqueId, SurfaceInputs.INTERNALDATA, addSemiColon: false );
 				dataCollector.ForceNormal = true;
 
-				normal = m_inputPorts[ 0 ].GenerateShaderForOutput( ref dataCollector, WirePortDataType.FLOAT3, ignoreLocalvar );
+				normal = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 				if( m_normalSpace == ViewSpace.Tangent )
 					normal = "WorldNormalVector( " + Constants.InputVarStr + " , " + normal + " )";
 

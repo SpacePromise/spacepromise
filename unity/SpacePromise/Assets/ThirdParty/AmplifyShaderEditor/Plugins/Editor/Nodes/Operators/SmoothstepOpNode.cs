@@ -79,8 +79,8 @@ namespace AmplifyShaderEditor
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
 		{
-			if( m_outputPorts[ 0 ].IsLocalValue )
-				return m_outputPorts[ 0 ].LocalValue;
+			if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+				return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 			string aValue = m_inputPorts[ m_minPortId ].GenerateShaderForOutput( ref dataCollector, m_mainDataType, ignoreLocalVar, true );
 			string bValue = m_inputPorts[ m_maxPortId ].GenerateShaderForOutput( ref dataCollector, m_mainDataType, ignoreLocalVar, true );
@@ -93,7 +93,7 @@ namespace AmplifyShaderEditor
 
 			RegisterLocalVariable( 0, result, ref dataCollector, "smoothstepResult" + OutputId );
 
-			return m_outputPorts[ 0 ].LocalValue;
+			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
 	}
 }

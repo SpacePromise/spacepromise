@@ -1,5 +1,8 @@
 // Amplify Shader Editor - Visual Shader Editing Tool
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
+
+// THIS FILE IS DEPRECATED AND SHOULD NOT BE USED
+
 using System;
 using UnityEngine;
 using UnityEditor;
@@ -51,25 +54,13 @@ namespace AmplifyShaderEditor
 	}
 
 	[Serializable]
-	public class TemplateData
+	public sealed class TemplateData : TemplateDataParent
 	{
-		[SerializeField]
-		private string m_name;
-
-		[SerializeField]
-		private string m_guid;
-
 		[SerializeField]
 		private string m_templateBody = string.Empty;
 
 		[SerializeField]
-		private string m_defaultShaderName = string.Empty;
-
-		[SerializeField]
 		private string m_shaderNameId = string.Empty;
-
-		[SerializeField]
-		private int m_orderId;
 
 		[SerializeField]
 		private List<TemplateProperty> m_propertyList = new List<TemplateProperty>();
@@ -119,19 +110,20 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		private TemplateTagsModuleData m_tagData = new TemplateTagsModuleData();
 
-		[SerializeField]
-		private bool m_communityTemplate = false;
-
-		[SerializeField]
-		private bool m_isValid = true;
+		public TemplateData()
+		{
+			m_templateType = TemplateDataType.LegacySinglePass;
+		}
 
 		public TemplateData( string name )
 		{
+			m_templateType = TemplateDataType.LegacySinglePass;
 			m_name = name;
 		}
 
 		public TemplateData( string name, string guid )
 		{
+			m_templateType = TemplateDataType.LegacySinglePass;
 			m_communityTemplate = false;
 			if( !string.IsNullOrEmpty( guid ) )
 			{
@@ -165,6 +157,7 @@ namespace AmplifyShaderEditor
 
 		public TemplateData( string name, string guid, string body )
 		{
+			m_templateType = TemplateDataType.LegacySinglePass;
 			m_communityTemplate = true;
 			if( !string.IsNullOrEmpty( body ) )
 			{
@@ -174,7 +167,7 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public void Reload()
+		public override void Reload()
 		{
 			if( m_vertexDataContainer != null )
 			{
@@ -274,8 +267,8 @@ namespace AmplifyShaderEditor
 
 
 			//Fetch local variables must be done after fetching code areas as it needs them to see is variable is on vertex or fragment
-			TemplateHelperFunctions.FetchLocalVars( m_templateBody , ref m_localVarsList , m_inputDataList );
-			
+			TemplateHelperFunctions.FetchLocalVars( m_templateBody, ref m_localVarsList, m_vertexFunctionData, m_fragmentFunctionData );
+
 			//Fetch snippets
 		}
 
@@ -459,7 +452,7 @@ namespace AmplifyShaderEditor
 						{
 							m_tagData.Reset();
 							m_tagData.TagsId = subBody.Substring( tagsIdx, tagsEndIdx + 1 - tagsIdx );
-							TemplateHelperFunctions.CreateTags( ref m_tagData );
+							TemplateHelperFunctions.CreateTags( ref m_tagData, true );
 							m_tagData.DataCheck = TemplateDataCheck.Valid;
 							AddId( m_tagData.TagsId, false );
 						}
@@ -536,7 +529,7 @@ namespace AmplifyShaderEditor
 					int dataBeginIdx = m_templateBody.LastIndexOf( '{', interpDataBegin, interpDataBegin );
 					string interpData = m_templateBody.Substring( dataBeginIdx + 1, interpDataBegin - dataBeginIdx );
 
-					m_interpolatorDataContainer = TemplateHelperFunctions.CreateInterpDataList( interpData, interpDataId );
+					m_interpolatorDataContainer = TemplateHelperFunctions.CreateInterpDataList( interpData, interpDataId, 8 );
 					m_interpolatorDataContainer.InterpDataId = interpDataId;
 					m_interpolatorDataContainer.InterpDataStartIdx = interpDataBegin;
 					AddId( interpDataId );
@@ -547,6 +540,7 @@ namespace AmplifyShaderEditor
 				Debug.LogException( e );
 				m_isValid = false;
 			}
+
 
 			try
 			{
@@ -672,11 +666,11 @@ namespace AmplifyShaderEditor
 				string outParameters = ( parametersArr.Length > 1 ) ? parametersArr[ 1 ] : string.Empty;
 				if( category == MasterNodePortCategory.Fragment )
 				{
-					m_fragmentFunctionData = new TemplateFunctionData( id, areaBeginIndexes, inParameters, outParameters, category );
+					m_fragmentFunctionData = new TemplateFunctionData(-1, string.Empty, id, areaBeginIndexes, inParameters, outParameters, category );
 				}
 				else
 				{
-					m_vertexFunctionData = new TemplateFunctionData( id, areaBeginIndexes, inParameters, outParameters, category );
+					m_vertexFunctionData = new TemplateFunctionData( -1, string.Empty,id, areaBeginIndexes, inParameters, outParameters, category );
 				}
 				AddId( id, true );
 			}
@@ -915,13 +909,13 @@ namespace AmplifyShaderEditor
 
 		public void AddInput( int tagStartIdx, string tagId, string portName, string defaultValue, WirePortDataType dataType, MasterNodePortCategory portCategory, int portUniqueId, int portOrderId )
 		{
-			TemplateInputData inputData = new TemplateInputData( tagStartIdx, tagId, portName, defaultValue, dataType, portCategory, portUniqueId, portOrderId );
+			TemplateInputData inputData = new TemplateInputData( tagStartIdx, tagStartIdx, tagId, portName, defaultValue, dataType, portCategory, portUniqueId, portOrderId, string.Empty );
 			m_inputDataList.Add( inputData );
 			m_inputDataDict.Add( inputData.PortUniqueId, inputData );
 			AddId( tagId, false );
 		}
 
-		public void Destroy()
+		public override void Destroy()
 		{
 			if( m_vertexDataContainer != null )
 			{
@@ -976,18 +970,18 @@ namespace AmplifyShaderEditor
 			//	m_snippetElementsDict = null;
 			//}
 
-				//if( m_snippetElementsList != null )
-				//{
-				//	for( int i = 0; i < m_snippetElementsList.Count; i++ )
-				//	{
-				//		GameObject.DestroyImmediate( m_snippetElementsList[ i ] );
-				//		m_snippetElementsList[ i ] = null;
-				//	}
-				//	m_snippetElementsList.Clear();
-				//	m_snippetElementsList = null;
-				//}
+			//if( m_snippetElementsList != null )
+			//{
+			//	for( int i = 0; i < m_snippetElementsList.Count; i++ )
+			//	{
+			//		GameObject.DestroyImmediate( m_snippetElementsList[ i ] );
+			//		m_snippetElementsList[ i ] = null;
+			//	}
+			//	m_snippetElementsList.Clear();
+			//	m_snippetElementsList = null;
+			//}
 
-				m_cullModeData = null;
+			m_cullModeData = null;
 			m_blendData = null;
 			m_colorMaskData = null;
 			m_stencilData = null;
@@ -1159,25 +1153,24 @@ namespace AmplifyShaderEditor
 
 		public string InterpDataId { get { return m_interpolatorDataContainer.InterpDataId; } }
 		public string VertexDataId { get { return m_vertexDataContainer.VertexDataId; } }
-		public string DefaultShaderName { get { return m_defaultShaderName; } }
-		public string ShaderNameId { get { return m_shaderNameId; } }
-		public int OrderId { get { return m_orderId; } set { m_orderId = value; } }
-		public string Name { get { return m_name; } }
-		public string TemplateBody { get { return m_templateBody; } }
-		public List<TemplateInputData> InputDataList { get { return m_inputDataList; } }
+		public string ShaderNameId { get { return m_shaderNameId; } set { m_shaderNameId = value; } }
+		public string TemplateBody { get { return m_templateBody; } set { m_templateBody = value; } }
+		public List<TemplateInputData> InputDataList { get { return m_inputDataList; } set { m_inputDataList = value; } }
 		public List<TemplateLocalVarData> LocalVarsList { get { return m_localVarsList; } }
 		public List<TemplateVertexData> VertexDataList { get { return m_vertexDataContainer.VertexData; } }
 		public TemplateInterpData InterpolatorData { get { return m_interpolatorDataContainer; } }
-		public TemplateFunctionData VertexFunctionData { get { return m_vertexFunctionData; } }
-		public TemplateFunctionData FragFunctionData { get { return m_fragmentFunctionData; } }
-		public bool IsValid { get { return m_isValid; } }
-		public string GUID { get { return m_guid; } }
-		public List<TemplateShaderPropertyData> AvailableShaderProperties { get { return m_availableShaderProperties; } }
-		public TemplateBlendData BlendData { get { return m_blendData; } }
-		public TemplateCullModeData CullModeData { get { return m_cullModeData; } }
-		public TemplateColorMaskData ColorMaskData { get { return m_colorMaskData; } }
-		public TemplateStencilData StencilData { get { return m_stencilData; } }
-		public TemplateDepthData DepthData { get { return m_depthData; } }
-		public TemplateTagsModuleData TagData { get { return m_tagData; } }
+		public TemplateFunctionData VertexFunctionData { get { return m_vertexFunctionData; } set { m_vertexFunctionData = value; } }
+		public TemplateFunctionData FragmentFunctionData { get { return m_fragmentFunctionData; } set { m_fragmentFunctionData = value; } }
+		public TemplateFunctionData FragFunctionData { get { return m_fragmentFunctionData; } set { m_fragmentFunctionData = value; } }
+		public List<TemplateShaderPropertyData> AvailableShaderProperties { get { return m_availableShaderProperties; } set { m_availableShaderProperties = value; } }
+		public TemplateBlendData BlendData { get { return m_blendData; } set { m_blendData = value; } }
+		public TemplateCullModeData CullModeData { get { return m_cullModeData; } set { m_cullModeData = value; } }
+		public TemplateColorMaskData ColorMaskData { get { return m_colorMaskData; } set { m_colorMaskData = value; } }
+		public TemplateStencilData StencilData { get { return m_stencilData; } set { m_stencilData = value; } }
+		public TemplateDepthData DepthData { get { return m_depthData; } set { m_depthData = value; } }
+		public TemplateTagsModuleData TagData { get { return m_tagData; } set { m_tagData = value; } }
+		private List<TemplateProperty> PropertyList { get { return m_propertyList; } set { m_propertyList = value; } }
+		public VertexDataContainer VertexDataContainer { get { return m_vertexDataContainer; } set { m_vertexDataContainer = value; } }
+		public TemplateInterpData InterpolatorDataContainer { get { return m_interpolatorDataContainer; } set { m_interpolatorDataContainer = value; } }
 	}
 }

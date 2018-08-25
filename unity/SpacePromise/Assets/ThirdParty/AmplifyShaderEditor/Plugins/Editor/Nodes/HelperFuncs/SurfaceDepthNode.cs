@@ -78,13 +78,15 @@ namespace AmplifyShaderEditor
 					string varName = "customSurfaceDepth" + OutputId;
 					GenerateInputInVertex( ref dataCollector, 0, varName, false );
 					string instruction = "-UnityObjectToViewPos( " + varName + " ).z" + space;
+					if( dataCollector.IsSRP )
+						instruction = "-TransformWorldToView(TransformObjectToWorld( " + varName + " )).z" + space;
 					string eyeVarName = "customEye" + OutputId;
 					dataCollector.TemplateDataCollectorInstance.RegisterCustomInterpolatedData( eyeVarName, WirePortDataType.FLOAT, m_currentPrecisionType, instruction );
 					return eyeVarName;
 				}
 				else
 				{
-					return dataCollector.TemplateDataCollectorInstance.GetEyeDepth( m_currentPrecisionType, true, MasterNodePortCategory.Fragment,m_viewSpaceInt );
+					return dataCollector.TemplateDataCollectorInstance.GetEyeDepth( m_currentPrecisionType, true, MasterNodePortCategory.Fragment, m_viewSpaceInt );
 				}
 			}
 
@@ -118,12 +120,12 @@ namespace AmplifyShaderEditor
 					if( m_viewSpaceInt == 1 )
 						space = " * _ProjectionParams.w";
 
-					if( m_outputPorts[ 0 ].IsLocalValue )
-						return m_outputPorts[ 0 ].LocalValue;
+					if( m_outputPorts[ 0 ].IsLocalValue( dataCollector.PortCategory ) )
+						return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 
 					string value = m_inputPorts[ 0 ].GeneratePortInstructions( ref dataCollector );
 					RegisterLocalVariable( 0, string.Format( "-UnityObjectToViewPos( {0} ).z", value ) + space, ref dataCollector, "customSurfaceDepth" + OutputId );
-					return m_outputPorts[ 0 ].LocalValue;
+					return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 				}
 				else
 				{
@@ -151,15 +153,15 @@ namespace AmplifyShaderEditor
 					string varName = "customSurfaceDepth" + OutputId;
 					GenerateInputInVertex( ref dataCollector, 0, varName, false );
 					dataCollector.AddToInput( UniqueId, varName, WirePortDataType.FLOAT );
-					string instruction = "-UnityObjectToViewPos( " + varName +" ).z" + space;
-					dataCollector.AddVertexInstruction( Constants.VertexShaderOutputStr + "." + varName + " = " + instruction, UniqueId );
+					string instruction = "-UnityObjectToViewPos( " + varName + " ).z" + space;
+					dataCollector.AddToVertexLocalVariables( UniqueId , Constants.VertexShaderOutputStr + "." + varName + " = " + instruction+";" );
 					return Constants.InputVarStr + "." + varName;
 				}
 				else
 				{
 					dataCollector.AddToInput( UniqueId, m_vertexNameStr[ m_viewSpaceInt ], WirePortDataType.FLOAT );
 					string instruction = "-UnityObjectToViewPos( " + Constants.VertexShaderInputStr + ".vertex.xyz ).z" + space;
-					dataCollector.AddVertexInstruction( Constants.VertexShaderOutputStr + "." + m_vertexNameStr[ m_viewSpaceInt ] + " = " + instruction, UniqueId );
+					dataCollector.AddToVertexLocalVariables( UniqueId , Constants.VertexShaderOutputStr + "." + m_vertexNameStr[ m_viewSpaceInt ] + " = " + instruction+";" );
 					return Constants.InputVarStr + "." + m_vertexNameStr[ m_viewSpaceInt ];
 				}
 			}

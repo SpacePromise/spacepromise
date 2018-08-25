@@ -2,7 +2,7 @@
 
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "ASESampleShaders/Sobel"
+Shader "ASESampleShaders/Post Process/Sobel"
 {
 	Properties
 	{
@@ -170,7 +170,7 @@ Node;AmplifyShaderEditor.FunctionNode;39;553.4998,-47.19983;Float;False;SobelMai
 Node;AmplifyShaderEditor.SimpleAddOpNode;23;951.5491,184.7441;Float;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0.0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SamplerNode;22;522.5495,353.7439;Float;True;Property;_TextureSample0;Texture Sample 0;2;0;Create;True;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;6;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;1.0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1.0;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ColorNode;21;542.3502,128.5439;Float;False;Property;_Color0;Color 0;1;0;Create;True;0,0,0,0;0,0,0,0;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.TemplateMasterNode;26;1093.604,-156.7999;Float;False;True;2;Float;ASEMaterialInspector;0;1;ASESampleShaders/Sobel;c71b220b631b6344493ea3cf87110c93;ASETemplateShaders/PostProcess;Off;2;7;0;1;0;FLOAT4;0,0,0,0;False;0
+Node;AmplifyShaderEditor.TemplateMasterNode;26;1093.604,-156.7999;Float;False;True;2;Float;ASEMaterialInspector;0;1;ASESampleShaders/Post Process/Sobel;c71b220b631b6344493ea3cf87110c93;ASETemplateShaders/PostProcess;Off;2;7;0;1;0;FLOAT4;0,0,0,0;False;0
 WireConnection;17;0;12;0
 WireConnection;17;1;18;0
 WireConnection;13;0;17;0
