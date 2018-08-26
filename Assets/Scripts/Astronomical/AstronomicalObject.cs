@@ -18,7 +18,7 @@ namespace Assets.Scripts.Astronomical
 
                 var face = new AstronomicalObjectFace
                 {
-                    faceGameObject = faceGameObject
+                    FaceGameObject = faceGameObject
                 };
 
                 face.Load();
