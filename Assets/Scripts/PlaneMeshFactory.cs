@@ -17,7 +17,6 @@ namespace Assets.Scripts
             var resX = resolutionX; // 2 minimum
             var resZ = resolutionZ;
  
-            #region Vertices		
             var vertices = new Vector3[ resX * resZ ];
             for(var z = 0; z < resZ; z++)
             {
@@ -30,15 +29,11 @@ namespace Assets.Scripts
                     vertices[ x + z * resX ] = new Vector3( xPos, 0f, zPos );
                 }
             }
-            #endregion
  
-            #region Normales
             var normals = new Vector3[ vertices.Length ];
             for( var n = 0; n < normals.Length; n++ )
                 normals[n] = Vector3.up;
-            #endregion
  
-            #region UVs		
             var uvs = new Vector2[ vertices.Length ];
             for(var v = 0; v < resZ; v++)
             {
@@ -47,9 +42,7 @@ namespace Assets.Scripts
                     uvs[ u + v * resX ] = new Vector2( (float)u / (resX - 1), (float)v / (resZ - 1) );
                 }
             }
-            #endregion
  
-            #region Triangles
             var nbFaces = (resX - 1) * (resZ - 1);
             var triangles = new int[ nbFaces * 6 ];
             var t = 0;
@@ -66,7 +59,6 @@ namespace Assets.Scripts
                 triangles[t++] = i + resX + 1;
                 triangles[t++] = i + 1; 
             }
-            #endregion
 
             return new MeshData
             {

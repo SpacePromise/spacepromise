@@ -7,8 +7,12 @@ namespace Assets.Scripts.Utils
     {
         public TData Data;
         public QuadTreeNode<TData>[] Children;
-        public bool IsLeaf;
+        public bool IsLeaf = true;
 
+
+        public QuadTreeNode()
+        {
+        }
 
         public QuadTreeNode(TData data)
         {
@@ -28,10 +32,10 @@ namespace Assets.Scripts.Utils
             };
         }
 
-        public IEnumerable<TData> Collapse()
+        public TData[] Collapse()
         {
             this.IsLeaf = true;
-            var childrenData = this.Children.Select(c => c.Data);
+            var childrenData = this.Children.Select(c => c.Data).ToArray();
             this.Children = null;
 
             return childrenData;

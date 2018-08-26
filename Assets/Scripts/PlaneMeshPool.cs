@@ -68,21 +68,12 @@ namespace Assets.Scripts
 	
         private void FillOne(Queue<Mesh> collection, Vector2 size)
         {
-            // Generate mesh data
-            var meshData = this.factory.Value.Plane(
-                (int)size.x, (int)size.y, 
-                (int)size.x + 1, (int)size.y + 1);
-
-            // Create mesh
-            var mesh = new Mesh
-            {
-                vertices = meshData.Vertices,
-                uv = meshData.Uv,
-                triangles = meshData.Triangles,
-                normals = meshData.Normals
-            };
-		
-            collection.Enqueue(mesh);
+            collection.Enqueue(
+                this.factory.Value
+                    .Plane(
+                        (int) size.x, (int) size.y,
+                        (int) size.x + 1, (int) size.y + 1)
+                    .ApplyToMesh(new Mesh()));
         }
     }
 }

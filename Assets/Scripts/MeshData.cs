@@ -11,5 +11,19 @@ namespace Assets.Scripts
         public Vector3[] Normals;
 
         public int[] Triangles;
+
+        public Mesh ApplyToMesh(Mesh mesh)
+        {
+            return ApplyToMesh(this, mesh);
+        }
+
+        public static Mesh ApplyToMesh(MeshData data, Mesh mesh)
+        {
+            mesh.vertices = data.Vertices;
+            mesh.uv = data.Uv;
+            mesh.triangles = data.Triangles;
+            mesh.normals = data.Normals;
+            return mesh;
+        }
     }
 }

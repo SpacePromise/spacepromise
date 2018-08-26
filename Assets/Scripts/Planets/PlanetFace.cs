@@ -2,10 +2,9 @@
 
 namespace Assets.Scripts.Planets
 {
-    
-
     public class PlanetFace
     {
+        //private Quadtree
         private readonly Mesh mesh;
         private readonly int resolution;
         private readonly Vector3 localUp;
