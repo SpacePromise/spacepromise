@@ -1,8 +1,26 @@
-﻿using Assets.Scripts.Utils;
+﻿using System;
+using Assets.Scripts.Utils;
 using UnityEngine;
 
 namespace Assets.Scripts.Astronomical
 {
+    [Serializable]
+    public class ViewerData
+    {
+        public Vector3 ViewerPosition;
+
+        public bool IsViewerLodPositionLocked;
+        public Vector3 ViewerLodPosition;
+
+        public void SetViewerPosition(Vector3 newViewerPosition)
+        {
+            this.ViewerPosition = newViewerPosition;
+
+            if (!this.IsViewerLodPositionLocked)
+                this.ViewerLodPosition = newViewerPosition;
+        }
+    }
+    
     public class AstronomicalObjectFace
     {
         public GameObject FaceGameObject;
