@@ -1,45 +1,51 @@
-﻿using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+﻿using System;
+using System.ComponentModel;
+using UnityEngine;
 
 namespace Assets.Scripts.Astronomical
 {
     public class AstronomicalObject : MonoBehaviour
     {
-        private const int NumberOfFaces = 1;
+        private static readonly Vector3[] FaceDirections =
+            {Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back};
 
-        private readonly AstronomicalObjectFace[] faces = new AstronomicalObjectFace[NumberOfFaces];
+        private static readonly int NumberOfFaces = FaceDirections.Length;
+
+        [NonSerialized]
+        public readonly AstronomicalObjectFace[] Faces = new AstronomicalObjectFace[NumberOfFaces];
 
         public void Start()
         {
             for (var faceIndex = 0; faceIndex < NumberOfFaces; faceIndex++)
             {
-                var faceGameObject = new GameObject("AstronomicalObjectFace");
+                var faceGameObject = new GameObject($"AstronomicalObjectFace {FaceDirections[faceIndex].x}, {FaceDirections[faceIndex].y}, {FaceDirections[faceIndex].z}");
                 faceGameObject.transform.parent = this.transform;
+                faceGameObject.transform.localPosition = Vector3.zero;
+                faceGameObject.transform.localScale = Vector3.one;
 
-                var face = new AstronomicalObjectFace
+                var face = new AstronomicalObjectFace(FaceDirections[faceIndex])
                 {
                     FaceGameObject = faceGameObject
                 };
 
                 face.Load();
 
-                this.faces[faceIndex] = face;
+                this.Faces[faceIndex] = face;
             }
         }
 
-        public void OnValidate()
+        public void Update()
         {
+            ViewerDataProvider.Instance.Data.SetViewerPosition(Camera.main.transform.position);
+
             this.ApplyLod();
         }
 
-        [Range(0, 8)]
-        public int currentLod = 0;
-
         public void ApplyLod()
         {
-            for (int faceIndex = 0; faceIndex < NumberOfFaces; faceIndex++)
+            for (var faceIndex = 0; faceIndex < NumberOfFaces; faceIndex++)
             {
-                this.faces[faceIndex].ApplyLod(this.currentLod);
+                this.Faces[faceIndex].ApplyLod();
             }
         }
     }

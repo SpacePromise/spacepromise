@@ -29,7 +29,7 @@ namespace Assets.Scripts
             else
                 UnityObject.DestroyImmediate(obj);
 #else
-        UnityObject.Destroy(obj);
+            UnityObject.Destroy(obj);
 #endif
         }
 

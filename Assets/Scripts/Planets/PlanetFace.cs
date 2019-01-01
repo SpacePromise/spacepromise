@@ -33,22 +33,9 @@ namespace Assets.Scripts.Planets
             {
                 for (var x = 0; x < this.resolution; x++)
                 {
-                    // Calculate vertex position
-                    var pointOnUnitCube = this.localUp +
-                                          ((float) x / resolutionLimit - 0.5f) * 2 * this.axisA +
-                                          ((float) y / resolutionLimit - 0.5f) * 2 * this.axisB;
-
-                    //var x2 = pointOnUnitCube.x * pointOnUnitCube.x;
-                    //var y2 = pointOnUnitCube.y * pointOnUnitCube.y;
-                    //var z2 = pointOnUnitCube.z * pointOnUnitCube.z;
-                    //var fixedPointOnSphere = new Vector3(
-                    //    pointOnUnitCube.x * Mathf.Sqrt(1f - y2 / 2f - z2 / 2f + y2 * z2 / 3f),
-                    //    pointOnUnitCube.y * Mathf.Sqrt(1f - x2 / 2f - z2 / 2f + x2 * z2 / 3f),
-                    //    pointOnUnitCube.z * Mathf.Sqrt(1f - x2 / 2f - y2 / 2f + x2 * y2 / 3f));
-
                     // Set vertex position
                     var vertexIndex = x + y * this.resolution;
-                    vertices[vertexIndex] = pointOnUnitCube;
+                    vertices[vertexIndex] = CalcVertexSpherePosition(x, y, resolutionLimit);
 
                     // Skip indices for right and bottom edges
                     if (x == resolutionLimit || y == resolutionLimit) continue;
@@ -72,6 +59,28 @@ namespace Assets.Scripts.Planets
             this.mesh.vertices = vertices;
             this.mesh.triangles = indices;
             this.mesh.normals = vertices;
+        }
+
+        private Vector3 CalcVertexCubePosition(int x, int y, int resolutionLimit)
+        {
+            // Calculate vertex position
+            return this.localUp + ((float) x / resolutionLimit - 0.5f) * 2 * this.axisA +
+                                  ((float) y / resolutionLimit - 0.5f) * 2 * this.axisB;
+        }
+
+        private Vector3 CalcVertexSpherePosition(int x, int y, int resolutionLimit)
+        {
+            var pointOnUnitCube = CalcVertexCubePosition(x, y, resolutionLimit);
+
+            var x2 = pointOnUnitCube.x * pointOnUnitCube.x;
+            var y2 = pointOnUnitCube.y * pointOnUnitCube.y;
+            var z2 = pointOnUnitCube.z * pointOnUnitCube.z;
+            var fixedPointOnSphere = new Vector3(
+                pointOnUnitCube.x * Mathf.Sqrt(1f - y2 / 2f - z2 / 2f + y2 * z2 / 3f),
+                pointOnUnitCube.y * Mathf.Sqrt(1f - x2 / 2f - z2 / 2f + x2 * z2 / 3f),
+                pointOnUnitCube.z * Mathf.Sqrt(1f - x2 / 2f - y2 / 2f + x2 * y2 / 3f));
+
+            return fixedPointOnSphere;
         }
     }
 }

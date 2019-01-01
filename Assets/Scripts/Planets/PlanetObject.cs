@@ -4,7 +4,7 @@ namespace Assets.Scripts.Planets
 {
     public class PlanetObject : MonoBehaviour
     {
-        private const int NumberOfFaces = 1;
+        private const int NumberOfFaces = 6;
 
         [Range(2, 256)]
         public int Resolution = 10;
@@ -12,7 +12,6 @@ namespace Assets.Scripts.Planets
         private static readonly Vector3[] PlanetFaceDirections =
             {Vector3.up, Vector3.down, Vector3.left, Vector3.right, Vector3.forward, Vector3.back};
 
-        [SerializeField, HideInInspector]
         private MeshFilter[] meshFilters;
         private PlanetFace[] planetFaces;
 

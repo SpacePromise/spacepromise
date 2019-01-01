@@ -63,7 +63,6 @@ namespace Assets.Scripts
 
         private void Refresh()
         {
-            return;
             this.RefreshLod();
 
             this.isRefreshWaiting = false;

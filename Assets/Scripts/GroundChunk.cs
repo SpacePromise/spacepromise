@@ -19,8 +19,8 @@ namespace Assets.Scripts
         {
             foreach (var groundSurface in this.groundSurfaces)
             {
-                if (groundSurface.renderer != null)
-                    groundSurface.renderer.RequestRefresh();
+                if (groundSurface.MeshRenderer != null)
+                    groundSurface.MeshRenderer.RequestRefresh();
             }
         }
 

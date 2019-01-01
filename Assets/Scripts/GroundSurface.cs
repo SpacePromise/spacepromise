@@ -4,20 +4,20 @@ namespace Assets.Scripts
 {
     public class GroundSurface : MonoBehaviour
     {
-        public GroundSurfaceMeshRenderer renderer;
+        public GroundSurfaceMeshRenderer MeshRenderer;
         public GroundSharedRenderData SharedRenderData;
 
 
         private void Start()
         {
-            this.renderer = this.gameObject.GetOrAddComponent<GroundSurfaceMeshRenderer>();
+            this.MeshRenderer = this.gameObject.GetOrAddComponent<GroundSurfaceMeshRenderer>();
         }
 
         public void Update()
         {
             var lodDistance = Vector3.Distance(this.SharedRenderData.LodViewerPosition, this.transform.position) / 160;
-            this.renderer.LodBase = this.SharedRenderData.ChunkSize / this.SharedRenderData.SurfacesPerChunk;
-            this.renderer.Lod = Mathf.Clamp((int)lodDistance, 1, 22);
+            this.MeshRenderer.LodBase = this.SharedRenderData.ChunkSize / this.SharedRenderData.SurfacesPerChunk;
+            this.MeshRenderer.Lod = Mathf.Clamp((int)lodDistance, 1, 22);
         }
     }
 }
