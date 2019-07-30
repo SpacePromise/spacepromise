@@ -5,6 +5,7 @@
 
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace AmplifyShaderEditor
 {
@@ -31,7 +32,7 @@ namespace AmplifyShaderEditor
 		[MenuItem( "Window/Amplify Shader Editor/Create Template Menu Items" )]
 		public static void CreateTemplateMenuItems()
 		{
-			TemplatesManager.CreateTemplateMenuItems();
+			UIUtils.CurrentWindow.TemplatesManagerInstance.CreateTemplateMenuItems();
 		}
 
 #else
@@ -148,6 +149,39 @@ namespace AmplifyShaderEditor
 			{
 				Debug.Log( UIUtils.CurrentWindow.IsShaderFunctionWindow );
 				window.CurrentPaletteWindow.ForceUpdate = true;
+			}
+
+			EditorGUILayout.Separator();
+
+			if( GUILayout.Button( "Detect Infinite Loops" ) )
+			{
+				if( window.IsShaderFunctionWindow )
+				{
+					Debug.Log( "Starting infinite loop detection over shader functions" );
+					List<FunctionOutput> nodes = window.OutsideGraph.FunctionOutputNodes.NodesList;
+					for( int i = 0; i < nodes.Count; i++ )
+					{
+						UIUtils.DetectNodeLoopsFrom( nodes[ i ], new Dictionary<int, int>() );
+					}
+				}
+				else
+				{
+					if( window.OutsideGraph.MultiPassMasterNodes.Count > 0 )
+					{
+						Debug.Log( "Starting infinite loop detection over shader from template" );
+						List<TemplateMultiPassMasterNode> nodes = window.OutsideGraph.MultiPassMasterNodes.NodesList;
+						for( int i = 0; i < nodes.Count; i++ )
+						{
+							UIUtils.DetectNodeLoopsFrom( nodes[ i ], new Dictionary<int, int>() );
+						}
+					}
+					else
+					{
+						Debug.Log( "Starting infinite loop detection over standard shader" );
+						UIUtils.DetectNodeLoopsFrom( window.OutsideGraph.CurrentMasterNode, new Dictionary<int, int>() );
+					}
+				}
+				Debug.Log( "End infinite loop detection" );
 			}
 		}
 	}

@@ -16,49 +16,60 @@ namespace AmplifyShaderEditor
 			if( templatesManager == null )
 				return;
 
-			if ( !templatesManager.Initialized )
-            {
+			if( !templatesManager.Initialized )
+			{
 				templatesManager.Init();
-            }
+			}
 
 			bool refreshMenuItems = false;
-			for ( int i = 0; i < importedAssets.Length; i++ )
+			for( int i = 0; i < importedAssets.Length; i++ )
 			{
-				if ( TemplateHelperFunctions.CheckIfTemplate( importedAssets[ i ] ) )
+				if( TemplateHelperFunctions.CheckIfTemplate( importedAssets[ i ] ) )
 				{
-					refreshMenuItems = true;
 					string guid = AssetDatabase.AssetPathToGUID( importedAssets[ i ] );
 					TemplateDataParent templateData = templatesManager.GetTemplate( guid );
 					if( templateData != null )
 					{
-						templateData.Reload();
+						refreshMenuItems = templateData.Reload() || refreshMenuItems;
+						int windowCount = IOUtils.AllOpenedWindows.Count;
+						for( int windowIdx = 0; windowIdx < windowCount; windowIdx++ )
+						{
+							if( IOUtils.AllOpenedWindows[ windowIdx ].OutsideGraph.CurrentCanvasMode == NodeAvailability.TemplateShader )
+							{
+								if( IOUtils.AllOpenedWindows[ windowIdx ].OutsideGraph.MultiPassMasterNodes.NodesList[ 0 ].CurrentTemplate == templateData )
+								{
+									IOUtils.AllOpenedWindows[ windowIdx ].OutsideGraph.ForceMultiPassMasterNodesRefresh();
+								}
+							}
+						}
 					}
 					else
 					{
+						refreshMenuItems = true;
 						string name = TemplatesManager.OfficialTemplates.ContainsKey( guid ) ? TemplatesManager.OfficialTemplates[ guid ] : string.Empty;
 						TemplateMultiPass mp = TemplateMultiPass.CreateInstance<TemplateMultiPass>();
-						mp.Init( name, guid );
+						mp.Init( name, guid, true );
 						templatesManager.AddTemplate( mp );
 					}
 				}
 			}
-			
-			if ( deletedAssets.Length > 0 )
+
+			if( deletedAssets.Length > 0 )
 			{
-				if ( deletedAssets[ 0 ].IndexOf( Constants.InvalidPostProcessDatapath ) < 0 )
+				if( deletedAssets[ 0 ].IndexOf( Constants.InvalidPostProcessDatapath ) < 0 )
 				{
-					for ( int i = 0; i < deletedAssets.Length; i++ )
+					for( int i = 0; i < deletedAssets.Length; i++ )
 					{
 						string guid = AssetDatabase.AssetPathToGUID( deletedAssets[ i ] );
 						TemplateDataParent templateData = templatesManager.GetTemplate( guid );
-						if ( templateData != null )
+						if( templateData != null )
 						{
 							// Close any window using that template
 							int windowCount = IOUtils.AllOpenedWindows.Count;
-							for ( int windowIdx = 0; windowIdx < windowCount; windowIdx++ )
+							for( int windowIdx = 0; windowIdx < windowCount; windowIdx++ )
 							{
 								TemplateMasterNode masterNode = IOUtils.AllOpenedWindows[ windowIdx ].CurrentGraph.CurrentMasterNode as TemplateMasterNode;
-								if ( masterNode != null && masterNode.CurrentTemplate.GUID.Equals( templateData.GUID ) )
+								if( masterNode != null && masterNode.CurrentTemplate.GUID.Equals( templateData.GUID ) )
 								{
 									IOUtils.AllOpenedWindows[ windowIdx ].Close();
 								}
@@ -71,25 +82,27 @@ namespace AmplifyShaderEditor
 				}
 			}
 
-			for ( int i = 0; i < movedAssets.Length; i++ )
-			{
-				if ( TemplateHelperFunctions.CheckIfTemplate( movedAssets[ i ] ) )
-				{
-					refreshMenuItems = true;
-					break;
-				}
-			}
+			//for ( int i = 0; i < movedAssets.Length; i++ )
+			//{
+			//	if ( TemplateHelperFunctions.CheckIfTemplate( movedAssets[ i ] ) )
+			//	{
+			//		refreshMenuItems = true;
+			//		break;
+			//	}
+			//}
 
-			for ( int i = 0; i < movedFromAssetPaths.Length; i++ )
-			{
-				if ( TemplateHelperFunctions.CheckIfTemplate( movedFromAssetPaths[ i ] ) )
-				{
-					refreshMenuItems = true;
-					break;
-				}
-			}
+			//for ( int i = 0; i < movedFromAssetPaths.Length; i++ )
+			//{
+			//	if ( TemplateHelperFunctions.CheckIfTemplate( movedFromAssetPaths[ i ] ) )
+			//	{
+			//		refreshMenuItems = true;
+			//		break;
+			//	}
+			//}
+
 			if( refreshMenuItems )
 			{
+				//UnityEngine.Debug.Log( "Refresh Menu Items" );
 				refreshMenuItems = false;
 				templatesManager.CreateTemplateMenuItems();
 

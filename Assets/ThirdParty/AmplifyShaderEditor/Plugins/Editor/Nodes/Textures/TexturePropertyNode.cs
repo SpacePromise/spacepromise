@@ -116,10 +116,12 @@ namespace AmplifyShaderEditor
 			m_currentParameterType = PropertyType.Property;
 			m_customPrefix = "Texture ";
 			m_drawPrecisionUI = false;
+			m_showVariableMode = true;
 			m_freeType = false;
 			m_drawPicker = true;
 			m_hasLeftDropdown = true;
 			m_textLabelWidth = 115;
+			m_longNameSize = 225;
 			m_availableAttribs.Add( new PropertyAttributes( "No Scale Offset", "[NoScaleOffset]" ) );
 			m_availableAttribs.Add( new PropertyAttributes( "Normal", "[Normal]" ) );
 			m_showPreview = true;
@@ -354,6 +356,15 @@ namespace AmplifyShaderEditor
 
 		public string GetTexture2DUniformValue()
 		{
+			if( m_containerGraph.SamplingThroughMacros )
+			{
+				if( m_containerGraph.IsSRP )
+					return string.Format( Constants.TexDeclarationSRPMacros[ TextureType.Texture2D ], PropertyName );
+
+					return string.Format( Constants.TexDeclarationStandardMacros[ TextureType.Texture2D ], PropertyName );
+
+			}
+
 			return "uniform sampler2D " + PropertyName + ";";
 		}
 
@@ -365,6 +376,13 @@ namespace AmplifyShaderEditor
 
 		public string GetTexture3DUniformValue()
 		{
+			if( m_containerGraph.SamplingThroughMacros )
+			{
+				if( m_containerGraph.IsSRP )
+					return string.Format( Constants.TexDeclarationSRPMacros[ TextureType.Texture3D ], PropertyName );
+
+				return string.Format( Constants.TexDeclarationStandardMacros[ TextureType.Texture3D ], PropertyName );
+			}
 			return "uniform sampler3D " + PropertyName + ";";
 		}
 
@@ -376,6 +394,14 @@ namespace AmplifyShaderEditor
 
 		public string GetCubeUniformValue()
 		{
+			if( m_containerGraph.SamplingThroughMacros )
+			{
+				if( m_containerGraph.IsSRP )
+					return string.Format( Constants.TexDeclarationSRPMacros[ TextureType.Cube ], PropertyName );
+
+				return string.Format( Constants.TexDeclarationStandardMacros[ TextureType.Cube ], PropertyName );
+			}
+
 			return "uniform samplerCUBE " + PropertyName + ";";
 		}
 
@@ -387,6 +413,14 @@ namespace AmplifyShaderEditor
 
 		public string GetTexture2DArrayUniformValue()
 		{
+			if( m_containerGraph.SamplingThroughMacros )
+			{
+				if( m_containerGraph.IsSRP )
+					return string.Format( Constants.TexDeclarationSRPMacros[ TextureType.Texture2DArray ], PropertyName );
+
+				return string.Format( Constants.TexDeclarationStandardMacros[ TextureType.Texture2DArray ], PropertyName );
+			}
+
 			return "uniform TEXTURE2D_ARRAY( " + PropertyName + " );" + "\nuniform SAMPLER( sampler" + PropertyName + " );";
 		}
 
@@ -494,7 +528,7 @@ namespace AmplifyShaderEditor
 #else
 				m_isNormalMap = importer.normalmap;
 #endif
-				if( writeDefault && !m_containerGraph.IsLoading )
+				if( writeDefault && !UIUtils.IsLoading )
 				{
 					if( m_defaultTextureValue == TexturePropertyValues.bump && !m_isNormalMap )
 						m_defaultTextureValue = TexturePropertyValues.white;
@@ -932,11 +966,33 @@ namespace AmplifyShaderEditor
 			return string.Empty;
 		}
 
-		public override bool GetUniformData( out string dataType, out string dataName )
+		public override bool GetUniformData( out string dataType, out string dataName, ref bool fullValue )
 		{
+			if( m_containerGraph.SamplingThroughMacros )
+			{
+				if( m_containerGraph.IsSRP )
+				{
+					if( Constants.TexDeclarationSRPMacros.ContainsKey( m_currentType ) )
+					{
+						dataName = string.Format( Constants.TexDeclarationSRPMacros[ m_currentType ], PropertyName );
+						dataType = string.Empty;
+						fullValue = true;
+						return true;
+					}
+				}
+				else if( Constants.TexDeclarationStandardMacros.ContainsKey( m_currentType ) )
+				{
+					dataName = string.Format( Constants.TexDeclarationStandardMacros[ m_currentType ], PropertyName );
+					dataType = string.Empty;
+					fullValue = true;
+					return true;
+				}
+			}
+
 			if( m_currentType == TextureType.Texture2DArray )
 			{
-				if( m_containerGraph.CurrentMasterNode.CurrentDataCollector.IsTemplate && m_containerGraph.CurrentMasterNode.CurrentDataCollector.IsSRP )
+				MasterNode masterNode = UIUtils.CurrentWindow.OutsideGraph.CurrentMasterNode;
+				if( masterNode.CurrentDataCollector.IsTemplate && masterNode.CurrentDataCollector.IsSRP )
 				{
 					dataType = "TEXTURE2D_ARRAY( " + PropertyName + "";
 					dataName = ");\nuniform SAMPLER( sampler" + PropertyName + " )";
@@ -946,6 +1002,7 @@ namespace AmplifyShaderEditor
 				dataName = m_propertyName + " )";
 				return true;
 			}
+			
 
 			dataType = UIUtils.TextureTypeToCgType( m_currentType );
 			dataName = m_propertyName;

@@ -144,7 +144,7 @@ namespace AmplifyShaderEditor
 
 		void InitAvailableCategories()
 		{
-			int templateCount =  m_containerGraph.ParentWindow.TemplatesManagerInstance.TemplateCount;
+			int templateCount = m_containerGraph.ParentWindow.TemplatesManagerInstance.TemplateCount;
 			m_availableCategories = new MasterNodeCategoriesData[ templateCount + 1 ];
 			m_availableCategoryLabels = new GUIContent[ templateCount + 1 ];
 
@@ -172,6 +172,16 @@ namespace AmplifyShaderEditor
 					NodeData nodeData = new NodeData( m_inputPorts[ i ].Category );
 					ParentNode node = m_inputPorts[ i ].GetOutputNode();
 					node.PropagateNodeData( nodeData, ref m_currentDataCollector );
+				}
+				else if( m_inputPorts[ i ].HasExternalLink )
+				{
+					InputPort linkedPort = m_inputPorts[ i ].ExternalLink;
+					if( linkedPort != null && linkedPort.IsConnected )
+					{
+						NodeData nodeData = new NodeData( linkedPort.Category );
+						ParentNode node = linkedPort.GetOutputNode();
+						node.PropagateNodeData( nodeData, ref m_currentDataCollector );
+					}
 				}
 			}
 		}
@@ -207,11 +217,11 @@ namespace AmplifyShaderEditor
 			m_masterNodeCategory = EditorGUILayoutPopup( m_categoryLabel, m_masterNodeCategory, m_availableCategoryLabels );
 			if( oldType != m_masterNodeCategory )
 			{
-				m_containerGraph.ParentWindow.ReplaceMasterNode( m_availableCategories[ m_masterNodeCategory ] , false );
+				m_containerGraph.ParentWindow.ReplaceMasterNode( m_availableCategories[ m_masterNodeCategory ], false );
 			}
 		}
 
-		protected void DrawCustomInspector( )
+		protected void DrawCustomInspector()
 		{
 			EditorGUILayout.BeginHorizontal();
 			m_customInspectorName = EditorGUILayoutTextField( CustomInspectorStr, m_customInspectorName );
@@ -447,12 +457,12 @@ namespace AmplifyShaderEditor
 			{
 				if( nodes[ i ].AutoRegisterMode )
 				{
-					nodes[ i ].CheckDependencies( ref m_currentDataCollector, ref examinedNodes);
+					nodes[ i ].CheckDependencies( ref m_currentDataCollector, ref examinedNodes );
 				}
 			}
 			examinedNodes.Clear();
 			examinedNodes = null;
-		} 
+		}
 
 		// What operation this node does
 		public virtual void Execute( Shader selectedShader )
@@ -566,7 +576,7 @@ namespace AmplifyShaderEditor
 			m_propertyNodesVisibleList.Sort( ( x, y ) => { return x.OrderIndex.CompareTo( y.OrderIndex ); } );
 		}
 
-		public void DrawMaterialInputs( GUIStyle toolbarstyle , bool style = true)
+		public void DrawMaterialInputs( GUIStyle toolbarstyle, bool style = true )
 		{
 			m_propertyOrderChanged = false;
 			Color cachedColor = GUI.color;
@@ -861,5 +871,6 @@ namespace AmplifyShaderEditor
 		public List<PropertyNode> PropertyNodesVisibleList { get { return m_propertyNodesVisibleList; } }
 		public ReorderableList PropertyReordableList { get { return m_propertyReordableList; } }
 		public int ReordableListLastCount { get { return m_lastCount; } }
+		public MasterNodeCategoriesData CurrentCategoriesData { get { return m_availableCategories[ m_masterNodeCategory ]; } }
 	}
 }

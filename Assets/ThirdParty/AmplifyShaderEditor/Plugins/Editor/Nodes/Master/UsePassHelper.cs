@@ -9,7 +9,7 @@ namespace AmplifyShaderEditor
 	public enum UsePassLocation
 	{
 		Above,
-		Bellow
+		Below
 	}
 
 	[Serializable]
@@ -59,7 +59,13 @@ namespace AmplifyShaderEditor
 		private Material m_dummyMaterial;
 		private MenuCommand m_dummyCommand;
 		private int m_currentUsePassIdx = 0;
-		
+
+		public void Init( string moduleName )
+		{
+			hideFlags = HideFlags.HideAndDontSave;
+			m_moduleName = moduleName;
+		}
+
 		void DrawButtons()
 		{
 			EditorGUILayout.Separator();
@@ -136,10 +142,10 @@ namespace AmplifyShaderEditor
 							EditorGUI.BeginChangeCheck();
 							m_items[ index ].Location = (UsePassLocation)owner.EditorGUIEnumPopup( popupPos, m_items[ index ].Location );
 
-							if( EditorGUI.EndChangeCheck() && m_items[ index ].Location == UsePassLocation.Bellow && m_owner != null && m_owner.ContainerGraph.CurrentCanvasMode == NodeAvailability.TemplateShader )
+							if( EditorGUI.EndChangeCheck() && m_items[ index ].Location == UsePassLocation.Below && m_owner != null && m_owner.ContainerGraph.CurrentCanvasMode == NodeAvailability.TemplateShader )
 							{
 								m_items[ index ].Location = UsePassLocation.Above;
-								UIUtils.ShowMessage( "Bellow option still not available on templates" );
+								UIUtils.ShowMessage( "Below option still not available on templates" );
 							}
 							m_items[ index ].Value = owner.EditorGUITextField( labelPos, string.Empty, m_items[ index ].Value );
 
@@ -252,7 +258,11 @@ namespace AmplifyShaderEditor
 				int count = Convert.ToInt32( nodeParams[ index++ ] );
 				for( int i = 0; i < count; i++ )
 				{
-					UsePassLocation location = (UsePassLocation)Enum.Parse( typeof( UsePassLocation ), nodeParams[ index++ ] );
+					string locationValue = nodeParams[ index++ ];
+					// REMOVE THIS TEST AFTER A COUPLE OF VERSIONS (curr v1.5.6 r02)
+					if( locationValue.Equals( "Bellow" ) ) locationValue = "Below";
+
+					UsePassLocation location = (UsePassLocation)Enum.Parse( typeof( UsePassLocation ), locationValue );
 					string name = nodeParams[ index++ ];
 					UsePassItem newItem = ScriptableObject.CreateInstance<UsePassItem>();
 					newItem.hideFlags = HideFlags.HideAndDontSave;
@@ -277,9 +287,22 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public void BuildUsePassInfo( ref string aboveItems, ref string bellowItems, string tabs )
+		public void BuildUsePassInfo( MasterNodeDataCollector dataCollector, ref string aboveItems, ref string bellowItems, string tabs)
 		{
-			int count = m_items.Count;
+			int count = 0;
+			count = dataCollector.AboveUsePassesList.Count;
+			for( int i = 0; i < count; i++ )
+			{
+				aboveItems += tabs + string.Format( UseGrabFormatNewLine, dataCollector.AboveUsePassesList[ i ].PropertyName );
+			}
+
+			count = dataCollector.BelowUsePassesList.Count;
+			for( int i = 0; i < count; i++ )
+			{
+				bellowItems += tabs + string.Format( UseGrabFormatNewLine,  dataCollector.BelowUsePassesList[ i ].PropertyName );
+			}
+			
+			count = m_items.Count;
 			for( int i = 0; i < count; i++ )
 			{
 				if( m_items[ i ].Location == UsePassLocation.Above )
@@ -293,9 +316,23 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public void BuildUsePassInfo( ref List<PropertyDataCollector> aboveItems, ref List<PropertyDataCollector> bellowItems )
+		public void BuildUsePassInfo( MasterNodeDataCollector dataCollector, ref List<PropertyDataCollector> aboveItems, ref List<PropertyDataCollector> bellowItems )
 		{
-			int count = m_items.Count;
+			int count = 0;
+			count = dataCollector.AboveUsePassesList.Count;
+			for( int i = 0; i < count; i++ )
+			{
+				aboveItems.Add( new PropertyDataCollector( -1, string.Format( UseGrabFormat, dataCollector.AboveUsePassesList[ i ].PropertyName ) ) );
+			}
+
+			count = dataCollector.BelowUsePassesList.Count;
+			for( int i = 0; i < count; i++ )
+			{
+				bellowItems.Add( new PropertyDataCollector( -1, string.Format( UseGrabFormat, dataCollector.BelowUsePassesList[ i ].PropertyName ) ) );
+			}
+
+
+			count = m_items.Count;
 			for( int i = 0; i < count; i++ )
 			{
 				if( m_items[ i ].Location == UsePassLocation.Above )
@@ -309,7 +346,7 @@ namespace AmplifyShaderEditor
 			}
 		}
 
-		public string ModuleName { set { m_moduleName = value; } }
+		//public string ModuleName { set { m_moduleName = value; } }
 		public void Destroy()
 		{
 			m_owner = null;

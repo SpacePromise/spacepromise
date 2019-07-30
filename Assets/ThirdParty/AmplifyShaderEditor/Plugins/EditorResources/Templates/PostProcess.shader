@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader /*ase_name*/ "ASETemplateShaders/Legacy/PostProcess" /*end*/
+Shader /*ase_name*/ "Hidden/Templates/Legacy/PostProcess" /*end*/
 {
 	Properties
 	{

@@ -198,9 +198,14 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+		public void OnLogicUpdate( TemplateModulesData currentModule )
+		{
+			if( currentModule.TagData.DataCheck == TemplateDataCheck.Valid )
+				m_tagsHelper.OnLogicUpdate();
+		}
+
 		public void Draw( ParentNode owner, TemplateModulesData currentModule , TemplateModulesHelper parent = null )
 		{
-
 			if( currentModule.ShaderModel.DataCheck == TemplateDataCheck.Valid )
 				m_shaderModelHelper.Draw( owner );
 
@@ -299,6 +304,13 @@ namespace AmplifyShaderEditor
 
 				if( BlendOpHelper.BlendOpActive )
 					moduleBody += BlendOpHelper.CurrentBlendOp + "\n";
+
+			}
+
+			if( !BlendOpHelper.AlphaToMaskIndependent )
+			{
+				if( BlendOpHelper.ValidAlphaToMask && BlendOpHelper.AlphaToMaskValue )
+					moduleBody += BlendOpHelper.CurrentAlphaToMask + "\n";
 			}
 
 			if( !CullModeHelper.IndependentModule )

@@ -216,5 +216,20 @@ namespace AmplifyShaderEditor
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_index );
 			IOUtils.AddFieldValueToString( ref nodeInfo, m_texcoordSize );
 		}
+
+		public override void PropagateNodeData( NodeData nodeData, ref MasterNodeDataCollector dataCollector )
+		{
+			base.PropagateNodeData( nodeData, ref dataCollector );
+			if( dataCollector.IsTemplate )
+			{
+				dataCollector.TemplateDataCollectorInstance.SetUVUsage( m_index, m_texcoordSize );
+			}
+			else if( m_index > 3 )
+			{
+				dataCollector.AddCustomAppData( string.Format( TemplateHelperFunctions.TexUVFullSemantic, m_index ) );
+			}
+		}
+
+		
 	}
 }

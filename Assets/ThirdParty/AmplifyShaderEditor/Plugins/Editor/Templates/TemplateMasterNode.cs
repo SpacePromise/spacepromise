@@ -13,7 +13,7 @@ using UnityEditor;
 namespace AmplifyShaderEditor
 {
 	[Serializable]
-	[NodeAttributes( "Template Master Node", "Master", "Shader Generated according to template rules", null, KeyCode.None, false, true, null, typeof( TemplateMultiPassMasterNode ) )]
+	[NodeAttributes( "Template Master Node", "Master", "Shader Generated according to template rules", null, KeyCode.None, false, true, "Template MultiPass Master Node", typeof( TemplateMultiPassMasterNode ) )]
 	public sealed class TemplateMasterNode : MasterNode
 	{
 		private const string WarningMessage = "Templates is a feature that is still heavily under development and users may experience some problems.\nPlease email support@amplify.pt if any issue occurs.";
@@ -500,6 +500,11 @@ namespace AmplifyShaderEditor
 			if( m_currentTemplate.BlendData.ValidBlendOp )
 			{
 				validBody = m_currentTemplate.FillTemplateBody( m_currentTemplate.BlendData.BlendOpId, ref shaderBody, m_blendOpHelper.CurrentBlendOp ) && validBody;
+			}
+
+			if( m_currentTemplate.BlendData.ValidAlphaToMask )
+			{
+				validBody = m_currentTemplate.FillTemplateBody( m_currentTemplate.BlendData.AlphaToMaskId, ref shaderBody, m_blendOpHelper.CurrentAlphaToMask ) && validBody;
 			}
 
 			if( m_currentTemplate.DepthData.ValidZWrite )

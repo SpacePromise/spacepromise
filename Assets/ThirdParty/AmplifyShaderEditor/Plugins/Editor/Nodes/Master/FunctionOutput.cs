@@ -270,7 +270,14 @@ namespace AmplifyShaderEditor
 		public AmplifyShaderFunction Function
 		{
 			get { return m_function; }
-			set { m_function = value; }
+			set
+			{
+				m_function = value;
+				if( m_isMainOutputNode && m_function != null )
+				{
+					m_function.UpdateDirectivesList();
+				}
+			}
 		}
 
 		public string OutputName

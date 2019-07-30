@@ -87,7 +87,7 @@ public class AmplifyShaderFunction : ScriptableObject
 			}
 		}
 	}
-
+	
 	[SerializeField]
 	private PreviewLocation m_previewPosition = PreviewLocation.Auto;
 	public PreviewLocation PreviewPosition
@@ -96,8 +96,17 @@ public class AmplifyShaderFunction : ScriptableObject
 		set { m_previewPosition = value; }
 	}
 
+	[SerializeField]
+	private bool m_hidden = false;
+	public bool Hidden
+	{
+		get { return m_hidden; }
+		set { m_hidden = value; }
+	}
+
 	public void UpdateDirectivesList()
 	{
+		m_additionalDirectives.CleanNullDirectives();
 		m_additionalDirectives.UpdateDirectivesFromSaveItems();
 
 		if( m_additionalIncludes.IncludeList.Count > 0 )

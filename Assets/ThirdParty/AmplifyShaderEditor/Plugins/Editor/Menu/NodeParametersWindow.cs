@@ -36,7 +36,7 @@ namespace AmplifyShaderEditor
 		// width and height are between [0,1] and represent a percentage of the total screen area
 		public NodeParametersWindow( AmplifyShaderEditorWindow parentWindow ) : base( parentWindow, 0, 0, 265, 0, string.Empty, MenuAnchor.TOP_LEFT, MenuAutoSize.MATCH_VERTICAL )
 		{
-			SetMinimizedArea( -225, 0, 275, 0 );
+			SetMinimizedArea( -225, 0, 260, 0 );
 		}
 
 		public void OnShaderFunctionLoad()
@@ -236,6 +236,8 @@ namespace AmplifyShaderEditor
 					SerializedProperty custCat = serializedObject.FindProperty( "m_customNodeCategory" );
 					EditorGUILayout.PropertyField( custCat, new GUIContent( "Custom" ) );
 				}
+				SerializedProperty hidden = serializedObject.FindProperty( "m_hidden" );
+				EditorGUILayout.PropertyField( hidden, new GUIContent( "Hidden" ) );
 				serializedObject.ApplyModifiedProperties();
 			}
 			EditorGUIUtility.labelWidth = cacheWidth;

@@ -111,8 +111,6 @@ internal class ASEMaterialInspector : ShaderGUI
 			//Event.current.Use();
 		}
 
-
-
 		if( materialEditor.isVisible )
 		{
 			GUILayout.BeginVertical();
@@ -120,7 +118,12 @@ internal class ASEMaterialInspector : ShaderGUI
 				GUILayout.Space( 3 );
 				if( GUILayout.Button( "Open in Shader Editor" ) )
 				{
+#if UNITY_2018_3_OR_NEWER
+					ASEPackageManagerHelper.SetupLateMaterial( mat );
+
+#else
 					AmplifyShaderEditorWindow.LoadMaterialToASE( mat );
+#endif
 				}
 
 				GUILayout.BeginHorizontal();

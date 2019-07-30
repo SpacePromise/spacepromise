@@ -42,27 +42,18 @@ namespace AmplifyShaderEditor
 		{
 			base.ReadFromString( ref nodeParams );
 			m_isMainOutputNode = Convert.ToBoolean( GetCurrentParam( ref nodeParams ) );
-			//if( m_isMainOutputNode )
-			//{
-			//	ContainerGraph.AssignMasterNode( this, true );
-			//}
-		}
-
-		public override void AfterDuplication( ParentNode original )
-		{
-			base.AfterDuplication( original );
-			m_isMainOutputNode = false;
-		}
-
-		public override void RefreshExternalReferences()
-		{
-			base.RefreshExternalReferences();
-			if( m_isMainOutputNode )
+			if( m_isMainOutputNode && !ContainerGraph.IsDuplicating )
 			{
 				ContainerGraph.AssignMasterNode( this, true );
 			}
 		}
 
+		public override void AfterDuplication()
+		{
+			base.AfterDuplication();
+			m_isMainOutputNode = false;
+		}
+		
 		public bool IsMainOutputNode
 		{
 			get { return m_isMainOutputNode; }

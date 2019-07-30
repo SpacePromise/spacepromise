@@ -89,6 +89,8 @@ namespace AmplifyShaderEditor
 			base.CommonInit( uniqueId );
 			AddInputPort( WirePortDataType.COLOR, false, "Source" );
 			AddInputPort( WirePortDataType.COLOR, false, "Destiny" );
+			AddInputPort( WirePortDataType.FLOAT, false,"Alpha" );
+			m_inputPorts[ 2 ].FloatInternalData = 1;
 			AddOutputPort( WirePortDataType.COLOR, Constants.EmptyPortValue );
 			m_inputPorts[ 0 ].AddPortForbiddenTypes(	WirePortDataType.FLOAT3x3,
 														WirePortDataType.FLOAT4x4,
@@ -106,6 +108,7 @@ namespace AmplifyShaderEditor
 			m_autoWrapProperties = true;
 			m_hasLeftDropdown = true;
 			SetAdditonalTitleText( string.Format( Constants.SubTitleTypeFormatStr, m_currentBlendOp ) );
+			m_useInternalPortData = true;
 			m_previewShaderGUID = "6d6b3518705b3ba49acdc6e18e480257";
 		}
 
@@ -115,6 +118,8 @@ namespace AmplifyShaderEditor
 
 			m_previewMaterialPassId = (int)m_currentBlendOp;
 			PreviewMaterial.SetInt( "_Sat", m_saturate ? 1 : 0 );
+			int lerpMode = ( m_inputPorts[ 2 ].IsConnected || m_inputPorts[ 2 ].FloatInternalData < 1 ) ? 1 : 0;
+			PreviewMaterial.SetInt( "_Lerp", lerpMode );
 		}
 
 		public override void AfterCommonInit()
@@ -149,6 +154,9 @@ namespace AmplifyShaderEditor
 
 		void UpdateConnection( int portId )
 		{
+			if( portId == 2 )
+				return;
+
 			m_inputPorts[ portId ].MatchPortToConnection();
 			int otherPortId = ( portId + 1 ) % 2;
 			if( m_inputPorts[ otherPortId ].IsConnected )
@@ -165,6 +173,9 @@ namespace AmplifyShaderEditor
 
 		void UpdateDisconnection( int portId )
 		{
+			if( portId == 2 )
+				return;
+
 			int otherPortId = ( portId + 1 ) % 2;
 			if( m_inputPorts[ otherPortId ].IsConnected )
 			{
@@ -360,7 +371,8 @@ namespace AmplifyShaderEditor
 				break;
 				case BlendOps.Overlay:
 				{
-					result = "(( " + dstLocalVar + " > 0.5 ) ? ( 1.0 - ( 1.0 - 2.0 * ( " + dstLocalVar + " - 0.5 ) ) * ( 1.0 - " + srcLocalVar + " ) ) : ( 2.0 * " + dstLocalVar + " * " + srcLocalVar + " ) )";
+					//result = "(( " + dstLocalVar + " > 0.5 ) ? ( 1.0 - ( 1.0 - 2.0 * ( " + dstLocalVar + " - 0.5 ) ) * ( 1.0 - " + srcLocalVar + " ) ) : ( 2.0 * " + dstLocalVar + " * " + srcLocalVar + " ) )";
+					result = "(( " + dstLocalVar + " > 0.5 ) ? ( 1.0 - 2.0 * ( 1.0 - " + dstLocalVar + " ) * ( 1.0 - " + srcLocalVar + " ) ) : ( 2.0 * " + dstLocalVar + " * " + srcLocalVar + " ) )";
 					//dataCollector.AddFunction( ASEOverlayCall, UIUtils.ShaderIndentTabs + ASEOverlayFunc );
 					//result = CreateMultiChannel( ref dataCollector, ASEOverlayCall, srcLocalVar, dstLocalVar, "overlayBlend" );
 				}
@@ -392,6 +404,14 @@ namespace AmplifyShaderEditor
 			}
 
 			UIUtils.ShaderIndentLevel = currIndent;
+			if( m_inputPorts[ 2 ].IsConnected || m_inputPorts[ 2 ].FloatInternalData < 1.0 )
+			{
+				string opacity = m_inputPorts[ 2 ].GeneratePortInstructions( ref dataCollector );
+				string lerpVar = "lerpBlendMode" + OutputId;
+				string lerpResult = string.Format( "lerp({0},{1},{2})", dstLocalVar, result, opacity );
+				dataCollector.AddLocalVariable( UniqueId, m_currentPrecisionType, m_outputPorts[ 0 ].DataType, lerpVar, lerpResult );
+				result = lerpVar;				
+			}
 
 			if( m_saturate )
 				result = "( saturate( " + result + " ))";

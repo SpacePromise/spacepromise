@@ -247,6 +247,7 @@ namespace AmplifyShaderEditor
 				{
 					DrawItem( m_editorShortcuts[ i ].Name, m_editorShortcuts[ i ].Description );
 				}
+				DrawItem( "Ctrl + F", "Find nodes" );
 				DrawItem( "LMB Drag", "Box selection" );
 				DrawItem( "MMB/RMB Drag", "Camera pan" );
 				DrawItem( "Alt + MMB/RMB Drag", "Zoom graph" );

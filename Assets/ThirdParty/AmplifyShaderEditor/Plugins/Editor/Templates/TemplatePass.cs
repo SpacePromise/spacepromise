@@ -1,6 +1,6 @@
 // Amplify Shader Editor - Visual Shader Editing Tool
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
-
+#define CUSTOM_OPTIONS_AVAILABLE
 using UnityEngine;
 using System;
 using System.Collections.Generic;
@@ -59,13 +59,16 @@ namespace AmplifyShaderEditor
 
 		[SerializeField]
 		TemplateInfoContainer m_passNameContainer = new TemplateInfoContainer();
-
-		public TemplatePass( TemplateModulesData subShaderModule, int subshaderIdx, int passIdx, TemplateIdManager idManager, string uniquePrefix, int offsetIdx, TemplatePassInfo passInfo, ref Dictionary<string, TemplateShaderPropertyData> duplicatesHelper )
+#if CUSTOM_OPTIONS_AVAILABLE
+		[SerializeField]
+		TemplateOptionsContainer m_customOptionsContainer = new TemplateOptionsContainer();
+#endif
+		public TemplatePass( TemplateSubShader subShader,  int subshaderIdx, int passIdx, TemplateIdManager idManager, string uniquePrefix, int offsetIdx, TemplatePassInfo passInfo, ref Dictionary<string, TemplateShaderPropertyData> duplicatesHelper )
 		{
-			m_idx = passIdx; 
+			m_idx = passIdx;
 
 			m_uniquePrefix = uniquePrefix;
-
+			idManager.RegisterPassId( passInfo.Data );
 			m_isMainPass = passInfo.Data.Contains( TemplatesManager.TemplateMainPassTag );
 			if( !m_isMainPass )
 			{
@@ -74,10 +77,10 @@ namespace AmplifyShaderEditor
 				m_isInvisible = TemplateHelperFunctions.FetchInvisibleInfo( passInfo.Data, ref m_invisibleOptions, ref id, ref idIndex );
 				if( m_isInvisible )
 				{
-					idManager.RegisterId( idIndex, uniquePrefix + id, id,true );
+					idManager.RegisterId( idIndex, uniquePrefix + id, id, true );
 				}
 			}
-			
+
 			FetchPassName( offsetIdx, passInfo.Data );
 			if( m_passNameContainer.Index > -1 )
 			{
@@ -88,7 +91,15 @@ namespace AmplifyShaderEditor
 				m_passNameContainer.Data = string.Format( DefaultPassNameStr, subshaderIdx, passIdx );
 			}
 
-			m_modules = new TemplateModulesData( idManager, m_templateProperties, uniquePrefix + "Module", offsetIdx, passInfo.Data, false );
+#if CUSTOM_OPTIONS_AVAILABLE
+			m_customOptionsContainer = TemplateOptionsToolsHelper.GenerateOptionsContainer( false, passInfo.Data );
+			if( m_customOptionsContainer.Enabled )
+			{
+				idManager.RegisterId( m_customOptionsContainer.Index, uniquePrefix + m_customOptionsContainer.Body, m_customOptionsContainer.Body, true );
+			}
+			//m_customOptionsContainer.CopyPortOptionsFrom( subShader.CustomOptionsContainer, m_passNameContainer.Data );
+#endif
+			m_modules = new TemplateModulesData( m_customOptionsContainer,idManager, m_templateProperties, uniquePrefix + "Module", offsetIdx, passInfo.Data, false );
 
 			if( !m_modules.PassTag.IsValid )
 			{
@@ -98,12 +109,20 @@ namespace AmplifyShaderEditor
 				//m_templateProperties.PropertyDict[ m_modules.PassTag.Id ].UseIndentationAtStart = false;
 				idManager.RegisterId( m_modules.PassTag.StartIdx, m_modules.UniquePrefix + m_modules.PassTag.Id, string.Empty );
 			}
+			m_modules.SetPassUniqueNameIfUndefined( m_passNameContainer.Data );
+
+			m_modules.SRPType = subShader.Modules.SRPType;
+			if( m_modules.SRPType == TemplateSRPType.HD )
+			{
+				m_modules.SRPIsPBR = passInfo.Data.Contains( TemplateHelperFunctions.HDPBRTag );
+
+			}
 
 			Dictionary<string, TemplateShaderPropertyData> ownDuplicatesDict = new Dictionary<string, TemplateShaderPropertyData>( duplicatesHelper );
 			TemplateHelperFunctions.CreateShaderGlobalsList( passInfo.Data, ref m_availableShaderGlobals, ref ownDuplicatesDict );
 
 			// Vertex and Interpolator data
-			FetchVertexAndInterpData( subShaderModule,offsetIdx, passInfo.Data );
+			FetchVertexAndInterpData( subShader.Modules, offsetIdx, passInfo.Data );
 			if( m_vertexDataContainer != null )
 				idManager.RegisterId( m_vertexDataContainer.VertexDataStartIdx, uniquePrefix + m_vertexDataContainer.VertexDataId, m_vertexDataContainer.VertexDataId );
 
@@ -123,7 +142,7 @@ namespace AmplifyShaderEditor
 			if( m_fragmentFunctionData != null )
 				FetchInputs( offsetIdx, MasterNodePortCategory.Fragment, passInfo.Data );
 
-			if( m_vertexFunctionData != null)
+			if( m_vertexFunctionData != null )
 				FetchInputs( offsetIdx, MasterNodePortCategory.Vertex, passInfo.Data );
 
 			//Fetch local variables must be done after fetching code areas as it needs them to see is variable is on vertex or fragment
@@ -184,6 +203,9 @@ namespace AmplifyShaderEditor
 		public void Destroy()
 		{
 			m_passNameContainer = null;
+#if CUSTOM_OPTIONS_AVAILABLE
+			m_customOptionsContainer = null;
+#endif
 			if( m_templateProperties != null )
 				m_templateProperties.Destroy();
 
@@ -298,7 +320,7 @@ namespace AmplifyShaderEditor
 					int dataBeginIdx = body.LastIndexOf( '{', interpDataBegin, interpDataBegin );
 					string interpData = body.Substring( dataBeginIdx + 1, interpDataBegin - dataBeginIdx );
 
-					int interpolatorAmount = TemplateHelperFunctions.AvailableInterpolators["2.5"];
+					int interpolatorAmount = TemplateHelperFunctions.AvailableInterpolators[ "2.5" ];
 
 					if( m_modules.ShaderModel.IsValid )
 					{
@@ -400,7 +422,7 @@ namespace AmplifyShaderEditor
 					int length = inputEndIdx - beginIndex;
 					string inputData = body.Substring( beginIndex, length );
 					string[] inputDataArray = inputData.Split( IOUtils.FIELD_SEPARATOR );
-					
+
 					if( inputDataArray != null && inputDataArray.Length > 0 )
 					{
 						try
@@ -454,6 +476,9 @@ namespace AmplifyShaderEditor
 			}
 		}
 
+#if CUSTOM_OPTIONS_AVAILABLE
+		public TemplateOptionsContainer CustomOptionsContainer { get { return m_customOptionsContainer; } }
+#endif
 		public TemplateModulesData Modules { get { return m_modules; } }
 		public List<TemplateInputData> InputDataList { get { return m_inputDataList; } }
 		public TemplateFunctionData VertexFunctionData { get { return m_vertexFunctionData; } }
@@ -466,7 +491,7 @@ namespace AmplifyShaderEditor
 		public List<TemplateLocalVarData> LocalVarsList { get { return m_localVarsList; } }
 		public TemplateInfoContainer PassNameContainer { get { return m_passNameContainer; } }
 		public bool IsMainPass { get { return m_isMainPass; } set { m_isMainPass = value; } }
-		public bool IsInvisible { get { return m_isInvisible; }  }
+		public bool IsInvisible { get { return m_isInvisible; } }
 		public int InvisibleOptions { get { return m_invisibleOptions; } }
 		public int Idx { get { return m_idx; } }
 		public bool AddToList

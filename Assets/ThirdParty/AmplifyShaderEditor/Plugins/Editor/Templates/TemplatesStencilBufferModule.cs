@@ -516,5 +516,147 @@ namespace AmplifyShaderEditor
 		public InlineProperty ZFailStencilOpIdx { get { return m_zFailStencilOpFrontIdx; } }
 		public InlineProperty ZFailStencilOpBackIdx { get { return m_zFailStencilOpBackIdx; } }
 
+
+		public int ReferenceValue
+		{
+			set
+			{
+				m_reference.IntValue = value;
+				m_reference.Active = false;
+			}
+			get
+			{
+				return m_reference.IntValue;
+			}
+		}
+
+		public int ReadMaskValue
+		{
+			set
+			{
+				m_readMask.IntValue = value;
+				m_reference.Active = false;
+			}
+			get
+			{
+				return m_readMask.IntValue;
+			}
+		}
+
+		public int WriteMaskValue
+		{
+			set
+			{
+				m_writeMask.IntValue = value;
+				m_writeMask.Active = false;
+			}
+			get
+			{
+				return m_writeMask.IntValue;
+			}
+		}
+
+		public int ComparisonFunctionIdxValue
+		{
+			set
+			{
+				m_comparisonFunctionFrontIdx.IntValue = value;
+				m_comparisonFunctionFrontIdx.Active = false;
+			}
+			get
+			{
+				return m_comparisonFunctionFrontIdx.IntValue;
+			}
+		}
+
+		public int ComparisonFunctionBackIdxValue
+		{
+			set
+			{
+				m_comparisonFunctionBackIdx.IntValue = value;
+				m_comparisonFunctionBackIdx.Active = false;
+			}
+			get
+			{
+				return m_comparisonFunctionBackIdx.IntValue;
+			}
+		}
+
+		public int PassStencilOpIdxValue
+		{
+			set
+			{
+				m_passStencilOpFrontIdx.IntValue = value;
+				m_passStencilOpFrontIdx.Active = false;
+			}
+			get
+			{
+				return m_passStencilOpFrontIdx.IntValue;
+			}
+		}
+
+		public int PassStencilOpBackIdxValue
+		{
+			set
+			{
+				m_passStencilOpBackIdx.IntValue = value;
+				m_passStencilOpBackIdx.Active = false;
+			}
+			get
+			{
+				return m_passStencilOpBackIdx.IntValue;
+			}
+		}
+
+		public int FailStencilOpIdxValue
+		{
+			set
+			{
+				m_failStencilOpFrontIdx.IntValue = value;
+				m_failStencilOpFrontIdx.Active = false;
+			}
+			get
+			{
+				return m_failStencilOpFrontIdx.IntValue;
+			}
+		}
+		public int FailStencilOpBackIdxValue
+		{
+			set
+			{
+				m_failStencilOpBackIdx.IntValue = value;
+				m_failStencilOpBackIdx.Active = false;
+			}
+			get
+			{
+				return m_failStencilOpBackIdx.IntValue;
+			}
+		}
+
+		public int ZFailStencilOpIdxValue
+		{
+			set
+			{
+				m_zFailStencilOpFrontIdx.IntValue = value;
+				m_zFailStencilOpFrontIdx.Active = false;
+			}
+			get
+			{
+				return m_zFailStencilOpFrontIdx.IntValue;
+			}
+		}
+
+		public int ZFailStencilOpBackIdxValue
+		{
+			set
+			{
+				m_zFailStencilOpBackIdx.IntValue = value;
+				m_zFailStencilOpBackIdx.Active = false;
+			}
+			get
+			{
+				return m_zFailStencilOpBackIdx.IntValue;
+			}
+		}
 	}
 }

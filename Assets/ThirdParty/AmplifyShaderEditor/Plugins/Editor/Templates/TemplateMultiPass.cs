@@ -1,12 +1,20 @@
 // Amplify Shader Editor - Visual Shader Editing Tool
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
 using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
 namespace AmplifyShaderEditor
 {
+	[Serializable]
+	public class TemplateUniquePassData
+	{
+		public int SubShaderIdx;
+		public int PassIdx;
+	}
+
 	[Serializable]
 	public sealed class TemplateMultiPass : TemplateDataParent
 	{
@@ -49,31 +57,53 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		TemplateInfoContainer m_fallbackContainer = new TemplateInfoContainer();
 
+		[SerializeField]
+		TemplateInfoContainer m_beforePragmaContainer = new TemplateInfoContainer();
+
+		[SerializeField]
+		private CustomTemplatePropertyUIEnum m_customTemplatePropertyUI = CustomTemplatePropertyUIEnum.None;
+
+		private Dictionary<string, TemplateUniquePassData> m_passUniqueIdData = new Dictionary<string, TemplateUniquePassData>();
+
+
 		public TemplateMultiPass()
 		{
 			m_templateType = TemplateDataType.MultiPass;
 		}
 
-		public TemplateMultiPass( string name, string guid )
+		public TemplateMultiPass( string name, string guid , bool isCommunity)
 		{
 			m_templateType = TemplateDataType.MultiPass;
-			Init( name, guid );
+			Init( name, guid , isCommunity);
 		}
 
-		public override void Init( string name, string guid )
+		public override void Init( string name, string guid, bool isCommunity )
 		{
+			base.Init( name, guid, isCommunity );
 			TemplatesManager.CurrTemplateGUIDLoaded = guid;
 			LoadTemplateBody( guid );
-			m_name = string.IsNullOrEmpty( name ) ? m_defaultShaderName : name;
+			Name = string.IsNullOrEmpty( name ) ? m_defaultShaderName : name;
 		}
 
 		void LoadTemplateBody( string guid )
 		{
+			m_passUniqueIdData.Clear();
 			m_guid = guid;
 			string datapath = AssetDatabase.GUIDToAssetPath( guid );
 			string shaderBody = string.Empty;
 			shaderBody = IOUtils.LoadTextFileFromDisk( datapath );
 			shaderBody = shaderBody.Replace( "\r\n", "\n" );
+
+			// Insert Before Tag
+			MatchCollection col = Regex.Matches( shaderBody, TemplateHelperFunctions.BeforePragmaPattern, RegexOptions.Singleline );
+			for( int i = col.Count - 1; i >= 0; i-- )
+			{
+				if( col[ i ].Groups.Count == 3 )
+				{
+					shaderBody = shaderBody.Insert( col[ i ].Groups[ 2 ].Index, TemplatesManager.TemplatePragmaBeforeTag + "\n" + col[ i ].Groups[ 1 ].Value );
+				}
+			}
+
 			m_shaderData = TemplateShaderInfoUtil.CreateShaderData( shaderBody );
 			if( m_shaderData == null )
 			{
@@ -115,6 +145,7 @@ namespace AmplifyShaderEditor
 				m_isValid = false;
 			}
 
+			m_customTemplatePropertyUI = TemplateHelperFunctions.FetchCustomUI( shaderBody );
 			TemplateHelperFunctions.FetchDependencies( m_dependenciesContainer, ref m_shaderBody );
 			if( m_dependenciesContainer.IsValid )
 			{
@@ -122,8 +153,6 @@ namespace AmplifyShaderEditor
 				m_templateProperties.AddId( new TemplateProperty( m_dependenciesContainer.Id, m_dependenciesContainer.Id.Substring( 0, index ), true ) );
 				m_templateIdManager.RegisterId( m_dependenciesContainer.Index, m_dependenciesContainer.Id, m_dependenciesContainer.Id );
 			}
-
-
 
 			TemplateHelperFunctions.FetchCustomInspector( m_customInspectorContainer, ref m_shaderBody );
 			if( m_customInspectorContainer.IsValid )
@@ -136,7 +165,7 @@ namespace AmplifyShaderEditor
 			TemplateHelperFunctions.FetchFallback( m_fallbackContainer, ref m_shaderBody );
 			if( m_fallbackContainer.IsValid )
 			{
-				int index = m_fallbackContainer.Id.IndexOf( "Fallback" );
+				int index = m_fallbackContainer.Id.IndexOf( "Fallback",StringComparison.InvariantCultureIgnoreCase );
 				m_templateProperties.AddId( new TemplateProperty( m_fallbackContainer.Id, m_fallbackContainer.Id.Substring( 0, index ), true ) );
 				m_templateIdManager.RegisterId( m_fallbackContainer.Index, m_fallbackContainer.Id, m_fallbackContainer.Id );
 			}
@@ -157,6 +186,9 @@ namespace AmplifyShaderEditor
 			int firstVisiblePassId = -1;
 			bool foundMainPass = false;
 			bool foundFirstVisible = false;
+
+			m_templateIdManager.RegisterTag( TemplatesManager.TemplatePassesEndTag );
+			m_templateIdManager.RegisterTag( TemplatesManager.TemplateMainPassTag );
 
 			for( int i = 0; i < subShaderCount; i++ )
 			{
@@ -285,6 +317,10 @@ namespace AmplifyShaderEditor
 				case TemplateModuleDataType.ModuleBlendOp:
 				{
 					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Modules.BlendData.BlendOpId, text );
+				}break;
+				case TemplateModuleDataType.ModuleAlphaToMask:
+				{
+					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Modules.BlendData.AlphaToMaskId, text );
 				}
 				break;
 				case TemplateModuleDataType.ModuleCullMode:
@@ -335,6 +371,11 @@ namespace AmplifyShaderEditor
 				case TemplateModuleDataType.ModulePragma:
 				{
 					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Modules.PragmaTag.Id, text );
+				}
+				break;
+				case TemplateModuleDataType.ModulePragmaBefore:
+				{
+					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Modules.PragmaBeforeTag.Id, text );
 				}
 				break;
 				case TemplateModuleDataType.ModulePass:
@@ -391,6 +432,11 @@ namespace AmplifyShaderEditor
 					prefix = addPrefix ? m_subShaders[ subShaderId ].Modules.UniquePrefix : string.Empty;
 					return prefix + m_subShaders[ subShaderId ].Modules.BlendData.BlendOpId;
 				}
+				case TemplateModuleDataType.ModuleAlphaToMask:
+				{
+					prefix = addPrefix ? m_subShaders[ subShaderId ].Modules.UniquePrefix : string.Empty;
+					return prefix + m_subShaders[ subShaderId ].Modules.BlendData.AlphaToMaskId;
+				}
 				case TemplateModuleDataType.ModuleCullMode:
 				{
 					prefix = addPrefix ? m_subShaders[ subShaderId ].Modules.UniquePrefix : string.Empty;
@@ -441,6 +487,11 @@ namespace AmplifyShaderEditor
 					prefix = addPrefix ? m_subShaders[ subShaderId ].Modules.UniquePrefix : string.Empty;
 					return prefix + m_subShaders[ subShaderId ].Modules.PragmaTag.Id;
 				}
+				case TemplateModuleDataType.ModulePragmaBefore:
+				{
+					prefix = addPrefix ? m_subShaders[ subShaderId ].Modules.UniquePrefix : string.Empty;
+					return prefix + m_subShaders[ subShaderId ].Modules.PragmaBeforeTag.Id;
+				}
 				case TemplateModuleDataType.ModulePass:
 				{
 					prefix = addPrefix ? m_subShaders[ subShaderId ].Modules.UniquePrefix : string.Empty;
@@ -482,6 +533,11 @@ namespace AmplifyShaderEditor
 				{
 					prefix = addPrefix ? m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix : string.Empty;
 					return prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.BlendData.BlendOpId;
+				}
+				case TemplateModuleDataType.ModuleAlphaToMask:
+				{
+					prefix = addPrefix ? m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix : string.Empty;
+					return prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.BlendData.AlphaToMaskId;
 				}
 				case TemplateModuleDataType.ModuleCullMode:
 				{
@@ -532,6 +588,11 @@ namespace AmplifyShaderEditor
 				{
 					prefix = addPrefix ? m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix : string.Empty;
 					return prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.PragmaTag.Id;
+				}
+				case TemplateModuleDataType.ModulePragmaBefore:
+				{
+					prefix = addPrefix ? m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix : string.Empty;
+					return prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.PragmaBeforeTag.Id;
 				}
 				case TemplateModuleDataType.ModulePass:
 				{
@@ -632,6 +693,12 @@ namespace AmplifyShaderEditor
 					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.BlendData.BlendOpId, text );
 				}
 				break;
+				case TemplateModuleDataType.ModuleAlphaToMask:
+				{
+					prefix = m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix;
+					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.BlendData.AlphaToMaskId, text );
+				}
+				break;
 				case TemplateModuleDataType.ModuleCullMode:
 				{
 					prefix = m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix;
@@ -690,6 +757,12 @@ namespace AmplifyShaderEditor
 				{
 					prefix = m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix;
 					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.PragmaTag.Id, text );
+				}
+				break;
+				case TemplateModuleDataType.ModulePragmaBefore:
+				{
+					prefix = m_subShaders[ subShaderId ].Passes[ passId ].Modules.UniquePrefix;
+					m_templateIdManager.SetReplacementText( prefix + m_subShaders[ subShaderId ].Passes[ passId ].Modules.PragmaBeforeTag.Id, text );
 				}
 				break;
 				case TemplateModuleDataType.ModulePass:
@@ -939,6 +1012,7 @@ namespace AmplifyShaderEditor
 				m_templateIdManager.SetReplacementText( m_fallbackContainer.Id, m_templateProperties.PropertyDict[ m_fallbackContainer.Id ].Indentation + fallback );
 			}
 		}
+
 		public void SetDependencies( string dependencies )
 		{
 			if( m_dependenciesContainer.Index > -1 )
@@ -952,13 +1026,14 @@ namespace AmplifyShaderEditor
 			hideFlags = HideFlags.HideAndDontSave;
 		}
 		
-		public override void Reload()
+		public override bool Reload()
 		{
 			m_propertyTag = null;
 			m_shaderNameId = string.Empty;
 			m_shaderBody = string.Empty;
 			m_isSinglePass = false;
 			m_masterNodesRequired = 0;
+			m_beforePragmaContainer.Reset();
 			m_customInspectorContainer.Reset();
 			m_fallbackContainer.Reset();
 			m_dependenciesContainer.Reset();
@@ -975,11 +1050,48 @@ namespace AmplifyShaderEditor
 				m_shaderData.Destroy();
 
 			m_templateProperties.Reset();
-			
+
+			string oldName = m_defaultShaderName;	
 			LoadTemplateBody( m_guid );
+
+			if( m_communityTemplate )
+				Name = m_defaultShaderName;
+
+			return !oldName.Equals( m_defaultShaderName );
 		}
 
-		public bool SRPIsPBRHD { get { return m_subShaders[0].Modules.SRPIsPBRHD ; } }
+		public bool GetSubShaderandPassFor( string passUniqueId, ref int subShaderId, ref int passId )
+		{
+			if( string.IsNullOrEmpty( passUniqueId ) )
+				return false;
+
+			if( m_passUniqueIdData.Count == 0 )
+			{
+				for( int subShaderIdx = 0; subShaderIdx < m_subShaders.Count; subShaderIdx++ )
+				{
+					for( int passIdx = 0; passIdx < m_subShaders[subShaderIdx].Passes.Count; passIdx++ )
+					{
+						if( m_subShaders[ subShaderIdx ].Passes[ passIdx ].Modules.HasPassUniqueName )
+						{
+							m_passUniqueIdData.Add( m_subShaders[ subShaderIdx ].Passes[ passIdx ].Modules.PassUniqueName, new TemplateUniquePassData() { PassIdx = passIdx, SubShaderIdx = subShaderIdx } );
+						}
+					}
+				}
+			}
+
+			if( m_passUniqueIdData.ContainsKey( passUniqueId ) )
+			{
+				subShaderId = m_passUniqueIdData[ passUniqueId ].SubShaderIdx;
+				passId = m_passUniqueIdData[ passUniqueId ].PassIdx;
+				return true;
+			}
+			subShaderId = -1;
+			passId = -1;
+			return false;
+		}
+
+		public TemplateSRPType SRPtype { get { return m_subShaders[ 0 ].Modules.SRPType; } }
+		//public bool SRPIsPBRHD { get { return m_subShaders[0].Modules.SRPIsPBRHD ; } }
 		public List<TemplateSubShader> SubShaders { get { return m_subShaders; } }
 		public List<TemplateShaderPropertyData> AvailableShaderProperties { get { return m_availableShaderProperties; } }
 		public TemplateTagData PropertyTag { get { return m_propertyTag; } }
@@ -987,7 +1099,9 @@ namespace AmplifyShaderEditor
 		public TemplatePropertyContainer TemplateProperties { get { return m_templateProperties; } }
 		public TemplateInfoContainer CustomInspectorContainer { get { return m_customInspectorContainer; } }
 		public TemplateInfoContainer FallbackContainer { get { return m_fallbackContainer; } }
+		public TemplateInfoContainer BeforePragmaContainer { get { return m_beforePragmaContainer; } }
 		public bool IsSinglePass { get { return m_isSinglePass; } }
 		public int MasterNodesRequired { get { return m_masterNodesRequired; } }
+		public CustomTemplatePropertyUIEnum CustomTemplatePropertyUI { get { return m_customTemplatePropertyUI; } }
 	}
 }

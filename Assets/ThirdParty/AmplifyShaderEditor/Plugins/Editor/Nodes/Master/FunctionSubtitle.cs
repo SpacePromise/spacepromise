@@ -8,7 +8,7 @@ using System;
 namespace AmplifyShaderEditor
 {
 	[Serializable]
-	[NodeAttributes( "Function Subtitle", "Functions", "Function Input adds an input port to the shader function", NodeAvailabilityFlags = (int)NodeAvailability.ShaderFunction )]
+	[NodeAttributes( "Function Subtitle", "Functions", "Adds a subtitle to its shader function", NodeAvailabilityFlags = (int)NodeAvailability.ShaderFunction )]
 	public sealed class FunctionSubtitle : ParentNode
 	{
 

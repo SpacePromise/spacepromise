@@ -27,6 +27,12 @@ namespace AmplifyShaderEditor
 		[SerializeField]
 		private int[] m_selectedOutputSwizzleTypes = new int[] { 0, 1, 2, 3 };
 
+		[SerializeField]
+		private int m_maskId;
+
+		[SerializeField]
+		private Vector4 m_maskValue = Vector4.one;
+
 		private readonly string[] SwizzleVectorChannels = { "x", "y", "z", "w" };
 		private readonly string[] SwizzleColorChannels = { "r", "g", "b", "a" };
 		private readonly string[] SwizzleChannelLabels = { "Channel 0", "Channel 1", "Channel 2", "Channel 3" };
@@ -53,7 +59,56 @@ namespace AmplifyShaderEditor
 			m_autoWrapProperties = true;
 			m_autoUpdateOutputPort = false;
 			m_hasLeftDropdown = true;
+			m_previewShaderGUID = "d20531704ce28b14bafb296f291f6608";
 			SetAdditonalTitleText( "Value( XYZW )" );
+			CalculatePreviewData();
+		}
+
+		public override void OnEnable()
+		{
+			base.OnEnable();
+			m_maskId = Shader.PropertyToID( "_Mask" );
+		}
+
+		public override void SetPreviewInputs()
+		{
+			base.SetPreviewInputs();
+			PreviewMaterial.SetVector( m_maskId, m_maskValue );
+		}
+
+		void CalculatePreviewData()
+		{
+			switch( m_outputPorts[ 0 ].DataType )
+			{
+				default: m_maskValue = Vector4.zero; break;
+				case WirePortDataType.INT:
+				case WirePortDataType.FLOAT: m_maskValue = new Vector4( 1, 0, 0, 0 ); break;
+				case WirePortDataType.FLOAT2: m_maskValue = new Vector4( 1, 1, 0, 0 ); break;
+				case WirePortDataType.FLOAT3: m_maskValue = new Vector4( 1, 1, 1, 0 ); break;
+				case WirePortDataType.FLOAT4:
+				case WirePortDataType.COLOR: m_maskValue = Vector4.one; break;
+			}
+
+			m_previewMaterialPassId = -1;
+			float passValue = 0;
+			for( int i = 3; i > -1; i-- )
+			{
+				if( m_selectedOutputSwizzleTypes[ i ] > 0 )
+				{
+					passValue += Mathf.Pow( 4, 3 - i ) * m_selectedOutputSwizzleTypes[ i ];
+				}
+			}
+
+			m_previewMaterialPassId = (int)passValue;
+
+			if( m_previewMaterialPassId == -1 )
+			{
+				m_previewMaterialPassId = 0;
+				if( DebugConsoleWindow.DeveloperMode )
+				{
+					UIUtils.ShowMessage( "Could not find pass ID for swizzle", MessageSeverity.Error );
+				}
+			}
 		}
 
 		public override void AfterCommonInit()
@@ -180,6 +235,7 @@ namespace AmplifyShaderEditor
 			}
 
 			EditorGUILayout.EndVertical();
+
 		}
 
 		void UpdatePorts()
@@ -249,6 +305,7 @@ namespace AmplifyShaderEditor
 			else
 				SetAdditonalTitleText( string.Empty );
 
+			CalculatePreviewData();
 			m_sizeIsDirty = true;
 		}
 

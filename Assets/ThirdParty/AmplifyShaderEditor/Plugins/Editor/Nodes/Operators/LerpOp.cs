@@ -104,12 +104,13 @@ namespace AmplifyShaderEditor
 			
 			return m_outputPorts[ 0 ].LocalValue( dataCollector.PortCategory );
 		}
-		public override void RefreshExternalReferences()
-		{
-			if ( m_inputPorts[ 2 ].DataType != WirePortDataType.FLOAT )
-			{
-				m_inputPorts[ 2 ].ChangeType( WirePortDataType.FLOAT, false );
-			}
-		}
+
+		//public override void RefreshExternalReferences()
+		//{
+		//	if ( m_inputPorts[ 2 ].DataType != WirePortDataType.FLOAT )
+		//	{
+		//		m_inputPorts[ 2 ].ChangeType( WirePortDataType.FLOAT, false );
+		//	}
+		//}
 	}
 }

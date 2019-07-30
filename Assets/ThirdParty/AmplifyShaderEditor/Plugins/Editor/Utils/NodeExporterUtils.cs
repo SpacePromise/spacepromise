@@ -78,7 +78,14 @@ namespace AmplifyShaderEditor
 			RenderTexture.active = m_screenshotRT;
 			m_window.CurrentPaletteWindow.FillList( ref m_screenshotList, true );
 			m_window.CurrentGraph.ClearGraph();
-			m_window.CurrentGraph.CurrentMasterNode.Vec2Position = new Vector2( 1500, 0 );
+			if( m_window.IsShaderFunctionWindow )
+			{
+				m_window.CurrentGraph.CurrentOutputNode.Vec2Position = new Vector2( 1500, 0 );
+			}
+			else
+			{
+				m_window.CurrentGraph.CurrentMasterNode.Vec2Position = new Vector2( 1500, 0 );
+			}
 			m_window.ResetCameraSettings();
 
 			m_takingShots = true;

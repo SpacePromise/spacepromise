@@ -84,7 +84,7 @@ namespace AmplifyShaderEditor
 
 
 		/* 
-		 * USE THE SOURCE CODE BELLOW INTO THE NODE YOU WANT THE WIDGET TO SHOW
+		 * USE THE SOURCE CODE BELOW INTO THE NODE YOU WANT THE WIDGET TO SHOW
 		 */
 		//private UpperLeftWidgetHelper m_upperLeftWidget = new UpperLeftWidgetHelper();
 	}

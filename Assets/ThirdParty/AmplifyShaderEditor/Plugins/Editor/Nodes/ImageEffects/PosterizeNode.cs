@@ -31,16 +31,23 @@ namespace AmplifyShaderEditor
 		public override void DrawProperties()
 		{
 			base.DrawProperties();
-			EditorGUILayout.BeginVertical();
+			if( !m_inputPorts[ 1 ].IsConnected )
 			{
-				EditorGUI.BeginChangeCheck();
-				m_posterizationPower = EditorGUILayoutIntSlider( PosterizationPowerStr, m_posterizationPower, 1, 256 );
-				if( EditorGUI.EndChangeCheck() )
+				EditorGUILayout.BeginVertical();
 				{
-					GetInputPortByUniqueId( 0 ).IntInternalData = m_posterizationPower;
+					EditorGUI.BeginChangeCheck();
+					m_posterizationPower = EditorGUILayoutIntSlider( PosterizationPowerStr, m_posterizationPower, 1, 256 );
+					if( EditorGUI.EndChangeCheck() )
+					{
+						GetInputPortByUniqueId( 0 ).IntInternalData = m_posterizationPower;
+					}
 				}
+				EditorGUILayout.EndVertical();
 			}
-			EditorGUILayout.EndVertical();
+			else
+			{
+				EditorGUILayout.Space();
+			}
 		}
 
 		public override string GenerateShaderForOutput( int outputId, ref MasterNodeDataCollector dataCollector, bool ignoreLocalVar )
