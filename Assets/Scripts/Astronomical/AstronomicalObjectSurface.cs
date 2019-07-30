@@ -31,7 +31,8 @@ namespace Assets.Scripts.Astronomical
             }
             else
             {
-                this.FaceCords = new Vector2Int(parent.FaceCords);
+                // TODO: Calculate real face cords using parent size/depth
+                this.FaceCords = new Vector2Int(x * Resolution, y * Resolution);
             }
 
             this.localUp = localUp;
@@ -100,6 +101,7 @@ namespace Assets.Scripts.Astronomical
         {
             var resolutionLimit = Resolution - 1;
             var vertices = new Vector3[Resolution * Resolution];
+            var normals = new Vector3[Resolution * Resolution];
             var indices = new int[resolutionLimit * resolutionLimit * 6];
 
             var startX = surfaceX * Resolution;
@@ -115,7 +117,13 @@ namespace Assets.Scripts.Astronomical
                 {
                     var vertexIndex = x0 + y0 * Resolution;
 
-                    vertices[vertexIndex] = CalcVertexCubePosition(x, y, faceResolution - 1, localUp, axisA, axisB);
+                    var cubePoint = CalcVertexCubePosition(x0, y0, resolutionLimit, localUp, axisA, axisB);
+
+                    var xx = x0 + surfaceX * Resolution;
+                    var yy = y0 + -surfaceY * Resolution + Resolution;
+
+                    vertices[vertexIndex] = cubePoint;//CalcVertexSpherePosition(cubePoint);
+                    normals[vertexIndex] = CalcVertexCubePosition(xx, yy, Resolution * 2 - 1, localUp, axisA, axisB);
                     //vertices[vertexIndex] = CalcVertexSpherePosition(x, y, faceResolution - 1, localUp, axisA, axisB);
 
                     // Skip indices for right and bottom edges
@@ -138,7 +146,7 @@ namespace Assets.Scripts.Astronomical
             // Assign vertices and indices to the mesh
             return new MeshData
             {
-                Normals = vertices,
+                Normals = normals,
                 Triangles = indices,
                 Vertices = vertices
             };
@@ -152,10 +160,8 @@ namespace Assets.Scripts.Astronomical
                    ((float) y / resolutionLimit - 0.5f) * 2 * axisB;
         }
 
-        private static Vector3 CalcVertexSpherePosition(int x, int y, int resolutionLimit, Vector3 localUp, Vector3 axisA, Vector3 axisB)
+        private static Vector3 CalcVertexSpherePosition(Vector3 pointOnUnitCube)
         {
-            var pointOnUnitCube = CalcVertexCubePosition(x, y, resolutionLimit, localUp, axisA, axisB);
-
             var x2 = pointOnUnitCube.x * pointOnUnitCube.x;
             var y2 = pointOnUnitCube.y * pointOnUnitCube.y;
             var z2 = pointOnUnitCube.z * pointOnUnitCube.z;

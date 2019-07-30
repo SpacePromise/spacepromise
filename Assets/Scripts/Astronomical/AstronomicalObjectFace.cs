@@ -31,7 +31,7 @@ namespace Assets.Scripts.Astronomical
 
         public void Load()
         {
-            this.Surfaces.Data = CreateSurface(this.FaceGameObject.transform, 0, 0, true);
+            this.Surfaces.Data = CreateSurface(null, this.FaceGameObject.transform, 0, 0, true);
         }
 
         public void ApplyLod()
@@ -85,10 +85,10 @@ namespace Assets.Scripts.Astronomical
             // Create child nodes
             var subSurfaces = new[]
             {
-                CreateSurface(node.Data.instance.transform, 0, 0),
-                CreateSurface(node.Data.instance.transform, 1, 0),
-                CreateSurface(node.Data.instance.transform, 0, 1),
-                CreateSurface(node.Data.instance.transform, 1, 1)
+                CreateSurface(node.Data, node.Data.instance.transform, 0, 0),
+                CreateSurface(node.Data, node.Data.instance.transform, 1, 0),
+                CreateSurface(node.Data, node.Data.instance.transform, 0, 1),
+                CreateSurface(node.Data, node.Data.instance.transform, 1, 1)
             };
             node.Expand(subSurfaces);
 
@@ -108,9 +108,9 @@ namespace Assets.Scripts.Astronomical
             node.Data.ActivateRendering();
         }
 
-        private AstronomicalObjectSurface CreateSurface(Transform parentTransform, int x, int y, bool isRoot = false)
+        private AstronomicalObjectSurface CreateSurface(AstronomicalObjectSurface parentSurface, Transform parentTransform, int x, int y, bool isRoot = false)
         {
-            var surface = new AstronomicalObjectSurface(x, y, this.localUp, this.axisA, this.axisB);
+            var surface = new AstronomicalObjectSurface(parentSurface, x, y, this.localUp, this.axisA, this.axisB);
 
             surface.Load();
             surface.Instantiate(parentTransform, x, y, isRoot ? 0 : 1);
