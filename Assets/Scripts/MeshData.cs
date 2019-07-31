@@ -23,6 +23,8 @@ namespace Assets.Scripts
             mesh.uv = data.Uv;
             mesh.triangles = data.Triangles;
             mesh.normals = data.Normals;
+
+            mesh.RecalculateNormals();
             return mesh;
         }
     }

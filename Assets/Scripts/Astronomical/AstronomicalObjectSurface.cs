@@ -43,7 +43,6 @@ namespace Assets.Scripts.Astronomical
 
         public void Load()
         {
-            //this.meshData = PlaneMeshFactory.Instance.Plane(1, 1, Resolution, Resolution);
         }
 
         public void Instantiate(Transform parentTransform, int x, int y, int depth)
@@ -60,16 +59,16 @@ namespace Assets.Scripts.Astronomical
 
             // Only first surface needs to be full size
             // (all other surfaces are half the size on both axis)
-            var depthScale = 0.5f;
+            var depthScale = 1f;//0.5f;
             var depthPositionOffset = depth <= 0 ? 0 : 0.5f;
 
             // TODO: Use pool
             this.instance = Object.Instantiate(meshRendererPrefab, parentTransform);
             this.instance.transform.localScale = new Vector3(depthScale, depthScale, depthScale);
-            this.instance.transform.localPosition = new Vector3(
-                this.localUp.x != 0 ? depthPositionOffset * this.localUp.x : x - depthPositionOffset, 
-                this.localUp.y != 0 ? depthPositionOffset * this.localUp.y : (this.localUp.z != 0 ? y : x) - depthPositionOffset, 
-                this.localUp.z != 0 ? depthPositionOffset * this.localUp.z : y - depthPositionOffset);
+            //this.instance.transform.localPosition = new Vector3(
+            //    this.localUp.x != 0 ? depthPositionOffset * this.localUp.x : x - depthPositionOffset, 
+            //    this.localUp.y != 0 ? depthPositionOffset * this.localUp.y : (this.localUp.z != 0 ? y : x) - depthPositionOffset, 
+            //    this.localUp.z != 0 ? depthPositionOffset * this.localUp.z : y - depthPositionOffset);
             this.renderer = instance.GetComponent<MeshRenderer>();
             var filter = instance.GetComponent<MeshFilter>();
 
@@ -108,7 +107,7 @@ namespace Assets.Scripts.Astronomical
             var startY = surfaceY * Resolution;
             var edgeLimitX = startX + Resolution - 1;
             var edgeLimitY = startY + Resolution - 1;
-
+            
             var indiceIndex = 0;
 
             for (int y = startY, y0 = 0; y < startY + Resolution; y++, y0++)
@@ -117,14 +116,19 @@ namespace Assets.Scripts.Astronomical
                 {
                     var vertexIndex = x0 + y0 * Resolution;
 
-                    var cubePoint = CalcVertexCubePosition(x0, y0, resolutionLimit, localUp, axisA, axisB);
+                    //var res = faceResolution - 1;
+                    //var xx = (((startX + x0)) / res);
+                    //var yy = (((startY + y0)) / res);
+                    //var up = centre;
 
-                    var xx = x0 + surfaceX * Resolution;
-                    var yy = y0 + -surfaceY * Resolution + Resolution;
+                    var xx = x / (faceResolution - 1f);
+                    var yy = y / (faceResolution - 1f);
 
-                    vertices[vertexIndex] = cubePoint;//CalcVertexSpherePosition(cubePoint);
-                    normals[vertexIndex] = CalcVertexCubePosition(xx, yy, Resolution * 2 - 1, localUp, axisA, axisB);
-                    //vertices[vertexIndex] = CalcVertexSpherePosition(x, y, faceResolution - 1, localUp, axisA, axisB);
+                    var cubePoint = CalcVertexCubePosition(xx, yy, localUp, axisA, axisB);
+                    //var cubePoint = CalcVertexCubePosition(x0, y0, resolutionLimit, localUp, axisA, axisB);
+
+                    //vertices[vertexIndex] = cubePoint.normalized;
+                    vertices[vertexIndex] = CalcVertexSpherePosition(cubePoint);
 
                     // Skip indices for right and bottom edges
                     if (x == edgeLimitX || y == edgeLimitY) continue;
@@ -152,12 +156,23 @@ namespace Assets.Scripts.Astronomical
             };
         }
 
-        private static Vector3 CalcVertexCubePosition(int x, int y, int resolutionLimit, Vector3 localUp, Vector3 axisA, Vector3 axisB)
+        private static Vector3 CalcVertexCubePosition(float x, float y, Vector3 localUp, Vector3 axisA, Vector3 axisB)
         {
-            // Calculate vertex position
+            //Vector2 percent = new Vector2(x, y) / (resolutionLimit - 0.5f);
+            //var centre = new Vector3(0.5f, 0.5f, 0.5f);
+            //var halfSize = 0.5f;
+
+            //return centre + ((percent.x - .5f) * 2 * axisA + (percent.y - .5f) * 2 * axisB) * halfSize;
+
             return localUp +
-                   ((float) x / resolutionLimit - 0.5f) * 2 * axisA +
-                   ((float) y / resolutionLimit - 0.5f) * 2 * axisB;
+                   ((x - 0.5f) * 2 * axisA +
+                   (y - 0.5f) * 2 * axisB);
+
+            //// Calculate vertex position
+            //var value = localUp +
+            //            ((float) x / resolutionLimit - 0.5f) * 2 * axisA +
+            //            ((float) y / resolutionLimit - 0.5f) * 2 * axisB;
+            //return value;
         }
 
         private static Vector3 CalcVertexSpherePosition(Vector3 pointOnUnitCube)
