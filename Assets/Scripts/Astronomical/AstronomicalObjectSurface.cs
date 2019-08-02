@@ -115,20 +115,12 @@ namespace Assets.Scripts.Astronomical
                 for (int x = startX, x0 = 0; x < startX + Resolution; x++, x0++)
                 {
                     var vertexIndex = x0 + y0 * Resolution;
-
-                    //var res = faceResolution - 1;
-                    //var xx = (((startX + x0)) / res);
-                    //var yy = (((startY + y0)) / res);
-                    //var up = centre;
-
+                    
                     var xx = x / (faceResolution - 1f);
                     var yy = y / (faceResolution - 1f);
-
+                    
                     var cubePoint = CalcVertexCubePosition(xx, yy, localUp, axisA, axisB);
-                    //var cubePoint = CalcVertexCubePosition(x0, y0, resolutionLimit, localUp, axisA, axisB);
-
-                    //vertices[vertexIndex] = cubePoint.normalized;
-                    vertices[vertexIndex] = CalcVertexSpherePosition(cubePoint);
+                    vertices[vertexIndex] = cubePoint.normalized;//CalcVertexSpherePosition(cubePoint);
 
                     // Skip indices for right and bottom edges
                     if (x == edgeLimitX || y == edgeLimitY) continue;
